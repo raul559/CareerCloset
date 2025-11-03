@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { AppointmentProvider } from "./context/AppointmentContext";
+import { OutfitProvider } from "./context/OutfitContext";
 import NavBar from "./components/NavBar";   
 import Footer from "./components/Footer";      
 import Home from "./pages/Home";                   
@@ -12,6 +13,7 @@ import "./styles/global.css";
 export default function App() {
   return (
     <AppointmentProvider>
+    <OutfitProvider>
       <NavBar />
       <main style={{ padding: "1rem" }}>
         <Routes>
@@ -23,6 +25,7 @@ export default function App() {
         </Routes>
       </main>
       <Footer />
+    </OutfitProvider>
     </AppointmentProvider>
   );
 }

@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppointment } from "../context/AppointmentContext";
+import { useOutfit } from "../context/OutfitContext";
 
 /** Sidebar with filters (chips + selectors) */
 export function FiltersSidebar({
@@ -180,10 +181,15 @@ export function FiltersSidebar({
 export function ItemCard({ item }) {
   const navigate = useNavigate();
   const { addItem } = useAppointment();
+  const { addToOutfit } = useOutfit();
 
   const handleReserve = () => {
     addItem(item);
     navigate("/book");
+  };
+
+  const handleAddToOutfit = () => {
+    addToOutfit(item.category.toLowerCase(), item);
   };
 
   return (
@@ -215,7 +221,13 @@ export function ItemCard({ item }) {
           >
             Reserve
           </button>
-          <button className="btn-outline">Add to Outfit</button>
+          <button 
+            className="btn-outline"
+            onClick={handleAddToOutfit}
+            disabled={item.status === "Unavailable"}
+          >
+            Add to Outfit
+          </button>
         </div>
       </div>
     </article>
