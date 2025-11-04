@@ -1,8 +1,10 @@
 import React, { useMemo, useState } from "react";
 import "../styles/browse.css";
 import{useNavigate} from "react-router-dom";
+import { useOutfit } from "../context/OutfitContext";
 
 import { FiltersSidebar, ItemCard } from "../components/BrowseClothingComponent";
+
 
 /** Demo data */
 const CATEGORIES = ["Blazers", "Shirts", "Pants", "Skirts", "Shoes", "Accessories"];
