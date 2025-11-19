@@ -1,8 +1,7 @@
-
 /* Page layout */
 .app-container {
   background: #f8f9fa;
-  height : 80vh;
+  min-height: 80vh;
   padding: 2rem;
   display: flex;
   justify-content: center;
@@ -197,10 +196,10 @@ button {
 }
 /* --- Compact footer inside the form card --- */
 .form-box footer {
-  background: #000;            /* keep the black look */
-  color: #cfb991;              /* gold text */
+  background: #000; /* keep the black look */
+  color: #cfb991; /* gold text */
   border-radius: 12px;
-  padding: 14px 16px;          /* ↓ was likely large; now tight */
+  padding: 14px 16px; /* ↓ was likely large; now tight */
   margin-top: 16px;
   text-align: center;
 }
@@ -211,14 +210,14 @@ button {
 }
 
 .form-box .footer-content h3 {
-  font-size: 0.95rem;          /* ↓ smaller */
-  line-height: 1.35;           /* tighter lines */
-  margin: 0 0 10px;            /* remove big margins */
+  font-size: 0.95rem; /* ↓ smaller */
+  line-height: 1.35; /* tighter lines */
+  margin: 0 0 10px; /* remove big margins */
   font-weight: 600;
 }
 
 .form-box .footer-content h2 {
-  font-size: 1.05rem;          /* smaller “Quick Links” */
+  font-size: 1.05rem; /* smaller “Quick Links” */
   margin: 6px 0 10px;
   font-weight: 700;
   color: #cfb991;
@@ -236,6 +235,6 @@ button {
   color: #111;
   border: none;
   border-radius: 8px;
-  padding: 6px 10px;           /* ↓ smaller buttons */
+  padding: 6px 10px; /* ↓ smaller buttons */
   font-size: 0.9rem;
 }

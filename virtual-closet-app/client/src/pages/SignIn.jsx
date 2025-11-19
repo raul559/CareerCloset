@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "../styles/SignIn.css";
 
+const isPFWEmail = (v) => /^[^\s@]+@pfw\.edu$/i.test((v || "").trim());
+
 export default function SignIn() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -13,41 +15,57 @@ export default function SignIn() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const from = (location.state && location.state.from) || "/";
+  // if you stored a pathname in location.state, prefer that; otherwise fall back
+  const from =
+    location.state?.from?.pathname ||
+    location.state?.from ||
+    "/browse";
 
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
-    if (!email || !password) {
+
+    const trimmedEmail = email.trim().toLowerCase();
+
+    if (!trimmedEmail || !password) {
       setError("Please enter your email and password.");
       return;
     }
+    if (!isPFWEmail(trimmedEmail)) {
+      setError("Use your PFW email address (e.g., username@pfw.edu).");
+      return;
+    }
+
     try {
       setLoading(true);
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: trimmedEmail, password }),
       });
+
+      let data = null;
+      try { data = await res.json(); } catch {}
+
       if (!res.ok) {
-        let msg = "Sign-in failed. Check your credentials.";
-        try {
-          const data = await res.json();
-          if (data && data.message) msg = data.message;
-        } catch {}
+        const msg = (data && data.message) || "Sign-in failed. Check your credentials.";
         throw new Error(msg);
       }
-      const data = await res.json(); // expect { token, user }
+
+      // expect { token, user }
       const storage = remember ? window.localStorage : window.sessionStorage;
-      storage.setItem("vc_token", data.token);
-      storage.setItem("vc_user", JSON.stringify(data.user));
-      navigate(from || "/browse", { replace: true });
+      if (data?.token) storage.setItem("vc_token", data.token);
+      if (data?.user) storage.setItem("vc_user", JSON.stringify(data.user));
+
+      navigate(from, { replace: true });
     } catch (err) {
       setError(err.message || "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
   }
+
+  const emailInvalid = email.length > 0 && !isPFWEmail(email);
 
   return (
     <div className="signin-wrapper">
@@ -66,13 +84,23 @@ export default function SignIn() {
               id="email"
               name="email"
               type="email"
+              inputMode="email"
               autoComplete="email"
               placeholder="you@pfw.edu"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="input"
-              aria-invalid={!!error && !email}
+              className={`input ${emailInvalid ? "input-invalid" : ""}`}
+              aria-invalid={emailInvalid}
+              aria-describedby="email-help"
+              // Browser-level validation (also enforced in JS above)
+              pattern="^[^\s@]+@pfw\.edu$"
+              title="Use your PFW email (e.g., username@pfw.edu)"
             />
+            {emailInvalid && (
+              <small id="email-help" className="help-text">
+                Email must be your PFW address (e.g., username@pfw.edu).
+              </small>
+            )}
           </div>
 
           <div className="field">
@@ -88,6 +116,8 @@ export default function SignIn() {
                 onChange={(e) => setPassword(e.target.value)}
                 className="input with-toggle"
                 aria-invalid={!!error && !password}
+                minLength={6}
+                required
               />
               <button
                 type="button"
