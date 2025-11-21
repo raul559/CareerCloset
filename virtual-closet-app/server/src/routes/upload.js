@@ -12,7 +12,10 @@ router.post("/", upload.single("image"), async (req, res) => {
       return res.status(400).json({ error: "No file received" });
     }
 
-    const imageUrl = await uploadImage(req.file.buffer, req.file.originalname);
+    const imageUrl = await uploadImage(
+      req.file.buffer,
+      req.file.originalname
+    );
 
     res.json({
       message: "Image uploaded successfully",

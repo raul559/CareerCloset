@@ -3,7 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import { connectDB } from "./config/database.js";
-import uploadRoute from "./src/routes/upload.js";
+import uploadRoute from "./routes/upload.js";
 
 dotenv.config();
 

@@ -1,6 +1,5 @@
 // server/src/services/storageService.js
 import { Storage } from "@google-cloud/storage";
-import path from "path";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -31,7 +30,8 @@ export async function uploadImage(fileBuffer, originalName) {
     stream.on("error", (err) => reject(err));
 
     stream.on("finish", async () => {
-      await file.makePublic(); // or generate signed URL
+      // Make file public so client can display it
+      await file.makePublic();
       resolve(`https://storage.googleapis.com/${bucket.name}/${fileName}`);
     });
 
