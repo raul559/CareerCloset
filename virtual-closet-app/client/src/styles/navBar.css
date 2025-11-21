@@ -1,0 +1,81 @@
+nav {
+  background-color: black;
+  height: 60px;
+  display: flex;
+  align-items: center;
+}
+
+nav ul {
+  width: 100%;
+  list-style: none;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+nav li {
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  height: auto;
+}
+
+nav a {
+  height: 100%;
+  padding: 0 30px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  color: white;
+}
+
+nav a:hover {
+  background-color: #393737;
+  border-radius: 10px;
+}
+
+.signIn {
+  background-color: #cfb991;
+  padding: 8px 16px;
+  border-radius: 100px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.signIn:hover {
+  background-color: #e5cf97;
+  transform: translateY(-2px);
+  padding: 8px 16px;
+  border-radius: 100px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  margin-right: auto;
+}
+
+.brand-logo {
+  height: 45px;
+  width: 45px;
+  margin-right: 10px;
+}
+
+.brand:hover {
+  transform: translateY(-5px);
+  transition: transform 0.3s ease;
+}
+
+.brandLink {
+  background-color: transparent !important;
+}
+
+.brand span {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: white;
+}

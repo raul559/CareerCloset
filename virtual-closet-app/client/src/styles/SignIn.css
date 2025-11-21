@@ -1,0 +1,123 @@
+:root {
+  --gold: #cfb991;
+  --gold-deep: #bfa168;
+  --black: #000000;
+  --white: #ffffff;
+  --text-dark: #111111;
+}
+
+.signin-wrapper {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: var(--white);
+  padding: 40px 16px;
+}
+
+.signin-card {
+  width: min(480px, 94vw);
+  background: var(--white);
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  padding: 28px;
+  text-align: left;
+}
+
+.signin-title {
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--text-dark);
+}
+
+.signin-sub {
+  font-family: "Noto Sans", Helvetica, Arial, sans-serif;
+  color: #444;
+  margin-bottom: 18px;
+  line-height: 1.5;
+}
+
+.signin-error {
+  background: #fde8e8;
+  color: #7a1111;
+  border: 1px solid #f6c7c7;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.signin-form { display: grid; gap: 14px; }
+.field { display: grid; gap: 6px; }
+.label { font-weight: 600; color: var(--text-dark); }
+
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 2px solid #e5e5e5;
+  outline: none;
+  font-size: 16px;
+}
+.input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(207,185,145,0.25);
+}
+
+.password-row { position: relative; }
+.input.with-toggle { padding-right: 44px; }
+
+.show-btn {
+  position: absolute;
+  right: 6px;
+  top: 6px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 2px solid var(--gold);
+  background: var(--gold);
+  color: var(--black);
+  cursor: pointer;
+}
+.show-btn:hover {
+  background: var(--black);
+  color: var(--white);
+  border-color: var(--black);
+}
+
+.row-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.checkbox-label { display: flex; align-items: center; gap: 8px; }
+.checkbox { width: 18px; height: 18px; }
+
+.link-btn {
+  background: transparent;
+  border: none;
+  color: var(--black);
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 600;
+}
+.link-btn:hover { color: var(--gold-deep); }
+
+.primary-btn {
+  background: var(--gold);
+  color: var(--black);
+  border: 2px solid var(--gold);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.primary-btn:hover {
+  background: var(--black);
+  color: var(--white);
+  border-color: var(--black);
+}
+
+.meta { margin-top: 12px; color: #444; }

@@ -1,0 +1,27 @@
+# Environment variables (CRITICAL - NEVER COMMIT)
+.env
+.env.local
+.env.*.local
+**/.env
+**/google-cloud-key.json
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Logs
+logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build outputs
+dist/
+build/
+
+# Ignore all local image folders
+gcs-images/
+thumbnails/
+thumbnails-webp/
