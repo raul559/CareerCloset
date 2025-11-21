@@ -1,19 +1,26 @@
 import mongoose from "mongoose";
 
-async function connectDB() {
+export async function connectDB() {
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI, {
-      serverSelectionTimeoutMS: 5000, // Fail after 5 seconds instead of hanging
-      socketTimeoutMS: 45000,
-    });
+    // Connect to MongoDB using the connection string from .env file
+    const conn = await mongoose.connect(process.env.MONGODB_URI);
+
     console.log("MongoDB Connected:", conn.connection.host);
+    console.log("Database:", conn.connection.name);
+
+    mongoose.connection.on("disconnected", () => {
+      console.log("MongoDB disconnected");
+    });
+
+    mongoose.connection.on("error", (err) => {
+      console.error("MongoDB connection error:", err);
+    });
   } catch (error) {
+    // Log error and exit if connection fails
     console.error("Error connecting to MongoDB:", error.message);
     process.exit(1);
   }
 }
-
-export default connectDB;
 
 /**
  * Close database connection

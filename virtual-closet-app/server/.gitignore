@@ -24,12 +24,9 @@ Thumbs.db
 *.swo
 *~
 
-# Google Cloud credentials
-gcs-credentials.json
+# Google Cloud credentials (will be added in PR #3)
 google-cloud-key.json
 *.json.key
-virtualcloset-*.json
-*-service-account.json
 
 # Build
 dist/
