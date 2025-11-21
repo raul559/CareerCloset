@@ -4,10 +4,13 @@ import * as clothingController from "../controllers/clothingController.js";
 const router = express.Router();
 
 // Get all clothing items for a user
+// Get all clothing items for a user, with pagination
 router.get("/", async (req, res) => {
   try {
     const userId = req.query.userId || "test-user-123";
-    const result = await clothingController.getAllItems(userId);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const result = await clothingController.getAllItems(userId, page, limit);
     res.json(result);
   } catch (error) {
     res.status(500).json({
