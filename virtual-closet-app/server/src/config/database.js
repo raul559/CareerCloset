@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
-async function connectDB() {
+export async function connectDB() {
   try {
     const conn = await mongoose.connect(process.env.MONGODB_URI, {
-      serverSelectionTimeoutMS: 5000, // Fail after 5 seconds instead of hanging
+      serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000,
     });
     console.log("MongoDB Connected:", conn.connection.host);
@@ -12,8 +12,6 @@ async function connectDB() {
     process.exit(1);
   }
 }
-
-export default connectDB;
 
 /**
  * Close database connection
