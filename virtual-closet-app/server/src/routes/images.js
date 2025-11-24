@@ -1,5 +1,6 @@
 import express from "express";
 import * as imageController from "../controllers/imageController.js";
+import { generateSignedUrl } from "../services/gcsService.js";
 
 const router = express.Router();
 
@@ -42,6 +43,22 @@ router.put("/sync-urls", async (req, res) => {
       error: "Failed to sync image URLs",
       message: error.message,
     });
+  }
+});
+
+router.get("/signed/:filename", async (req, res) => {
+  try {
+    const filename = req.params.filename;
+
+    if (!filename) {
+      return res.status(400).json({ error: "Filename is required" });
+    }
+
+    const url = await generateSignedUrl(filename);
+    return res.json({ url });
+  } catch (err) {
+    console.error("Signed URL error:", err);
+    res.status(500).json({ error: "Failed to generate signed URL" });
   }
 });
 
