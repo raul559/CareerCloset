@@ -53,7 +53,13 @@ app.get("/", (req, res) => {
   });
 });
 
-// 404
+// Mount routes
+app.use("/api/clothing", clothingRoutes);
+app.use("/api/images", imageRoutes);
+app.use("/api/admin", adminRoutes);
+
+
+// 404 handler - catches all undefined routes
 app.use((req, res) => {
   res.status(404).json({
     error: "Not Found",
