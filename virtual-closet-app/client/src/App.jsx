@@ -25,7 +25,6 @@ export default function App() {
           <Route path="/book" element={<BookAppointment />} />
           <Route path="/build" element={<BuildOutfit />} />
           <Route path="/signin" element={<SignIn />} />
-          <Route path="/upload" element={<UploadImages />} />
           <Route path="/admin" element={<AdminDashboard />} />
         </Routes>
       </main>
