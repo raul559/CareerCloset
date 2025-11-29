@@ -9,7 +9,9 @@ import BookAppointment from "./pages/BookAppointment";
 import BuildOutfit from "./pages/BuildOutfit";
 import SignIn from "./pages/SignIn";
 import UploadImages from "./pages/UploadImages.jsx";
-import "./styles/global.css";                      
+import "./styles/global.css";  
+import AdminDashboard from "./pages/AdminDashboard";
+
 
 export default function App() {
   return (
@@ -24,6 +26,7 @@ export default function App() {
           <Route path="/build" element={<BuildOutfit />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/upload" element={<UploadImages />} />
+          <Route path="/admin" element={<AdminDashboard />} />
         </Routes>
       </main>
       <Footer />
@@ -31,3 +34,4 @@ export default function App() {
     </AppointmentProvider>
   );
 }
+
