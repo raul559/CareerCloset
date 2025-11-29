@@ -8,6 +8,7 @@ import BrowseClothing from "./pages/BrowseClothing";
 import BookAppointment from "./pages/BookAppointment";
 import BuildOutfit from "./pages/BuildOutfit";
 import SignIn from "./pages/SignIn";
+import UploadImages from "./pages/UploadImages.jsx";
 import "./styles/global.css";                      
 
 export default function App() {
@@ -22,6 +23,7 @@ export default function App() {
           <Route path="/book" element={<BookAppointment />} />
           <Route path="/build" element={<BuildOutfit />} />
           <Route path="/signin" element={<SignIn />} />
+          <Route path="/upload" element={<UploadImages />} />
         </Routes>
       </main>
       <Footer />

@@ -24,6 +24,9 @@ export default function Navbar() {
         <li>
           <NavLink to="/signin" className="signIn">Sign In</NavLink>
         </li>
+        <li>
+          <NavLink to="/upload"Upload Images>Upload Images</NavLink> 
+        </li>
       </ul>
     </nav>
   );
