@@ -7,7 +7,17 @@ export async function connectDB() {
       socketTimeoutMS: 45000,
     });
     console.log("MongoDB Connected:", conn.connection.host);
+    console.log("Database:", conn.connection.name);
+
+    mongoose.connection.on("disconnected", () => {
+      console.log("MongoDB disconnected");
+    });
+
+    mongoose.connection.on("error", (err) => {
+      console.error("MongoDB connection error:", err);
+    });
   } catch (error) {
+    // Log error and exit if connection fails
     console.error("Error connecting to MongoDB:", error.message);
     process.exit(1);
   }

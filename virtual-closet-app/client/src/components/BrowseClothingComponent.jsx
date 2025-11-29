@@ -1,7 +1,3 @@
-// AI-Assisted Code Notice:
-/* AI was used to design the advanced React patterns, improve code clarity, and optimize performance for 
-    image rendering and filtering. */
-    
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppointment } from "../context/AppointmentContext";
@@ -193,29 +189,17 @@ export function ItemCard({ item }) {
   };
 
   const handleAddToOutfit = () => {
-    addToOutfit(item.category?.toLowerCase(), item);
+    addToOutfit(item.category.toLowerCase(), item);
   };
 
   return (
     <article className="card item-card">
       <div style={{ position: "relative" }}>
-        <picture>
-          {item.thumbnailWebpUrl && (
-            <source srcSet={item.thumbnailWebpUrl} type="image/webp" />
-          )}
-          {item.thumbnailJpgUrl && (
-            <source srcSet={item.thumbnailJpgUrl} type="image/jpeg" />
-          )}
-          <img
-            className="item-thumb-img"
-            src={item.thumbnailJpgUrl || item.thumbnailWebpUrl || item.thumbnailSignedUrl || item.thumbnailUrl || item.signedUrl || item.img}
-            alt={`${item.name}, ${item.color}, size ${item.size}`}
-            width={300}
-            height={300}
-            style={{ objectFit: 'cover', background: '#f4f4f4' }}
-            loading="lazy"
-          />
-        </picture>
+        <img
+          className="item-thumb-img"
+          src={item.img}
+          alt={`${item.name}, ${item.color}, size ${item.size}`}
+        />
         <span className={`badge-chip ${item.status === "Unavailable" ? "unavailable" : ""}`}>
           {item.status}
         </span>
@@ -223,21 +207,21 @@ export function ItemCard({ item }) {
       <div className="item-body">
         <h3 className="item-title">{item.name}</h3>
         <p className="meta">
-          {item.category} · {item.color} · Size {item.size} · #{item.clothingId || item.id}
+          {item.category} · {item.color} · Size {item.size} · #{item.id}
         </p>
         <div className="btn-row">
-          <button
-            className="btn"
+          <button 
+            className="btn" 
             onClick={handleReserve}
             disabled={item.status === "Unavailable"}
-            style={{
+            style={{ 
               opacity: item.status === "Unavailable" ? 0.5 : 1,
               cursor: item.status === "Unavailable" ? "not-allowed" : "pointer"
             }}
           >
             Reserve
           </button>
-          <button
+          <button 
             className="btn-outline"
             onClick={handleAddToOutfit}
             disabled={item.status === "Unavailable"}
