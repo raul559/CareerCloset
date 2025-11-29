@@ -3,6 +3,79 @@ import { useState } from "react";
 
 export default function UploadImages() {
   const [file, setFile] = useState(null);
+
+  // CATEGORIES
+  const categories = [
+    "Tops",
+    "Bottoms",
+    "Dresses",
+    "Outerwear",
+    "Shoes",
+    "Accessories",
+  ];
+
+  // SUBCATEGORY MAPPING (from your MongoDB)
+  const subcategoryMap = {
+    Tops: ["Blazer", "Long Sleeve", "Short Sleeve"],
+    Bottoms: ["Pants", "Skirts"],
+    Dresses: ["Dresses"],
+    Outerwear: ["Outerwear"],
+    Shoes: ["Shoes"],
+    Accessories: ["Accessories"],
+  };
+
+  // COLOR OPTIONS (cleaned standard list)
+  const colors = [
+    "Black",
+    "White",
+    "Navy",
+    "Gray",
+    "Blue",
+    "Green",
+    "Brown",
+    "Tan",
+    "Red",
+    "Pink",
+    "Purple",
+    "Yellow",
+    "Orange",
+    "Beige",
+    "Maroon",
+  ];
+
+  // SIZE OPTIONS (cleaned: letters first → pants sizes → misc)
+  const sizes = [
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL",
+    "2XL",
+    "3XL",
+    "0",
+    "2",
+    "4",
+    "6",
+    "8",
+    "10",
+    "12",
+    "14",
+    "16",
+    "28x30",
+    "29x30",
+    "30x30",
+    "32x30",
+    "34x30",
+    "36x29",
+    "36x30",
+    "38x30",
+    "44x30",
+    "Petite XS",
+    "Petite S",
+    "Petite M",
+    "Petite L",
+  ];
+
   const [form, setForm] = useState({
     clothingId: "",
     name: "",
@@ -10,18 +83,22 @@ export default function UploadImages() {
     subcategory: "",
     size: "",
     color: "",
-    season: "All",
     gender: "",
-    tags: "",
   });
 
   const [uploading, setUploading] = useState(false);
   const [result, setResult] = useState(null);
 
   const updateForm = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleCategoryChange = (e) => {
+    const selected = e.target.value;
     setForm({
       ...form,
-      [e.target.name]: e.target.value,
+      category: selected,
+      subcategory: "", // reset subcategory
     });
   };
 
@@ -35,10 +112,7 @@ export default function UploadImages() {
     const data = new FormData();
     data.append("image", file);
 
-    // Append all metadata
-    Object.keys(form).forEach((key) => {
-      data.append(key, form[key]);
-    });
+    Object.keys(form).forEach((key) => data.append(key, form[key]));
 
     const res = await fetch("http://localhost:5000/api/upload", {
       method: "POST",
@@ -53,10 +127,8 @@ export default function UploadImages() {
   return (
     <div style={{ maxWidth: 600, margin: "20px auto" }}>
       <h1>Upload Clothing Item</h1>
-      <p>Upload an image and fill in the metadata for the clothing item.</p>
 
       <form onSubmit={handleSubmit} style={{ display: "grid", gap: 12 }}>
-
         {/* IMAGE FILE */}
         <label>
           Image File:
@@ -68,6 +140,7 @@ export default function UploadImages() {
           />
         </label>
 
+        {/* ID */}
         <label>
           Clothing ID:
           <input
@@ -80,6 +153,7 @@ export default function UploadImages() {
           />
         </label>
 
+        {/* NAME */}
         <label>
           Name:
           <input
@@ -92,83 +166,89 @@ export default function UploadImages() {
           />
         </label>
 
+        {/* CATEGORY DROPDOWN */}
         <label>
           Category:
-          <input
-            type="text"
+          <select
             name="category"
             value={form.category}
-            onChange={updateForm}
-            placeholder="Tops, Bottoms, Outerwear"
+            onChange={handleCategoryChange}
             required
-          />
-        </label>
-
-        <label>
-          Subcategory:
-          <input
-            type="text"
-            name="subcategory"
-            value={form.subcategory}
-            onChange={updateForm}
-            placeholder="Blazer, Pants, Skirt"
-            required
-          />
-        </label>
-
-        <label>
-          Size:
-          <input
-            type="text"
-            name="size"
-            value={form.size}
-            onChange={updateForm}
-            placeholder="S, M, L, XL"
-            required
-          />
-        </label>
-
-        <label>
-          Color:
-          <input
-            type="text"
-            name="color"
-            value={form.color}
-            onChange={updateForm}
-            placeholder="Black, Navy, White"
-          />
-        </label>
-
-        <label>
-          Season:
-          <select name="season" value={form.season} onChange={updateForm}>
-            <option>All</option>
-            <option>Fall</option>
-            <option>Winter</option>
-            <option>Spring</option>
-            <option>Summer</option>
+          >
+            <option value="">Select...</option>
+            {categories.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
           </select>
         </label>
 
+        {/* SUBCATEGORY DROPDOWN */}
+        <label>
+          Subcategory:
+          <select
+            name="subcategory"
+            value={form.subcategory}
+            onChange={updateForm}
+            required
+            disabled={!form.category}
+          >
+            <option value="">Select...</option>
+            {form.category &&
+              subcategoryMap[form.category].map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+          </select>
+        </label>
+
+        {/* SIZE DROPDOWN */}
+        <label>
+          Size:
+          <select name="size" value={form.size} onChange={updateForm} required>
+            <option value="">Select...</option>
+            {sizes.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        {/* COLOR DROPDOWN */}
+        <label>
+          Color:
+          <select
+            name="color"
+            value={form.color}
+            onChange={updateForm}
+            required
+          >
+            <option value="">Select...</option>
+            {colors.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        {/* GENDER DROPDOWN */}
         <label>
           Gender:
-          <select name="gender" value={form.gender} onChange={updateForm}>
+          <select
+            name="gender"
+            value={form.gender}
+            onChange={updateForm}
+            required
+          >
             <option value="">Select...</option>
             <option>Mens</option>
             <option>Womens</option>
             <option>Unisex</option>
           </select>
-        </label>
-
-        <label>
-          Tags (comma separated):
-          <input
-            type="text"
-            name="tags"
-            value={form.tags}
-            onChange={updateForm}
-            placeholder="dressy, blazer, interview"
-          />
         </label>
 
         <button
@@ -195,7 +275,15 @@ export default function UploadImages() {
             alt="Uploaded"
             style={{ width: 200, borderRadius: 8 }}
           />
-          <pre style={{ background: "#eee", padding: 10, marginTop: 10 }}>
+          <pre
+            style={{
+              background: "#eee",
+              padding: 10,
+              marginTop: 10,
+              wordBreak: "break-all",
+              whiteSpace: "pre-wrap",
+            }}
+          >
             {JSON.stringify(result.item, null, 2)}
           </pre>
         </div>
