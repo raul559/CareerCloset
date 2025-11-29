@@ -10,6 +10,7 @@ import { connectDB } from "./config/database.js";
 import clothingRoutes from "./routes/clothing.js";
 import imageRoutes from "./routes/images.js";
 import uploadRoute from "./routes/upload.js";
+import adminRoutes from "./routes/admin.js";
 
 // Get directory name for ES modules
 const __filename = fileURLToPath(import.meta.url);
