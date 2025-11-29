@@ -20,8 +20,3 @@ Thumbs.db
 # Build outputs
 dist/
 build/
-
-# Ignore all local image folders
-gcs-images/
-thumbnails/
-thumbnails-webp/
