@@ -2,7 +2,6 @@
 .env
 .env.local
 .env.*.local
-
 # Dependencies
 node_modules/
 
@@ -27,6 +26,8 @@ Thumbs.db
 # Google Cloud credentials (will be added in PR #3)
 google-cloud-key.json
 *.json.key
+gcs-credentials.json
+
 
 # Build
 dist/

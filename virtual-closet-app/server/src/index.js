@@ -9,6 +9,7 @@ import { connectDB } from "./config/database.js";
 import clothingRoutes from "./routes/clothing.js";
 import imageRoutes from "./routes/images.js";
 import uploadRoute from "./routes/upload.js";
+import adminRoutes from "./routes/admin.js";
 
 
 // Load .env from parent directory (server/.env)
@@ -73,6 +74,8 @@ app.get("/", (req, res) => {
 // Mount routes
 app.use("/api/clothing", clothingRoutes);
 app.use("/api/images", imageRoutes);
+app.use("/api/admin", adminRoutes);
+
 
 // 404 handler - catches all undefined routes
 app.use((req, res) => {
