@@ -10,14 +10,11 @@ import clothingRoutes from "./routes/clothing.js";
 import imageRoutes from "./routes/images.js";
 import uploadRoute from "./routes/upload.js";
 
-// Get directory name for ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 // Load .env from parent directory (server/.env)
 dotenv.config({ path: join(__dirname, "..", ".env") });
 
-// Get directory name for ES modules
+// Get directory name for ES modules only once
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
