@@ -8,7 +8,8 @@ import {
   ItemCard
 } from "../components/BrowseClothingComponent";
 
-const CATEGORIES = ["Blazers", "Shirts", "Pants", "Skirts", "Shoes", "Accessories"];
+// Categories should match the schema enum used on the server
+const CATEGORIES = ["Tops", "Bottoms", "Dresses", "Outerwear", "Shoes", "Accessories"];
 const SIZES = ["XS", "S", "M", "L", "XL"];
 const COLORS = ["Black", "Brown", "Green", "White", "Gray", "Tan", "Navy"];
 
@@ -20,9 +21,7 @@ export default function BrowseClothing() {
 
   // Clothing metadata + image URLS
   const [items, setItems] = useState([]);
-  const [itemsWithUrls, setItemsWithUrls] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [loadingImages, setLoadingImages] = useState(true);
 
   // Filters
   const [query, setQuery] = useState("");
@@ -36,7 +35,7 @@ export default function BrowseClothing() {
 
   const userId = "virtual-closet-user";
 
-  // Load clothing metadata metadata from MongoDB
+  // Load clothing metadata (now includes signed URLs from backend)
   useEffect(() => {
     async function loadItems() {
       try {
@@ -46,6 +45,7 @@ export default function BrowseClothing() {
         const data = await res.json();
 
         if (data && data.items) {
+          // Items already have thumbnailWebpUrl from backend
           setItems(data.items);
         } else {
           console.error("Unexpected API response:", data);
@@ -59,36 +59,6 @@ export default function BrowseClothing() {
 
     loadItems();
   }, []);
-
-  // Replace filename with signed URLs
-  useEffect(() => {
-    async function loadSignedURls() {
-      try {
-        const updated = await Promise.all(
-          items.map(async (item) => {
-            if (!item.imageUrl) return { ...item, img: null, status: item.status || "Available" };
-
-            try {
-              const res = await fetch(
-                `http://localhost:5000/api/images/signed/${item.imageUrl}`
-              );
-              const { url } = await res.json();
-              return { ...item, img: url, status: item.status || "Available" };
-            } catch (err) {
-              console.error("Error getting signed URL:", err);
-              return { ...item, img: null, status: item.status || "Available" };
-            }
-          })
-        );
-        setItemsWithUrls(updated);
-      } finally {
-        setLoadingImages(false);
-      }
-    }
-    if (items.length > 0) {
-      loadSignedURls();
-    }
-  }, [items]);
 
 
 
@@ -115,30 +85,60 @@ export default function BrowseClothing() {
 
   // Filtering Logic
   const filtered = useMemo(() => {
-    return itemsWithUrls.filter((it) => {
+    return items.filter((it) => {
+      // Query search
       const q = query.trim().toLowerCase();
+      const itemCategory = (it.category || it.subcategory || "").toLowerCase();
+      const itemName = (it.name || "").toLowerCase();
+      const itemColor = (it.color || "").toLowerCase();
+      const itemSize = (it.size || "").toLowerCase();
+
       const matchesQuery =
         !q ||
-        `${it.name} ${it.subcategory} ${it.color} ${it.size}`
-          .toLowerCase()
-          .includes(q);
+        `${itemName} ${itemCategory} ${itemColor} ${itemSize}`.includes(q);
 
+      // Availability
       const matchesAvail =
         availability === "All Items" ||
         (availability === "Available" && it.status !== "Unavailable") ||
         (availability === "Unavailable" && it.status === "Unavailable");
 
-      const matchesCategory =
-        selectedCategories.size === 0 ||
-        selectedCategories.has(it.subcategory);
+      // Category filter: compare against primary `category` field (schema enum)
+      const matchesCategory = (() => {
+        if (selectedCategories.size === 0) return true;
+        const selected = Array.from(selectedCategories).map((c) => c.toLowerCase());
+        const itemCat = (it.category || "").toLowerCase();
+        const itemSub = (it.subcategory || "").toLowerCase();
 
+        // Special rule: "Outerwear" filter should show only blazers
+        if (selected.includes("outerwear")) {
+          // Accept items whose subcategory is blazer (case-insensitive)
+          const isBlazer = itemSub.includes("blazer") || itemName.includes("blazer");
+          // If multiple categories are selected, still allow matches for other categories
+          const otherSelected = selected.filter((c) => c !== "outerwear");
+          const matchesOther = otherSelected.length === 0
+            ? false
+            : otherSelected.some((c) => c === itemCat);
+          return isBlazer || matchesOther;
+        }
+
+        // Default: match item's primary category
+        return selected.some((c) => c === itemCat);
+      })();
+
+      // Size filter: match if no filter OR item size matches
       const matchesSize =
         selectedSizes.size === 0 ||
-        selectedSizes.has(it.size);
+        Array.from(selectedSizes).some(
+          (size) => size.toLowerCase() === (it.size || "").toLowerCase()
+        );
 
+      // Color filter: match if no filter OR item color matches
       const matchesColor =
         selectedColors.size === 0 ||
-        selectedColors.has(it.color);
+        Array.from(selectedColors).some(
+          (color) => color.toLowerCase() === (it.color || "").toLowerCase()
+        );
 
       return (
         matchesQuery &&
@@ -148,7 +148,7 @@ export default function BrowseClothing() {
         matchesColor
       );
     });
-  }, [query, availability, selectedCategories, selectedSizes, selectedColors, itemsWithUrls]);
+  }, [query, availability, selectedCategories, selectedSizes, selectedColors, items]);
 
   // Pagination Logic
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
@@ -195,7 +195,7 @@ export default function BrowseClothing() {
           selectedColors={selectedColors}
           toggleColor={toggleColor}
           clearFilters={clearFilters}
-          totalCount={itemsWithUrls.length}
+          totalCount={items.length}
           filteredCount={filtered.length}
         />
 

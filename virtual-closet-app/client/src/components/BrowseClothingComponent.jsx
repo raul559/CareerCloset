@@ -71,7 +71,7 @@ export function FiltersSidebar({
                   }
                 >
                   <span className="chip-dot" aria-hidden="true" />
-                  <span>{c}</span>
+                  <span>{c === "Outerwear" ? "Blazers" : c}</span>
                 </button>
               );
             })}
@@ -181,15 +181,52 @@ export function FiltersSidebar({
 export function ItemCard({ item }) {
   const navigate = useNavigate();
   const { addItem } = useAppointment();
-  const { addToOutfit } = useOutfit();
+  const { addToOutfit, availableItems } = useOutfit();
 
   const handleReserve = () => {
     addItem(item);
     navigate("/book");
   };
 
+  const mapCategory = (cat) => {
+    const c = (cat || "").toLowerCase();
+    switch (c) {
+      case "tops":
+        return "shirts";
+      case "bottoms":
+        return "pants";
+      case "outerwear":
+        return "outerwear";
+      case "dresses":
+        return "skirts"; // BuildOutfit groups dresses/skirts under 'skirts'
+      case "shoes":
+        return "shoes";
+      case "accessories":
+        return "accessories";
+      default:
+        return "shirts"; // fallback bucket
+    }
+  };
+
+  const targetCategory = mapCategory(item.category);
+
+  const isAlreadyAdded = (() => {
+    const list = availableItems[targetCategory] || [];
+    const id = item.clothingId || item.id;
+    return list.some((i) => i.id === id);
+  })();
+
   const handleAddToOutfit = () => {
-    addToOutfit(item.category.toLowerCase(), item);
+    // Map API category (Tops, Bottoms, Outerwear, Dresses, Shoes, Accessories)
+    // to BuildOutfit categories (shirts, pants, outerwear, skirts, shoes, accessories)
+    if (isAlreadyAdded) return; // safety guard
+    // Ensure the BuildOutfit page has an 'img' field to render
+    const outfitItem = {
+      ...item,
+      id: item.clothingId || item.id,
+      img: item.thumbnailWebpUrl || item.img,
+    };
+    addToOutfit(targetCategory, outfitItem);
   };
 
   return (
@@ -197,36 +234,37 @@ export function ItemCard({ item }) {
       <div style={{ position: "relative" }}>
         <img
           className="item-thumb-img"
-          src={item.img}
+          src={item.thumbnailWebpUrl || item.img}
           alt={`${item.name}, ${item.color}, size ${item.size}`}
         />
         <span className={`badge-chip ${item.status === "Unavailable" ? "unavailable" : ""}`}>
-          {item.status}
+          {item.status || "Available"}
         </span>
       </div>
       <div className="item-body">
         <h3 className="item-title">{item.name}</h3>
         <p className="meta">
-          {item.category} · {item.color} · Size {item.size} · #{item.id}
+          {item.category} · {item.color} · Size {item.size} · #{item.clothingId}
         </p>
         <div className="btn-row">
-          <button 
-            className="btn" 
+          <button
+            className="btn"
             onClick={handleReserve}
             disabled={item.status === "Unavailable"}
-            style={{ 
+            style={{
               opacity: item.status === "Unavailable" ? 0.5 : 1,
               cursor: item.status === "Unavailable" ? "not-allowed" : "pointer"
             }}
           >
             Reserve
           </button>
-          <button 
+          <button
             className="btn-outline"
             onClick={handleAddToOutfit}
-            disabled={item.status === "Unavailable"}
+            disabled={item.status === "Unavailable" || isAlreadyAdded}
+            style={isAlreadyAdded ? { opacity: 0.6, cursor: "default" } : undefined}
           >
-            Add to Outfit
+            {isAlreadyAdded ? "Added to Outfit" : "Add to Outfit"}
           </button>
         </div>
       </div>
