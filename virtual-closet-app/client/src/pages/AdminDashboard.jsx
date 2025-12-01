@@ -3,11 +3,12 @@ import { useNavigate } from "react-router-dom";
 
 import AdminUserManagement from "../components/AdminUserManagement";
 import AdminClothingManagement from "../components/AdminClothingManagement";
+import AdminAppointmentManagement from "../components/AdminAppointmentManagement";
 
-// ⭐ REQUIRED IMPORT FOR THE NEW TAB
 import UploadImages from "./UploadImages";
 
 import { getStats, getAppointments } from "../services/adminApi";
+import auth from "../utils/auth";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -18,9 +19,11 @@ export default function AdminDashboard() {
 
   // -------- ROUTE PROTECTION --------
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (!user || user.role !== "admin") navigate("/");
-  }, []);
+    const user = auth.getCurrentUser();
+    if (!user || !user.isAdmin) {
+      navigate("/");
+    }
+  }, [navigate]);
 
   // -------- LOAD DASHBOARD DATA --------
   useEffect(() => {
@@ -85,20 +88,8 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {tab === "appointments" && (
-          <div>
-            <h2>Appointments</h2>
-            {appointments.map((a) => (
-              <div key={a._id} style={styles.card}>
-                <p><strong>{a.name}</strong></p>
-                <p>Date: {a.date}</p>
-                <p>Status: {a.status}</p>
-              </div>
-            ))}
-          </div>
-        )}
+        {tab === "appointments" && <AdminAppointmentManagement />}
 
-        {/* ⭐ NEW TAB CONTENT — Upload Page */}
         {tab === "upload" && <UploadImages />}
       </div>
     </div>

@@ -3,6 +3,9 @@ nav {
   height: 60px;
   display: flex;
   align-items: center;
+  position: sticky; /* Keeps navbar visible when scrolling */
+  top: 0;
+  z-index: 1000; /* Ensure it stays above page content */
 }
 
 nav ul {
@@ -78,4 +81,23 @@ nav a:hover {
   font-size: 1.25rem;
   font-weight: bold;
   color: white;
+}
+
+/* Badge for reserved items count */
+.nav-badge {
+  position: absolute;
+  top: -8px;
+  right: 8px;
+  background: #dc3545;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 10px;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }

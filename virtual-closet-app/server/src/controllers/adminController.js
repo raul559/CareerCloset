@@ -1,4 +1,4 @@
-import User from "../models/User.js";
+import User from "../models/user.js";
 import Clothing from "../models/ClothingItem.js"; 
 // import Outfit from "../models/Outfit.js";   // add when you create it
 // import Appointment from "../models/Appointment.js"; // add when you create it
