@@ -1,15 +1,6 @@
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
-
-// ES module __filename and __dirname setup
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -19,16 +10,6 @@ import { connectDB } from "./config/database.js";
 // Import routes
 import clothingRoutes from "./routes/clothing.js";
 import imageRoutes from "./routes/images.js";
-import uploadRoute from "./routes/upload.js";
-import adminRoutes from "./routes/admin.js";
-
-
-// Load .env from parent directory (server/.env)
-dotenv.config({ path: join(__dirname, "..", ".env") });
-
-// Get directory name for ES modules only once
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 const PORT = process.env.PORT || 5001;
 
