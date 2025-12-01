@@ -4,10 +4,10 @@ import { useNavigate } from "react-router-dom";
 import AdminUserManagement from "../components/AdminUserManagement";
 import AdminClothingManagement from "../components/AdminClothingManagement";
 
-// ⭐ REQUIRED IMPORT FOR THE NEW TAB
 import UploadImages from "./UploadImages";
 
 import { getStats, getAppointments } from "../services/adminApi";
+import auth from "../utils/auth";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -18,9 +18,11 @@ export default function AdminDashboard() {
 
   // -------- ROUTE PROTECTION --------
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (!user || user.role !== "admin") navigate("/");
-  }, []);
+    const user = auth.getCurrentUser();
+    if (!user || !user.isAdmin) {
+      navigate("/");
+    }
+  }, [navigate]);
 
   // -------- LOAD DASHBOARD DATA --------
   useEffect(() => {
@@ -98,7 +100,6 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* ⭐ NEW TAB CONTENT — Upload Page */}
         {tab === "upload" && <UploadImages />}
       </div>
     </div>
