@@ -6,17 +6,17 @@ import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { connectDB } from "./config/database.js";
 
-// Import routes
+// Routes
 import clothingRoutes from "./routes/clothing.js";
 import imageRoutes from "./routes/images.js";
 import uploadRoute from "./routes/upload.js";
 import adminRoutes from "./routes/admin.js";
 
-// Get directory name for ES modules
+// Resolve directory
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Load .env from parent directory (server/.env)
+// Load .env (local only)
 dotenv.config({ path: join(__dirname, "..", ".env") });
 
 const app = express();
@@ -26,41 +26,31 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Connect to MongoDB
+// Connect DB
 connectDB();
 
-// Upload route
+// ROUTES
 app.use("/api/upload", uploadRoute);
-
-// Clothing + image routes
-app.use("/api/clothing", clothingRoutes);
-app.use("/api/images", imageRoutes);
-
-// Health check
-app.get("/api/health", (req, res) => {
-  res.json({
-    status: "OK",
-    message: "Virtual Closet API is running",
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || "development",
-  });
-});
-
-// Root route
-app.get("/", (req, res) => {
-  res.json({
-    message: "Welcome to Virtual Closet API",
-    version: "1.0.0",
-  });
-});
-
-// Mount routes
 app.use("/api/clothing", clothingRoutes);
 app.use("/api/images", imageRoutes);
 app.use("/api/admin", adminRoutes);
 
+// Health Check
+app.get("/api/health", (req, res) => {
+  res.json({
+    status: "OK",
+    message: "Virtual Closet API is running",
+    environment: process.env.NODE_ENV || "development",
+    timestamp: new Date().toISOString(),
+  });
+});
 
-// 404 handler - catches all undefined routes
+// Root
+app.get("/", (req, res) => {
+  res.json({ message: "Welcome to Virtual Closet API", version: "1.0.0" });
+});
+
+// 404 Handler
 app.use((req, res) => {
   res.status(404).json({
     error: "Not Found",
@@ -68,7 +58,7 @@ app.use((req, res) => {
   });
 });
 
-// Error handler
+// Error Handler
 app.use((err, req, res, next) => {
   console.error("Error:", err);
   res.status(err.status || 500).json({
@@ -77,7 +67,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server
+// Start Server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
