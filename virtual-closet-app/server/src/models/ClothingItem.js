@@ -62,6 +62,10 @@ const clothingItemSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    thumbnailWebp: {
+      type: String,
+      default: "",
+    },
     tags: {
       type: [String],
       default: [],

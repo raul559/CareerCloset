@@ -3,6 +3,9 @@ nav {
   height: 60px;
   display: flex;
   align-items: center;
+  position: sticky; /* Keeps navbar visible when scrolling */
+  top: 0;
+  z-index: 1000; /* Ensure it stays above page content */
 }
 
 nav ul {
