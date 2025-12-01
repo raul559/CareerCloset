@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 // server/src/index.js
+=======
+>>>>>>> f2959851b81eeeb50cb775b4e60cabc8acbe9490
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -11,6 +14,13 @@ import clothingRoutes from "./routes/clothing.js";
 import imageRoutes from "./routes/images.js";
 import uploadRoute from "./routes/upload.js";
 import adminRoutes from "./routes/admin.js";
+<<<<<<< HEAD
+=======
+
+
+// Load .env from parent directory (server/.env)
+dotenv.config({ path: join(__dirname, "..", ".env") });
+>>>>>>> f2959851b81eeeb50cb775b4e60cabc8acbe9490
 
 // Get directory name for ES modules only once
 const __filename = fileURLToPath(import.meta.url);
@@ -33,6 +43,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+<<<<<<< HEAD
 // Connect to MongoDB
 connectDB();
 
@@ -44,6 +55,12 @@ app.use("/api/clothing", clothingRoutes);
 app.use("/api/images", imageRoutes);
 
 // Health check
+=======
+// Connect to MongoDB database
+connectDB();
+
+// Health check endpoint
+>>>>>>> f2959851b81eeeb50cb775b4e60cabc8acbe9490
 app.get("/api/health", (req, res) => {
   res.json({
     status: "OK",
@@ -53,7 +70,11 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+<<<<<<< HEAD
 // Root route
+=======
+// Root endpoint - welcome message
+>>>>>>> f2959851b81eeeb50cb775b4e60cabc8acbe9490
 app.get("/", (req, res) => {
   res.json({
     message: "Welcome to Virtual Closet API",
@@ -96,7 +117,7 @@ app.use((req, res) => {
   });
 });
 
-// Error handler
+// Error handling middleware - catches all errors
 app.use((err, req, res, next) => {
   console.error("Error:", err);
   res.status(err.status || 500).json({
@@ -105,7 +126,17 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server
+// Start the server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
+  console.log(`API available at: http://localhost:${PORT}/`);
+});
+
+// Graceful shutdown handler
+process.on("SIGTERM", () => {
+  console.log("SIGTERM signal received: closing HTTP server");
+  server.close(() => {
+    console.log("HTTP server closed");
+  });
 });
