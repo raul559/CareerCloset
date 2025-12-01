@@ -12,8 +12,14 @@ import { connectDB } from "./config/database.js";
 // Import routes
 import clothingRoutes from "./routes/clothing.js";
 import imageRoutes from "./routes/images.js";
+import uploadRoute from "./routes/upload.js";
+import adminRoutes from "./routes/admin.js";
 
-// Get directory name for ES modules
+
+// Load .env from parent directory (server/.env)
+dotenv.config({ path: join(__dirname, "..", ".env") });
+
+// Get directory name for ES modules only once
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
