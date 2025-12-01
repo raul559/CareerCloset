@@ -114,7 +114,8 @@ export default function UploadImages() {
 
     Object.keys(form).forEach((key) => data.append(key, form[key]));
 
-    const res = await fetch("http://localhost:5000/api/upload", {
+    const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5001/api";
+    const res = await fetch(`${API_URL}/upload`, {
       method: "POST",
       body: data,
     });

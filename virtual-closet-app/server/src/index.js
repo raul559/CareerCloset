@@ -1,3 +1,10 @@
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+
+// ES module __filename and __dirname setup
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -23,7 +30,7 @@ dotenv.config({ path: join(__dirname, "..", ".env") });
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 async function startServer() {
   try {
