@@ -1,5 +1,6 @@
 import express from "express";
 import * as imageController from "../controllers/imageController.js";
+import { generateSignedUrl } from "../services/gcsService.js";
 
 const router = express.Router();
 
@@ -19,7 +20,7 @@ router.get("/missing", async (req, res) => {
   }
 });
 
-// Sync image URLs - bulk update MongoDB with constructed image URLs
+// Sync URLs
 router.put("/sync-urls", async (req, res) => {
   try {
     const {
@@ -42,6 +43,42 @@ router.put("/sync-urls", async (req, res) => {
       error: "Failed to sync image URLs",
       message: error.message,
     });
+  }
+});
+
+router.get("/signed-webp/:filename", async (req, res) => {
+  try {
+    let original = req.params.filename;
+
+    if (!original) {
+      return res.status(400).json({ error: "Filename is required" });
+    }
+
+    // Remove 'Thumbnails-webp/' prefix if it exists
+    let base = original.replace(/^Thumbnails-webp\//, "");
+
+    // Remove file extension to get the base name
+    base = base.replace(/\.(jpg|jpeg|webp|JPG|JPEG|WEBP)$/i, "");
+
+    // Construct the webp path
+    const webpPath = `Thumbnails-webp/${base}.webp`;
+
+    try {
+      // Attempt to use WebP version
+      const url = await generateSignedUrl(webpPath);
+      return res.json({ url });
+    } catch (webpErr) {
+      console.warn("WebP missing → falling back to JPG:", webpPath);
+
+      // Fallback to original JPG file in root bucket
+      const jpgPath = original;
+      const url = await generateSignedUrl(jpgPath);
+
+      return res.json({ url });
+    }
+  } catch (err) {
+    console.error("Signed URL WebP error:", err);
+    res.status(500).json({ error: "Failed to generate WebP or JPG URL" });
   }
 });
 
