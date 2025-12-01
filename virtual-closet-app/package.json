@@ -2,9 +2,12 @@
   "name": "virtual-closet-app",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\" && echo '\nFrontend: http://localhost:5173/nBackend: http://localhost:5001/'"
+    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\" && echo '\nFrontend: http://localhost:5173\nBackend: http://localhost:5001'"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "cors": "^2.8.5"
   }
 }
