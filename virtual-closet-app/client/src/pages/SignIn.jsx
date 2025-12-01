@@ -24,9 +24,7 @@ export default function SignIn({ onLogin, loggedIn }) {
   function handleSubmit(e) {
     e.preventDefault();
     setError("");
-
     const trimmedEmail = email.trim().toLowerCase();
-
     if (!trimmedEmail || !password) {
       setError("Please enter your email and password.");
       return;

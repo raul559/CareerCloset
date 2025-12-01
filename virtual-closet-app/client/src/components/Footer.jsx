@@ -2,9 +2,9 @@ import { useNavigate } from "react-router-dom";
 import "../styles/global.css";
 
 
-export default function Footer(){
+export default function Footer() {
     const navigate = useNavigate();
-    return(
+    return (
         <footer>
             <div className="footer-content">
                 <h3>
@@ -15,9 +15,9 @@ export default function Footer(){
 
                 <h2>Quick Links</h2>
                 <div className="footer-buttons">
-                    <button id="lowerBrowseBtn" onClick={() =>navigate("/browse")}> Browse Clothing</button>
-                    <button id="lowerBookBtn" onClick={() =>navigate("/book")} > Book Appointment</button>
-                    <button id="lowerBuildBtn"onClick={() =>navigate("/build")}  >Build Outfit</button>
+                    <button id="lowerBrowseBtn" onClick={() => navigate("/browse")}>Browse Clothing</button>
+                    <button id="lowerBookBtn" onClick={() => navigate("/book")}>Book Appointment</button>
+                    <button id="lowerBuildBtn" onClick={() => navigate("/build")}>Build Outfit</button>
                 </div>
             </div>
 

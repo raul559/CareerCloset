@@ -1,12 +1,11 @@
-// src/pages/Home.jsx
-import "../styles/mainPage.css"; // or wherever your CSS lives
-import{useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import "../styles/mainPage.css";
 
 export default function Home() {
-  const navigate =useNavigate();
+  const navigate = useNavigate();
   return (
     <div className="career-closet">
-      
+
 
       <main className="main-section">
         <h1>Professional Attire for Your Career Success</h1>
@@ -19,8 +18,8 @@ export default function Home() {
         <img src="/group_pic.png" alt="Career Closet Group" />
 
         <div className="main-buttons">
-          <button id="browseBtn" onClick={() =>navigate("/browse")}>Browse Closet</button>
-          <button id="aptBtn" onClick={() =>navigate("/book")}>Book Appointment</button>
+          <button id="browseBtn" onClick={() => navigate("/browse")}>Browse Closet</button>
+          <button id="aptBtn" onClick={() => navigate("/book")}>Book Appointment</button>
         </div>
       </main>
     </div>

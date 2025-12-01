@@ -4,6 +4,7 @@
 .env.*.local
 **/.env
 **/google-cloud-key.json
+gcs-credentials.json    
 
 # Dependencies
 node_modules/
@@ -20,3 +21,9 @@ Thumbs.db
 # Build outputs
 dist/
 build/
+
+# Ignore all local image folders
+gcs-images/
+thumbnails/
+thumbnails-webp/
+

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import AdminUserManagement from "../components/AdminUserManagement";
 import AdminClothingManagement from "../components/AdminClothingManagement";
+import AdminAppointmentManagement from "../components/AdminAppointmentManagement";
 
 import UploadImages from "./UploadImages";
 
@@ -87,18 +88,7 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {tab === "appointments" && (
-          <div>
-            <h2>Appointments</h2>
-            {appointments.map((a) => (
-              <div key={a._id} style={styles.card}>
-                <p><strong>{a.name}</strong></p>
-                <p>Date: {a.date}</p>
-                <p>Status: {a.status}</p>
-              </div>
-            ))}
-          </div>
-        )}
+        {tab === "appointments" && <AdminAppointmentManagement />}
 
         {tab === "upload" && <UploadImages />}
       </div>
