@@ -206,7 +206,7 @@ export default function BookAppointment({ userEmail, isAdmin = false }) {
       date: selectedDate.toISOString().split('T')[0],
       time: selectedTime,
       requestedItems: requestedItems.map(item => ({
-        id: item.id,
+        id: item._id || item.id,
         name: item.name,
         category: item.category,
         color: item.color,

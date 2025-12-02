@@ -1,0 +1,10 @@
+node_modules
+.git
+.vscode
+dist
+*.log
+.env
+.env.local
+.env.*.local
+# Allow .env.production for production builds
+!.env.production
