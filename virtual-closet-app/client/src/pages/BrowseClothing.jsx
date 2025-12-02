@@ -13,7 +13,7 @@ const CATEGORIES = ["Tops", "Bottoms", "Dresses", "Outerwear", "Shoes", "Accesso
 const SIZES = ["XS", "S", "M", "L", "XL"];
 const COLORS = ["Black", "Brown", "Green", "White", "Gray", "Tan", "Navy"];
 
-const ITEMS_PER_PAGE = 50;
+const ITEMS_PER_PAGE = 30; // Reduced from 50 for faster initial load
 
 export default function BrowseClothing() {
   const navigate = useNavigate();
@@ -22,6 +22,8 @@ export default function BrowseClothing() {
   // Clothing metadata + image URLS
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
 
   // Filters
   const [query, setQuery] = useState("");
@@ -35,22 +37,35 @@ export default function BrowseClothing() {
 
   const userId = "virtual-closet-user";
 
-  // Load clothing metadata (now includes signed URLs from backend)
+  // Load ALL clothing items once (filtering happens client-side)
   useEffect(() => {
-    async function loadItems() {
+    async function loadAllItems() {
+      setLoading(true);
       try {
         const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5001/api";
-        const res = await fetch(
-          `${API_URL}/clothing?userId=${userId}`
-        );
-        const data = await res.json();
 
-        if (data && data.items) {
-          // Items already have thumbnailWebpUrl from backend
-          setItems(data.items);
-        } else {
-          console.error("Unexpected API response:", data);
+        // Fetch all items by making multiple paginated requests
+        let allItems = [];
+        let page = 1;
+        let hasMore = true;
+
+        while (hasMore) {
+          const res = await fetch(
+            `${API_URL}/clothing?userId=${userId}&page=${page}&limit=100`
+          );
+          const data = await res.json();
+
+          if (data && data.items) {
+            allItems = allItems.concat(data.items);
+            hasMore = data.items.length === 100 && page < data.totalPages;
+            page++;
+          } else {
+            hasMore = false;
+          }
         }
+
+        setItems(allItems);
+        setTotal(allItems.length);
       } catch (err) {
         console.error("Failed to load clothing:", err);
       } finally {
@@ -58,8 +73,8 @@ export default function BrowseClothing() {
       }
     }
 
-    loadItems();
-  }, []);
+    loadAllItems();
+  }, []); // Only load once on mount
 
 
 
@@ -83,6 +98,11 @@ export default function BrowseClothing() {
   const toggleCategory = toggleSet(setSelectedCategories);
   const toggleSize = toggleSet(setSelectedSizes);
   const toggleColor = toggleSet(setSelectedColors);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [query, availability, selectedCategories, selectedSizes, selectedColors]);
 
   // Filtering Logic
   const filtered = useMemo(() => {
@@ -151,14 +171,12 @@ export default function BrowseClothing() {
     });
   }, [query, availability, selectedCategories, selectedSizes, selectedColors, items]);
 
-  // Pagination Logic
-  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
-
+  // Client-side pagination after filtering all items
+  const totalFilteredPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
   const paginatedItems = filtered.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
-
 
   if (loading) return <p>Loading...</p>;
 
@@ -208,25 +226,55 @@ export default function BrowseClothing() {
           </div>
 
           {/* Pagination Controls */}
-          <div style={{ marginTop: 30, textAlign: "center" }}>
-            <button
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage((p) => p - 1)}
-            >
-              Previous
-            </button>
+          {filtered.length > 0 && (
+            <div style={{ marginTop: 30, textAlign: "center" }}>
+              <button
+                disabled={currentPage === 1}
+                onClick={() => {
+                  setCurrentPage(1);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                style={{ marginRight: 10 }}
+              >
+                First
+              </button>
 
-            <span style={{ margin: "0 15px" }}>
-              Page {currentPage} of {totalPages}
-            </span>
+              <button
+                disabled={currentPage === 1}
+                onClick={() => {
+                  setCurrentPage((p) => p - 1);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+              >
+                Previous
+              </button>
 
-            <button
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage((p) => p + 1)}
-            >
-              Next
-            </button>
-          </div>
+              <span style={{ margin: "0 15px" }}>
+                Page {currentPage} of {totalFilteredPages} ({filtered.length} items)
+              </span>
+
+              <button
+                disabled={currentPage === totalFilteredPages}
+                onClick={() => {
+                  setCurrentPage((p) => p + 1);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+              >
+                Next
+              </button>
+
+              <button
+                disabled={currentPage === totalFilteredPages}
+                onClick={() => {
+                  setCurrentPage(totalFilteredPages);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                style={{ marginLeft: 10 }}
+              >
+                Last
+              </button>
+            </div>
+          )}
         </section>
       </div>
     </main>

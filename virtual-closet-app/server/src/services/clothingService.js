@@ -1,16 +1,28 @@
 import ClothingItem from "../models/ClothingItem.js";
 
 /**
- * Find all items for a user, with optional limit
+ * Find all items for a user, with optional pagination
  */
-export async function findByUserId(userId, limit = null) {
+export async function findByUserId(userId, options = {}) {
+  const { limit = null, skip = 0 } = options;
   const query = ClothingItem.find({ userId: userId || "default" });
+
+  if (skip > 0) {
+    query.skip(skip);
+  }
 
   if (limit && typeof limit === "number" && limit > 0) {
     query.limit(limit);
   }
 
   return await query.exec();
+}
+
+/**
+ * Count total items for a user
+ */
+export async function countByUserId(userId) {
+  return await ClothingItem.countDocuments({ userId: userId || "default" });
 }
 
 /**

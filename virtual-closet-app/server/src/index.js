@@ -5,60 +5,61 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 
-// ----------------------
 // Resolve directory paths
-// ----------------------
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// ----------------------
 // Load ROOT .env properly
-// ----------------------
 dotenv.config({
   path: join(__dirname, "..", ".env") // this loads virtual-closet-app/.env
 });
 
 console.log("DEBUG: Loaded GCS_BUCKET =", process.env.GCS_BUCKET);
 
-// ----------------------
 // Import DB + Routes
-// ----------------------
 import { connectDB } from "./config/database.js";
 import clothingRoutes from "./routes/clothing.js";
 import imageRoutes from "./routes/images.js";
 import uploadRoute from "./routes/upload.js";
 import adminRoutes from "./routes/admin.js";
+import appointmentRoutes from "./routes/appointments.js";
 
-// ----------------------
 // Server Port
-// ----------------------
 const PORT = process.env.PORT || 5001;
 
 async function startServer() {
   try {
     const app = express();
 
-    app.use(cors());
+    // CORS configuration for production
+    const corsOptions = {
+      origin: process.env.NODE_ENV === 'production'
+        ? [
+            'https://virtual-closet-web-310822052817.us-central1.run.app',
+            'https://virtual-closet-api-310822052817.us-central1.run.app'
+          ]
+        : ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:5001'],
+      credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization']
+    };
+
+    app.use(cors(corsOptions));
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
 
-    // ----------------------
     // Connect Database
-    // ----------------------
     await connectDB();
     console.log("MongoDB connected");
 
-    // ----------------------
     // API Routes
-    // ----------------------
     app.use("/api/upload", uploadRoute);
     app.use("/api/clothing", clothingRoutes);
     app.use("/api/images", imageRoutes);
     app.use("/api/admin", adminRoutes);
+    app.use("/api/appointments", appointmentRoutes);
 
-    // ----------------------
     // Health check
-    // ----------------------
     app.get("/api/health", (req, res) => {
       res.json({
         status: "OK",
@@ -68,9 +69,7 @@ async function startServer() {
       });
     });
 
-    // ----------------------
     // Root route
-    // ----------------------
     app.get("/", (req, res) => {
       res.json({
         message: "Welcome to Virtual Closet API",
@@ -110,9 +109,7 @@ async function startServer() {
       });
     });
 
-    // ----------------------
     // 404 Handler
-    // ----------------------
     app.use((req, res) => {
       res.status(404).json({
         error: "Not Found",
@@ -120,9 +117,7 @@ async function startServer() {
       });
     });
 
-    // ----------------------
     // Error Handler
-    // ----------------------
     app.use((err, req, res, next) => {
       console.error("Error:", err);
       res.status(err.status || 500).json({
@@ -131,13 +126,13 @@ async function startServer() {
       });
     });
 
-    // ----------------------
     // Start Server
-    // ----------------------
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
+    const HOST = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost';
+    
+    app.listen(PORT, HOST, () => {
+      console.log(`Server running on ${HOST}:${PORT}`);
       console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
-      console.log(`API available at: http://localhost:${PORT}/`);
+      console.log(`API available at: http://${HOST}:${PORT}/`);
     });
 
   } catch (error) {
