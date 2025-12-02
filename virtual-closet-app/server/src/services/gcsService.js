@@ -48,6 +48,7 @@ if (process.env.NODE_ENV === 'production') {
     }
   }
 
+}
 if (!credentialsAvailable) {
   console.warn("GCS credentials file not found in any expected location");
   console.warn("GCS features will be unavailable until credentials are added");
