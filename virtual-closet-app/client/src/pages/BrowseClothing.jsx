@@ -39,8 +39,9 @@ export default function BrowseClothing() {
   useEffect(() => {
     async function loadItems() {
       try {
+        const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5001/api";
         const res = await fetch(
-          `http://localhost:5000/api/clothing?userId=${userId}`
+          `${API_URL}/clothing?userId=${userId}`
         );
         const data = await res.json();
 

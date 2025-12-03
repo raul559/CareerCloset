@@ -9,8 +9,10 @@ const __dirname = path.dirname(__filename);
 
 // Try multiple possible credential paths
 const possiblePaths = [
+  path.join(__dirname, "../config/gcs-credentials.json"),
   path.join(__dirname, "../../gcs-credentials.json"),
   path.resolve("gcs-credentials.json"),
+  process.env.GOOGLE_APPLICATION_CREDENTIALS,
   process.env.GCS_CREDENTIALS,
 ].filter(Boolean);
 
