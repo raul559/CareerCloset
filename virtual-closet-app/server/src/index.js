@@ -29,23 +29,22 @@ import clothingRoutes from "./routes/clothing.js";
 import imageRoutes from "./routes/images.js";
 import uploadRoute from "./routes/upload.js";
 import adminRoutes from "./routes/admin.js";
-<<<<<<< HEAD
-=======
+import appointmentRoutes from "./routes/appointments.js";
+
 
 // ----------------------
 // Server Port
 // ----------------------
 const PORT = process.env.PORT || 5001;
 
-<<<<<<< HEAD
+
 // Load .env from parent directory (server/.env)
 dotenv.config({ path: join(__dirname, "..", ".env") });
->>>>>>> f2959851b81eeeb50cb775b4e60cabc8acbe9490
-=======
+
 async function startServer() {
   try {
     const app = express();
->>>>>>> 98e2e86ce79913a1f921b790828ee8a56a4dd361
+
 
     app.use(cors());
     app.use(express.json());
@@ -142,7 +141,6 @@ async function startServer() {
         ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
       });
     });
->>>>>>> 98e2e86ce79913a1f921b790828ee8a56a4dd361
 
     // ----------------------
     // Start Server
