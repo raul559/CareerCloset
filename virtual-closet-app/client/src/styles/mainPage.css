@@ -15,7 +15,7 @@
 }
 
 body {
-  background-color: var(--white);
+  background: linear-gradient(135deg, #ffffff 0%, #f5f1ed 50%, #faf8f6 100%);
   color: var(--text-dark);
   font-family: "Noto Sans", Helvetica, Arial, sans-serif;
   text-align: center;
@@ -49,9 +49,9 @@ h3 {
 
 /* TOP NAVIGATION BAR */
 .topbar {
-  background-color: var(--black);
+  background: linear-gradient(180deg, #1a1a1a 0%, #000000 100%);
   padding: 12px 0;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
 }
 
 .topnav {
@@ -69,71 +69,113 @@ button {
   color: var(--black);
   border: 2px solid var(--gold);
   border-radius: 8px;
-  padding: 10px 16px;
+  padding: 12px 24px;
   font-weight: 600;
   cursor: pointer;
-  transition: 0.2s;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 button:hover {
-  background-color: var(--black);
-  color: var(--white);
-  border-color: var(--black);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
 /* Key actions */
 #homeBtn,
-#signIn,
-#aptBtn {
+#signIn {
   background-color: var(--black);
   color: var(--white);
   border: 2px solid var(--black);
 }
 
 #homeBtn:hover,
-#signIn:hover,
-#aptBtn:hover {
+#signIn:hover {
   background-color: var(--gold);
   color: var(--black);
+}
+
+.primary-btn {
+  background: linear-gradient(135deg, #000 0%, #2a2a2a 100%);
+  color: var(--white);
+  border: 2px solid var(--black);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.primary-btn:hover {
+  background: linear-gradient(135deg, var(--gold) 0%, #bfa168 100%);
+  color: var(--black);
+  border-color: var(--gold);
+}
+
+.secondary-btn {
+  background-color: var(--gold);
+  color: var(--black);
+  border: 2px solid var(--gold);
+  font-weight: 600;
+}
+
+.secondary-btn:hover {
+  background-color: var(--black);
+  color: var(--white);
+  border-color: var(--black);
+}
+
+.btn-icon {
+  font-size: 1.2rem;
 }
 
 /* MAIN SECTION */
 .main-section {
   width: min(1200px, 94vw);
-  margin: 40px auto;
-  padding: 30px 20px;
-  background: var(--white);
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  margin: 60px auto;
+  padding: 60px 50px;
+  background: linear-gradient(135deg, #ffffff 0%, #fefdfb 100%);
+  border-radius: 24px;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.12), 0 0 1px rgba(0, 0, 0, 0.05);
 
   display: grid;
   grid-template-columns: 1.15fr 1fr;
   grid-template-areas:
-    "title image"
-    "sub   image"
-    "actions image";
-  gap: 28px 40px;
+    "content image"
+    "content image";
+  gap: 48px 40px;
   align-items: center;
+}
+
+.content-wrapper {
+  grid-area: content;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 /* Place elements into the grid (no JSX changes needed) */
 .main-section h1 { 
-  grid-area: title; 
-  text-align: left; 
+  text-align: left;
+  color: var(--black);
+  margin-bottom: 0.8em;
+  background: linear-gradient(135deg, #000 0%, #333 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .main-section h3 { 
-  grid-area: sub; 
   text-align: left; 
-  line-height: 1.6;
-  margin: 0;                 /* keep tight to the buttons */
+  line-height: 1.8;
+  margin: 0 0 1.8em 0;
+  color: #444;
+  font-weight: 400;
 }
 
 .main-buttons {
-  grid-area: actions;
   display: flex;
-  gap: 12px;
-  margin-top: 10px;          /* buttons sit right under the paragraph */
+  gap: 16px;
   flex-wrap: wrap;
   justify-content: flex-start;
 }
@@ -142,9 +184,19 @@ button:hover {
   grid-area: image;
   width: 100%;
   height: auto;
-  border-radius: 16px;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-  justify-self: stretch;     /* fill the right column nicely */
+  border-radius: 20px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  justify-self: stretch;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.hero-image {
+  transition: transform 0.3s ease;
+}
+
+.hero-image:hover {
+  transform: scale(1.02);
 }
 
 /* Responsive: stack on mobile */
@@ -152,23 +204,30 @@ button:hover {
   .main-section {
     grid-template-columns: 1fr;
     grid-template-areas:
-      "title"
-      "sub"
-      "actions"
+      "content"
       "image";
     text-align: center;
+    padding: 40px 20px;
+    gap: 30px;
   }
   .main-section h1,
-  .main-section h3 { text-align: center; }
-  .main-buttons { justify-content: center; }
+  .main-section h3 { 
+    text-align: center;
+  }
+  .main-buttons { 
+    justify-content: center; 
+  }
+  .content-wrapper {
+    align-items: center;
+  }
 }
 
 /* FOOTER */
 footer {
-  background-color: var(--black);
+  background: linear-gradient(180deg, #000000 0%, #1a1a1a 100%);
   color: var(--white);
-  padding: 40px 0;
-  margin-top: 50px;
+  padding: 50px 0;
+  margin-top: 80px;
 }
 
 .footer-content {
@@ -180,8 +239,8 @@ footer {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 10px;
+  gap: 16px;
+  margin-top: 20px;
 }
 
 footer h2 {
