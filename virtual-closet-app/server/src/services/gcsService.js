@@ -28,9 +28,12 @@ if (process.env.NODE_ENV === 'production') {
       projectId: process.env.GCS_PROJECT_ID || 'virtualcloset-477422'
     });
     credentialsAvailable = true;
-    console.log('GCS Storage initialized with Application Default Credentials (production)');
+    console.log('✅ GCS Storage initialized with Application Default Credentials (production)');
+    console.log(`   Project ID: ${process.env.GCS_PROJECT_ID || 'virtualcloset-477422'}`);
+    console.log(`   Bucket: ${process.env.GCS_BUCKET_NAME || 'pfw-virtual-close'}`);
   } catch (err) {
-    console.error('GCS Storage initialization failed in production:', err.message);
+    console.error('❌ GCS Storage initialization failed in production:', err.message);
+    credentialsAvailable = false;
   }
 } else {
   // Development: Use credential files
@@ -40,19 +43,19 @@ if (process.env.NODE_ENV === 'production') {
         storage = new Storage({ keyFilename: testPath });
         credentialsAvailable = true;
         credentialsPath = testPath;
-        console.log(`GCS Storage initialized successfully with ${testPath}`);
+        console.log(`✅ GCS Storage initialized successfully with ${testPath}`);
         break;
       } catch (err) {
-        console.error(`GCS Storage initialization failed for ${testPath}:`, err.message);
+        console.error(`❌ GCS Storage initialization failed for ${testPath}:`, err.message);
       }
     }
   }
 
-}
-if (!credentialsAvailable) {
-  console.warn("GCS credentials file not found in any expected location");
-  console.warn("GCS features will be unavailable until credentials are added");
-  console.warn("Expected paths:", possiblePaths.join(", "));
+  if (!credentialsAvailable) {
+    console.warn("⚠️  GCS credentials file not found in any expected location");
+    console.warn("    GCS features will be unavailable until credentials are added");
+    console.warn("    Expected paths:", possiblePaths.join(", "));
+  }
 }
 
 const BUCKET_NAME = process.env.GCS_BUCKET_NAME || "pfw-virtual-close";
@@ -68,10 +71,11 @@ const CACHE_BUFFER_MS = 3600000; // Refresh 1 hour before expiry
 export async function getSignedUrl(filePath, expiresInSeconds = 3600) {
   if (!filePath) return null;
   
-  if (!credentialsAvailable || !storage) {
-    throw new Error(
-      "GCS credentials not configured. Please add gcs-credentials.json to server root or set GCS_CREDENTIALS env var"
-    );
+  if (!storage) {
+    const errorMsg = process.env.NODE_ENV === 'production' 
+      ? "GCS Storage not initialized. Check Cloud Run service account permissions." 
+      : "GCS credentials not configured. Please add gcs-credentials.json to server root or set GOOGLE_APPLICATION_CREDENTIALS env var";
+    throw new Error(errorMsg);
   }
 
   // Check cache first
@@ -106,7 +110,10 @@ export async function getSignedUrl(filePath, expiresInSeconds = 3600) {
     
     return url;
   } catch (err) {
-    console.error("GCS SIGNED URL ERROR:", err);
+    console.error(`❌ GCS SIGNED URL ERROR for ${filePath}:`, err.message);
+    if (process.env.NODE_ENV === 'production') {
+      console.error('   Hint: Check that Cloud Run service account has Storage Object Viewer role');
+    }
     throw err;
   }
 }

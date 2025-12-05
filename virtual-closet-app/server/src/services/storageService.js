@@ -2,11 +2,15 @@ import { Storage } from "@google-cloud/storage";
 import dotenv from "dotenv";
 dotenv.config();
 
-const storage = new Storage({
-  keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
-});
+// Initialize storage based on environment
+const storage = process.env.NODE_ENV === 'production'
+  ? new Storage({ projectId: process.env.GCS_PROJECT_ID || 'virtualcloset-477422' })
+  : new Storage({ keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS });
 
-const bucket = storage.bucket(process.env.GCS_BUCKET);
+const BUCKET_NAME = process.env.GCS_BUCKET_NAME || process.env.GCS_BUCKET || 'pfw-virtual-close';
+const bucket = storage.bucket(BUCKET_NAME);
+
+console.log(`📦 Storage Service initialized with bucket: ${BUCKET_NAME}`);
 
 export async function uploadImage(fileBuffer, originalName) {
   return new Promise(async (resolve, reject) => {

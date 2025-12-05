@@ -23,6 +23,7 @@ import imageRoutes from "./routes/images.js";
 import uploadRoute from "./routes/upload.js";
 import adminRoutes from "./routes/admin.js";
 import appointmentRoutes from "./routes/appointments.js";
+import authRoutes from "./routes/auth.js";
 
 // Server Port
 const PORT = process.env.PORT || 5001;
