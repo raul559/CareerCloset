@@ -1,5 +1,5 @@
-import chai from "chai";          // <-- use default-style import for chai v4
-import chaiHttp from "chai-http"; // <-- chai-http patches THIS instance
+import chai from "chai";
+import chaiHttp from "chai-http";
 
 chai.use(chaiHttp);
 
