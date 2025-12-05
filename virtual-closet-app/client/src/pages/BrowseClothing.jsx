@@ -160,7 +160,54 @@ export default function BrowseClothing() {
   );
 
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <svg className="mini-washer" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          {/* Machine body */}
+          <rect x="20" y="30" width="160" height="140" rx="8" fill="#e8e8e8" stroke="#2c5f7f" strokeWidth="2"/>
+          
+          {/* Top control panel */}
+          <rect x="20" y="30" width="160" height="35" rx="8" fill="#2c5f7f"/>
+          
+          {/* Display screen */}
+          <rect x="55" y="42" width="90" height="18" rx="3" fill="#1a3a52"/>
+          <text x="100" y="56" fontSize="14" fontWeight="bold" fill="#00ff88" textAnchor="middle">00:00</text>
+          
+          {/* Control knobs */}
+          <circle cx="40" cy="80" r="8" fill="#3a7fa3" stroke="#2c5f7f" strokeWidth="1.5"/>
+          <line x1="40" y1="72" x2="40" y2="66" stroke="#2c5f7f" strokeWidth="1.5"/>
+          
+          <circle cx="160" cy="80" r="8" fill="#3a7fa3" stroke="#2c5f7f" strokeWidth="1.5"/>
+          <line x1="160" y1="72" x2="160" y2="66" stroke="#2c5f7f" strokeWidth="1.5"/>
+          
+          {/* Drum */}
+          <circle cx="100" cy="115" r="50" fill="#e0f0ff" stroke="#2c5f7f" strokeWidth="1.5"/>
+          
+          {/* Drum holes - animated */}
+          <g className="drum-spin">
+            <circle cx="85" cy="95" r="1.5" fill="#2c5f7f" opacity="0.6"/>
+            <circle cx="100" cy="85" r="1.5" fill="#2c5f7f" opacity="0.6"/>
+            <circle cx="115" cy="95" r="1.5" fill="#2c5f7f" opacity="0.6"/>
+            <circle cx="80" cy="115" r="1.5" fill="#2c5f7f" opacity="0.6"/>
+            <circle cx="120" cy="115" r="1.5" fill="#2c5f7f" opacity="0.6"/>
+            <circle cx="85" cy="135" r="1.5" fill="#2c5f7f" opacity="0.6"/>
+            <circle cx="100" cy="145" r="1.5" fill="#2c5f7f" opacity="0.6"/>
+            <circle cx="115" cy="135" r="1.5" fill="#2c5f7f" opacity="0.6"/>
+          </g>
+          
+          {/* Water in drum */}
+          <g className="water-level">
+            <ellipse cx="100" cy="125" rx="35" ry="12" fill="#5da3c7" opacity="0.5"/>
+          </g>
+          
+          {/* Door handle */}
+          <circle cx="155" cy="115" r="7" fill="none" stroke="#2c5f7f" strokeWidth="1.5"/>
+        </svg>
+        <p className="loading-text">Loading</p>
+      </div>
+    );
+  }
 
   return (
     <main className="container">
@@ -208,19 +255,21 @@ export default function BrowseClothing() {
           </div>
 
           {/* Pagination Controls */}
-          <div style={{ marginTop: 30, textAlign: "center" }}>
+          <div className="pagination-container">
             <button
+              className="pagination-btn"
               disabled={currentPage === 1}
               onClick={() => setCurrentPage((p) => p - 1)}
             >
               Previous
             </button>
 
-            <span style={{ margin: "0 15px" }}>
+            <span className="pagination-info">
               Page {currentPage} of {totalPages}
             </span>
 
             <button
+              className="pagination-btn"
               disabled={currentPage === totalPages}
               onClick={() => setCurrentPage((p) => p + 1)}
             >
