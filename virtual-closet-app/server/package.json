@@ -5,13 +5,22 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "test": "cross-env NODE_ENV=test mocha --timeout 10000 --require ./test/testSetup.js \"./test/**/*.test.js\"",
+    "coverage": "nyc npm test"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "chai": "^4.5.0",
+    "chai-http": "^4.3.0",
+    "cross-env": "^10.1.0",
+    "mocha": "^11.7.5",
+    "mock-import": "^4.2.1",
+    "nodemon": "^3.1.10",
+    "nyc": "^17.1.0",
+    "sinon": "^21.0.0"
   },
   "dependencies": {
     "@google-cloud/storage": "^7.17.3",

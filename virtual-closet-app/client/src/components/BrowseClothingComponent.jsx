@@ -3,6 +3,27 @@ import { useNavigate } from "react-router-dom";
 import { useAppointment } from "../context/AppointmentContext";
 import { useOutfit } from "../context/OutfitContext";
 
+// Color hex mapping
+const COLOR_MAP = {
+  "Black": "#1a1a1a",
+  "Brown": "#8B6F47",
+  "Green": "#4a7c59",
+  "White": "#f5f5f5",
+  "Gray": "#808080",
+  "Tan": "#c9a961",
+  "Navy": "#001f3f",
+};
+
+// Category icons mapping
+const CATEGORY_ICONS = {
+  "Tops": "👕",
+  "Bottoms": "👖",
+  "Dresses": "👗",
+  "Outerwear": "🧥",
+  "Shoes": "👠",
+  "Accessories": "👜",
+};
+
 /** Sidebar with filters (chips + selectors) */
 export function FiltersSidebar({
   query, setQuery,
@@ -14,7 +35,7 @@ export function FiltersSidebar({
   clearFilters, totalCount, filteredCount,
 }) {
   return (
-    <aside className="card" style={{ position: "sticky", top: 12, padding: 16, borderRadius: 12 }}>
+    <aside className="filters-sidebar card" style={{ position: "sticky", top: 12, padding: 16, borderRadius: 12 }}>
       {/* Search */}
       <div className="search" style={{ marginBottom: 12 }}>
         <input
@@ -28,7 +49,7 @@ export function FiltersSidebar({
       <div style={{ display: "grid", gap: 12 }}>
         {/* Availability */}
         <section>
-          <h3 style={{ marginBottom: 8 }}>Availability</h3>
+          <h3 style={{ marginBottom: 8, fontWeight: 700 }}>Availability</h3>
           <select
             aria-label="Availability"
             value={availability}
@@ -42,9 +63,9 @@ export function FiltersSidebar({
         </section>
 
         {/* Categories */}
-        <section className="filter-group">
-          <div className="filter-header">
-            <h3>Categories</h3>
+        <section className="filter-group" style={{ paddingLeft: 12, paddingRight: 12 }}>
+          <div className="filter-header" style={{ gap: 4, marginBottom: 14 }}>
+            <h3 style={{ fontSize: "1.1rem", textDecoration: "underline", textTransform: "capitalize", margin: 0 }}>Categories</h3>
             <div className="filter-actions">
               <button type="button" className="btn-ghost" onClick={() => setSelectedCategories(new Set())}>
                 Clear
@@ -71,6 +92,7 @@ export function FiltersSidebar({
                   }
                 >
                   <span className="chip-dot" aria-hidden="true" />
+                  <span style={{ fontSize: "1.2rem", marginRight: "6px" }}>{CATEGORY_ICONS[c] || "👚"}</span>
                   <span>{c === "Outerwear" ? "Blazers" : c}</span>
                 </button>
               );
@@ -95,6 +117,7 @@ export function FiltersSidebar({
                   }
                 >
                   <span className="chip-dot" aria-hidden="true" />
+                  <span style={{ fontSize: "1.2rem", marginRight: "6px" }}>{CATEGORY_ICONS[c] || "👚"}</span>
                   <span>Accessories</span>
                 </button>
               );
@@ -104,28 +127,17 @@ export function FiltersSidebar({
 
         {/* Sizes */}
         <section>
-          <h3 style={{ marginBottom: 8 }}>Sizes</h3>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+          <h3 style={{ fontWeight: 700, fontSize: "1.1rem", textDecoration: "underline", marginBottom: 12 }}>Sizes</h3>
+          <div className="size-filter">
             {SIZES.map((s) => (
               <label
                 key={s}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  padding: "6px 10px",
-                  border: "1px solid rgba(0,0,0,.15)",
-                  borderRadius: 999,
-                  background: selectedSizes.has(s) ? "black" : "white",
-                  color: selectedSizes.has(s) ? "white" : "black",
-                  cursor: "pointer",
-                }}
+                className={`size-label ${selectedSizes.has(s) ? 'checked' : ''}`}
               >
                 <input
                   type="checkbox"
                   checked={selectedSizes.has(s)}
                   onChange={() => toggleSize(s)}
-                  style={{ display: "none" }}
                 />
                 {s}
               </label>
@@ -135,29 +147,22 @@ export function FiltersSidebar({
 
         {/* Colors */}
         <section>
-          <h3 style={{ marginBottom: 8 }}>Colors</h3>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+          <h3 style={{ fontWeight: 700, fontSize: "1.1rem", textDecoration: "underline", marginBottom: 12 }}>Colors</h3>
+          <div className="color-filter">
             {COLORS.map((c) => (
               <label
                 key={c}
                 title={c}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  padding: "6px 10px",
-                  border: "1px solid rgba(0,0,0,.15)",
-                  borderRadius: 999,
-                  background: selectedColors.has(c) ? "black" : "white",
-                  color: selectedColors.has(c) ? "white" : "black",
-                  cursor: "pointer",
-                }}
+                className={`color-label ${selectedColors.has(c) ? 'checked' : ''}`}
               >
+                <span 
+                  className="color-swatch"
+                  style={{ backgroundColor: COLOR_MAP[c] || "#ccc" }}
+                />
                 <input
                   type="checkbox"
                   checked={selectedColors.has(c)}
                   onChange={() => toggleColor(c)}
-                  style={{ display: "none" }}
                 />
                 {c}
               </label>

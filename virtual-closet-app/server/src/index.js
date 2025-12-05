@@ -1,3 +1,4 @@
+// server/src/index.js
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -9,14 +10,23 @@ import { dirname, join } from "path";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Load ROOT .env properly
+// ----------------------
+// Load ROOT .env FIRST (must be BEFORE app creation)
+// ----------------------
 dotenv.config({
-  path: join(__dirname, "..", ".env") // this loads virtual-closet-app/.env
+  path: join(__dirname, "..", ".env"),
 });
 
 console.log("DEBUG: Loaded GCS_BUCKET =", process.env.GCS_BUCKET);
 
-// Import DB + Routes
+// ----------------------
+// Create Express App (AFTER env loads)
+// ----------------------
+const app = express();
+
+// ----------------------
+// Import DB + Routes (AFTER app is created)
+// ----------------------
 import { connectDB } from "./config/database.js";
 import clothingRoutes from "./routes/clothing.js";
 import imageRoutes from "./routes/images.js";
@@ -28,10 +38,12 @@ import authRoutes from "./routes/auth.js";
 // Server Port
 const PORT = process.env.PORT || 5001;
 
+
+// Load .env from parent directory (server/.env)
+dotenv.config({ path: join(__dirname, "..", ".env") });
+
 async function startServer() {
   try {
-    const app = express();
-
     // CORS configuration for production
     const corsOptions = {
       origin: process.env.NODE_ENV === 'production'
@@ -50,8 +62,11 @@ async function startServer() {
     app.use(express.urlencoded({ extended: true }));
 
     // Connect Database
-    await connectDB();
-    console.log("MongoDB connected");
+    // ----------------------
+    if (process.env.NODE_ENV !== "test") {
+      await connectDB();
+      console.log("MongoDB connected");
+    }
 
     // API Routes
     app.use("/api/upload", uploadRoute);
@@ -65,7 +80,7 @@ async function startServer() {
       res.json({
         status: "OK",
         message: "Virtual Closet API is running",
-        environment: process.env.NODE_ENV || "development",
+        environment: process.env.NODE_ENV,
         timestamp: new Date().toISOString(),
       });
     });
@@ -110,7 +125,7 @@ async function startServer() {
       });
     });
 
-    // 404 Handler
+    // 404 handler - catches all undefined routes
     app.use((req, res) => {
       res.status(404).json({
         error: "Not Found",
@@ -127,14 +142,20 @@ async function startServer() {
       });
     });
 
-    // Start Server
-    const HOST = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost';
-    
-    app.listen(PORT, HOST, () => {
-      console.log(`Server running on ${HOST}:${PORT}`);
-      console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
-      console.log(`API available at: http://${HOST}:${PORT}/`);
-    });
+    // ----------------------
+    // Start Server (BLOCKED during tests)
+    // ----------------------
+    if (process.env.NODE_ENV !== "test") {
+      const HOST = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost';
+      
+      app.listen(PORT, HOST, () => {
+        console.log(`Server running on ${HOST}:${PORT}`);
+        console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
+        console.log(`API available at: http://${HOST}:${PORT}/`);
+      });
+    } else {
+      console.log("🧪 Test environment detected — server NOT started.");
+    }
 
   } catch (error) {
     console.error("Failed to start server:", error.message);
@@ -143,3 +164,8 @@ async function startServer() {
 }
 
 startServer();
+
+// ----------------------
+// Export app LAST
+// ----------------------
+export default app;

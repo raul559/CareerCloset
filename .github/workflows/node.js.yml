@@ -1,0 +1,38 @@
+name: Node.js CI
+
+on:
+  push:
+    branches: [ "main", "dBranch" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [22.x]
+        mongodb-version: ['8.0']
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    - name: Start MongoDB
+      uses: supercharge/mongodb-github-action@1.12.1
+      with:
+        mongodb-version: ${{ matrix.mongodb-version }}
+
+    - name: Install server dependencies
+      working-directory: ./virtual-closet-app/server
+      run: npm ci
+
+    - name: Run tests
+      working-directory: ./virtual-closet-app/server
+      run: npm test
