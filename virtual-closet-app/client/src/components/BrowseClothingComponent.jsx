@@ -182,11 +182,34 @@ export function FiltersSidebar({
   );
 }
 
-/** Individual item card */
+/** Individual item card with lazy loading */
 export function ItemCard({ item }) {
   const navigate = useNavigate();
   const { addItem } = useAppointment();
   const { addToOutfit, availableItems } = useOutfit();
+  const [isVisible, setIsVisible] = React.useState(false);
+  const imgRef = React.useRef(null);
+
+  // Intersection Observer for lazy loading
+  React.useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+            observer.disconnect();
+          }
+        });
+      },
+      { rootMargin: '100px' } // Load images 100px before they enter viewport
+    );
+
+    if (imgRef.current) {
+      observer.observe(imgRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   const handleReserve = () => {
     addItem(item);
@@ -236,11 +259,13 @@ export function ItemCard({ item }) {
 
   return (
     <article className="card item-card">
-      <div style={{ position: "relative" }}>
+      <div style={{ position: "relative" }} ref={imgRef}>
         <img
           className="item-thumb-img"
-          src={item.thumbnailWebpUrl || item.img}
+          src={isVisible ? (item.thumbnailWebpUrl || item.img) : 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400"%3E%3Crect fill="%23f0f0f0" width="300" height="400"/%3E%3C/svg%3E'}
           alt={`${item.name}, ${item.color}, size ${item.size}`}
+          loading="lazy"
+          style={{ opacity: isVisible ? 1 : 0.5, transition: 'opacity 0.3s' }}
         />
         <span className={`badge-chip ${item.status === "Unavailable" ? "unavailable" : ""}`}>
           {item.status || "Available"}

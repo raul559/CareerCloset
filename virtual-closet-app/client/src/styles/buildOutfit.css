@@ -111,6 +111,14 @@
   font-size: 1rem;
 }
 
+.itemGrid .emptyMessage {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #9ca3af;
+  padding: 3rem 1rem;
+  font-size: 1rem;
+}
+
 .itemCard {
   background-color: #fafafa;
   border: 2px solid transparent;

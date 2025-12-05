@@ -13,7 +13,7 @@ const CATEGORIES = ["Tops", "Bottoms", "Dresses", "Outerwear", "Shoes", "Accesso
 const SIZES = ["XS", "S", "M", "L", "XL"];
 const COLORS = ["Black", "Brown", "Green", "White", "Gray", "Tan", "Navy"];
 
-const ITEMS_PER_PAGE = 50;
+const ITEMS_PER_PAGE = 30; // Reduced from 50 for faster initial load
 
 export default function BrowseClothing() {
   const navigate = useNavigate();
@@ -22,6 +22,8 @@ export default function BrowseClothing() {
   // Clothing metadata + image URLS
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
 
   // Filters
   const [query, setQuery] = useState("");
@@ -35,22 +37,35 @@ export default function BrowseClothing() {
 
   const userId = "virtual-closet-user";
 
-  // Load clothing metadata (now includes signed URLs from backend)
+  // Load ALL clothing items once (filtering happens client-side)
   useEffect(() => {
-    async function loadItems() {
+    async function loadAllItems() {
+      setLoading(true);
       try {
         const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5001/api";
-        const res = await fetch(
-          `${API_URL}/clothing?userId=${userId}`
-        );
-        const data = await res.json();
 
-        if (data && data.items) {
-          // Items already have thumbnailWebpUrl from backend
-          setItems(data.items);
-        } else {
-          console.error("Unexpected API response:", data);
+        // Fetch all items by making multiple paginated requests
+        let allItems = [];
+        let page = 1;
+        let hasMore = true;
+
+        while (hasMore) {
+          const res = await fetch(
+            `${API_URL}/clothing?userId=${userId}&page=${page}&limit=100`
+          );
+          const data = await res.json();
+
+          if (data && data.items) {
+            allItems = allItems.concat(data.items);
+            hasMore = data.items.length === 100 && page < data.totalPages;
+            page++;
+          } else {
+            hasMore = false;
+          }
         }
+
+        setItems(allItems);
+        setTotal(allItems.length);
       } catch (err) {
         console.error("Failed to load clothing:", err);
       } finally {
@@ -58,8 +73,8 @@ export default function BrowseClothing() {
       }
     }
 
-    loadItems();
-  }, []);
+    loadAllItems();
+  }, []); // Only load once on mount
 
 
 
@@ -83,6 +98,11 @@ export default function BrowseClothing() {
   const toggleCategory = toggleSet(setSelectedCategories);
   const toggleSize = toggleSet(setSelectedSizes);
   const toggleColor = toggleSet(setSelectedColors);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [query, availability, selectedCategories, selectedSizes, selectedColors]);
 
   // Filtering Logic
   const filtered = useMemo(() => {
@@ -151,9 +171,8 @@ export default function BrowseClothing() {
     });
   }, [query, availability, selectedCategories, selectedSizes, selectedColors, items]);
 
-  // Pagination Logic
-  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
-
+  // Client-side pagination after filtering all items
+  const totalFilteredPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
   const paginatedItems = filtered.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
@@ -165,44 +184,44 @@ export default function BrowseClothing() {
       <div className="loading-container">
         <svg className="mini-washer" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
           {/* Machine body */}
-          <rect x="20" y="30" width="160" height="140" rx="8" fill="#e8e8e8" stroke="#2c5f7f" strokeWidth="2"/>
-          
+          <rect x="20" y="30" width="160" height="140" rx="8" fill="#e8e8e8" stroke="#2c5f7f" strokeWidth="2" />
+
           {/* Top control panel */}
-          <rect x="20" y="30" width="160" height="35" rx="8" fill="#2c5f7f"/>
-          
+          <rect x="20" y="30" width="160" height="35" rx="8" fill="#2c5f7f" />
+
           {/* Display screen */}
-          <rect x="55" y="42" width="90" height="18" rx="3" fill="#1a3a52"/>
+          <rect x="55" y="42" width="90" height="18" rx="3" fill="#1a3a52" />
           <text x="100" y="56" fontSize="14" fontWeight="bold" fill="#00ff88" textAnchor="middle">00:00</text>
-          
+
           {/* Control knobs */}
-          <circle cx="40" cy="80" r="8" fill="#3a7fa3" stroke="#2c5f7f" strokeWidth="1.5"/>
-          <line x1="40" y1="72" x2="40" y2="66" stroke="#2c5f7f" strokeWidth="1.5"/>
-          
-          <circle cx="160" cy="80" r="8" fill="#3a7fa3" stroke="#2c5f7f" strokeWidth="1.5"/>
-          <line x1="160" y1="72" x2="160" y2="66" stroke="#2c5f7f" strokeWidth="1.5"/>
-          
+          <circle cx="40" cy="80" r="8" fill="#3a7fa3" stroke="#2c5f7f" strokeWidth="1.5" />
+          <line x1="40" y1="72" x2="40" y2="66" stroke="#2c5f7f" strokeWidth="1.5" />
+
+          <circle cx="160" cy="80" r="8" fill="#3a7fa3" stroke="#2c5f7f" strokeWidth="1.5" />
+          <line x1="160" y1="72" x2="160" y2="66" stroke="#2c5f7f" strokeWidth="1.5" />
+
           {/* Drum */}
-          <circle cx="100" cy="115" r="50" fill="#e0f0ff" stroke="#2c5f7f" strokeWidth="1.5"/>
-          
+          <circle cx="100" cy="115" r="50" fill="#e0f0ff" stroke="#2c5f7f" strokeWidth="1.5" />
+
           {/* Drum holes - animated */}
           <g className="drum-spin">
-            <circle cx="85" cy="95" r="1.5" fill="#2c5f7f" opacity="0.6"/>
-            <circle cx="100" cy="85" r="1.5" fill="#2c5f7f" opacity="0.6"/>
-            <circle cx="115" cy="95" r="1.5" fill="#2c5f7f" opacity="0.6"/>
-            <circle cx="80" cy="115" r="1.5" fill="#2c5f7f" opacity="0.6"/>
-            <circle cx="120" cy="115" r="1.5" fill="#2c5f7f" opacity="0.6"/>
-            <circle cx="85" cy="135" r="1.5" fill="#2c5f7f" opacity="0.6"/>
-            <circle cx="100" cy="145" r="1.5" fill="#2c5f7f" opacity="0.6"/>
-            <circle cx="115" cy="135" r="1.5" fill="#2c5f7f" opacity="0.6"/>
+            <circle cx="85" cy="95" r="1.5" fill="#2c5f7f" opacity="0.6" />
+            <circle cx="100" cy="85" r="1.5" fill="#2c5f7f" opacity="0.6" />
+            <circle cx="115" cy="95" r="1.5" fill="#2c5f7f" opacity="0.6" />
+            <circle cx="80" cy="115" r="1.5" fill="#2c5f7f" opacity="0.6" />
+            <circle cx="120" cy="115" r="1.5" fill="#2c5f7f" opacity="0.6" />
+            <circle cx="85" cy="135" r="1.5" fill="#2c5f7f" opacity="0.6" />
+            <circle cx="100" cy="145" r="1.5" fill="#2c5f7f" opacity="0.6" />
+            <circle cx="115" cy="135" r="1.5" fill="#2c5f7f" opacity="0.6" />
           </g>
-          
+
           {/* Water in drum */}
           <g className="water-level">
-            <ellipse cx="100" cy="125" rx="35" ry="12" fill="#5da3c7" opacity="0.5"/>
+            <ellipse cx="100" cy="125" rx="35" ry="12" fill="#5da3c7" opacity="0.5" />
           </g>
-          
+
           {/* Door handle */}
-          <circle cx="155" cy="115" r="7" fill="none" stroke="#2c5f7f" strokeWidth="1.5"/>
+          <circle cx="155" cy="115" r="7" fill="none" stroke="#2c5f7f" strokeWidth="1.5" />
         </svg>
         <p className="loading-text">Loading</p>
       </div>
@@ -255,27 +274,55 @@ export default function BrowseClothing() {
           </div>
 
           {/* Pagination Controls */}
-          <div className="pagination-container">
-            <button
-              className="pagination-btn"
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage((p) => p - 1)}
-            >
-              Previous
-            </button>
+          {filtered.length > 0 && (
+            <div style={{ marginTop: 30, textAlign: "center" }}>
+              <button
+                disabled={currentPage === 1}
+                onClick={() => {
+                  setCurrentPage(1);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                style={{ marginRight: 10 }}
+              >
+                First
+              </button>
 
-            <span className="pagination-info">
-              Page {currentPage} of {totalPages}
-            </span>
+              <button
+                disabled={currentPage === 1}
+                onClick={() => {
+                  setCurrentPage((p) => p - 1);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+              >
+                Previous
+              </button>
 
-            <button
-              className="pagination-btn"
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage((p) => p + 1)}
-            >
-              Next
-            </button>
-          </div>
+              <span style={{ margin: "0 15px" }}>
+                Page {currentPage} of {totalFilteredPages} ({filtered.length} items)
+              </span>
+
+              <button
+                disabled={currentPage === totalFilteredPages}
+                onClick={() => {
+                  setCurrentPage((p) => p + 1);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+              >
+                Next
+              </button>
+
+              <button
+                disabled={currentPage === totalFilteredPages}
+                onClick={() => {
+                  setCurrentPage(totalFilteredPages);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                style={{ marginLeft: 10 }}
+              >
+                Last
+              </button>
+            </div>
+          )}
         </section>
       </div>
     </main>

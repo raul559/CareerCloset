@@ -12,12 +12,15 @@ if (process.env.NODE_ENV === "test") {
     return null;
   };
 } else {
-  const storage = new Storage({
-    keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
-  });
+  // Initialize storage based on environment
+  const storage = process.env.NODE_ENV === 'production'
+    ? new Storage({ projectId: process.env.GCS_PROJECT_ID || 'virtualcloset-477422' })
+    : new Storage({ keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS });
 
-  const bucketName = process.env.GCS_BUCKET;
-  const bucket = bucketName ? storage.bucket(bucketName) : null;
+  const BUCKET_NAME = process.env.GCS_BUCKET_NAME || process.env.GCS_BUCKET || 'pfw-virtual-close';
+  const bucket = storage.bucket(BUCKET_NAME);
+
+  console.log(`📦 Storage Service initialized with bucket: ${BUCKET_NAME}`);
 
   uploadImage = async function (fileBuffer, originalName) {
     return new Promise(async (resolve, reject) => {
