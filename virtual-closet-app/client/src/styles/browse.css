@@ -1,191 +1,611 @@
-:root{
-  --purdue-gold:#CFB991;
-  --purdue-black:#000000;
-  --purdue-white:#ffffff;
-  --bg:#f8f8f8;
-  --text:#111;
-  --muted:#666;
-  --radius:16px;
-  --shadow:0 10px 30px rgba(0,0,0,.08);
+:root {
+  --purdue-gold: #cfb991;
+  --purdue-black: #000000;
+  --purdue-white: #ffffff;
+  --bg: #f8f8f8;
+  --text: #111;
+  --muted: #666;
+  --radius: 16px;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
-*{box-sizing:border-box}
-html,body{margin:0;padding:0}
-body{
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
-  background:linear-gradient(135deg, #f5f3f0 0%, #faf8f6 100%);
-  color:var(--text);
-  line-height:1.6;
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+    "Apple Color Emoji", "Segoe UI Emoji";
+  background: linear-gradient(135deg, #f5f3f0 0%, #faf8f6 100%);
+  color: var(--text);
+  line-height: 1.6;
 }
 
-.container{max-width:1100px;margin:0 auto;padding:24px}
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+}
 
 /* -------- Navbar -------- */
-.navbar{
-  position:sticky; top:0; z-index:999;
-  background:var(--purdue-black);
-  color:var(--purdue-white);
-  border-bottom:2px solid var(--purdue-gold);
-  box-shadow:0 2px 10px rgba(0,0,0,.15);
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background: var(--purdue-black);
+  color: var(--purdue-white);
+  border-bottom: 2px solid var(--purdue-gold);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
 }
-.navbar .inner{
-  max-width:1100px;
-  margin:0 auto;
-  padding:10px 20px;
-  display:flex; align-items:center; gap:16px;
+.navbar .inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
-.brand{
-  display:flex; align-items:center; gap:12px;
-  text-decoration:none; color:var(--purdue-white);
-  font-weight:800; letter-spacing:.2px;
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--purdue-white);
+  font-weight: 800;
+  letter-spacing: 0.2px;
 }
-.brand span{white-space:nowrap; line-height:1;}
-.brand-logo{height:34px; width:auto; display:block; object-fit:contain; image-rendering:-webkit-optimize-contrast;}
-@media (min-width:1100px){ .brand-logo{height:36px;} }
+.brand span {
+  white-space: nowrap;
+  line-height: 1;
+}
+.brand-logo {
+  height: 34px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+  image-rendering: -webkit-optimize-contrast;
+}
+@media (min-width: 1100px) {
+  .brand-logo {
+    height: 36px;
+  }
+}
 
-.nav{
-  margin-left:auto;
-  display:flex; gap:18px; align-items:center;
-  overflow-x:auto; scrollbar-width:none; -ms-overflow-style:none;
+.nav {
+  margin-left: auto;
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
-.nav::-webkit-scrollbar{display:none;}
-.nav a{
-  color:var(--purdue-white); text-decoration:none;
-  padding:8px 12px; border-radius:12px; font-weight:600; opacity:.95;
-  transition:background .2s,color .2s,transform .12s;
+.nav::-webkit-scrollbar {
+  display: none;
 }
-.nav a:hover{ transform:translateY(-1px); opacity:1; }
-.nav a.active{
-  background:var(--purdue-gold); color:var(--purdue-black);
-  box-shadow:inset 0 0 0 1.5px rgba(0,0,0,.6);
+.nav a {
+  color: var(--purdue-white);
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-weight: 600;
+  opacity: 0.95;
+  transition: background 0.2s, color 0.2s, transform 0.12s;
+}
+.nav a:hover {
+  transform: translateY(-1px);
+  opacity: 1;
+}
+.nav a.active {
+  background: var(--purdue-gold);
+  color: var(--purdue-black);
+  box-shadow: inset 0 0 0 1.5px rgba(0, 0, 0, 0.6);
 }
 /* Sign In CTA */
-.nav a:last-child{
-  background:var(--purdue-gold); color:var(--purdue-black);
-  border:2px solid var(--purdue-black); padding:8px 14px; border-radius:999px;
+.nav a:last-child {
+  background: var(--purdue-gold);
+  color: var(--purdue-black);
+  border: 2px solid var(--purdue-black);
+  padding: 8px 14px;
+  border-radius: 999px;
 }
-.nav a:last-child:hover{ filter:brightness(.95); }
-@media (max-width:720px){ .nav{gap:12px} .brand span{font-size:.95rem} }
+.nav a:last-child:hover {
+  filter: brightness(0.95);
+}
+@media (max-width: 720px) {
+  .nav {
+    gap: 12px;
+  }
+  .brand span {
+    font-size: 0.95rem;
+  }
+}
 
 /* -------- General UI -------- */
-.card{
-  background:var(--purdue-white);
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
-  padding:28px;
+.card {
+  background: var(--purdue-white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px;
 }
-.eyebrow{color:var(--muted); text-transform:uppercase; letter-spacing:.2em; font-weight:700; font-size:.8rem}
-h1{margin:.2em 0 .4em; line-height:1.15; font-size:clamp(2rem,4.6vw,3.1rem)}
-.lead{font-size:1.1rem; color:#222; margin-bottom:20px}
-
-.btn-row{display:flex; gap:12px; flex-wrap:wrap}
-.btn,.btn-outline{
-  display:inline-flex; align-items:center; justify-content:center;
-  padding:12px 18px; border-radius:999px; font-weight:700; text-decoration:none;
+.eyebrow {
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-weight: 700;
+  font-size: 0.8rem;
 }
-.btn{background:var(--purdue-black); color:var(--purdue-white); border:2px solid var(--purdue-black)}
-.btn:hover{opacity:.92}
-.btn-outline{border:2px solid var(--purdue-black); color:var(--purdue-black); background:transparent}
-.btn-outline:hover{background:var(--purdue-black); color:var(--purdue-white)}
+h1 {
+  margin: 0.2em 0 0.4em;
+  line-height: 1.15;
+  font-size: clamp(2rem, 4.6vw, 3.1rem);
+}
+.lead {
+  font-size: 1.1rem;
+  color: #222;
+  margin-bottom: 20px;
+}
 
-.footer{
-  margin-top:40px; padding:32px 24px; text-align:center; color:#555;
-  border-top:4px solid var(--purdue-gold); background:linear-gradient(135deg, #fafaf9 0%, #f5f3f0 100%); font-weight:600;
+.btn-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.btn,
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 18px;
+  border-radius: 999px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.btn {
+  background: var(--purdue-black);
+  color: var(--purdue-white);
+  border: 2px solid var(--purdue-black);
+}
+.btn:hover {
+  opacity: 0.92;
+}
+.btn-outline {
+  border: 2px solid var(--purdue-black);
+  color: var(--purdue-black);
+  background: transparent;
+}
+.btn-outline:hover {
+  background: var(--purdue-black);
+  color: var(--purdue-white);
+}
+
+.footer {
+  margin-top: 40px;
+  padding: 32px 24px;
+  text-align: center;
+  color: #555;
+  border-top: 4px solid var(--purdue-gold);
+  background: linear-gradient(135deg, #fafaf9 0%, #f5f3f0 100%);
+  font-weight: 600;
 }
 
 /* Forms */
-label{font-weight:800; color:var(--purdue-black); display:block; margin-bottom:6px; text-transform:uppercase; font-size:.85rem; letter-spacing:.5px}
-input,select,textarea{width:100%; padding:12px 14px; border-radius:12px; border:2.5px solid #d4b896; background:linear-gradient(135deg, #faf8f6 0%, #f9f5f0 100%); font-size:1rem; font-family:inherit; transition:all .2s}
-input:hover,select:hover,textarea:hover{border-color:var(--purdue-gold); box-shadow:0 2px 8px rgba(207,185,145,.1)}
-input:focus,select:focus,textarea:focus{outline:none; border-color:var(--purdue-gold); box-shadow:0 0 0 4px rgba(207,185,145,.2); background:#fff}
+label {
+  font-weight: 800;
+  color: var(--purdue-black);
+  display: block;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 2.5px solid #d4b896;
+  background: linear-gradient(135deg, #faf8f6 0%, #f9f5f0 100%);
+  font-size: 1rem;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+input:hover,
+select:hover,
+textarea:hover {
+  border-color: var(--purdue-gold);
+  box-shadow: 0 2px 8px rgba(207, 185, 145, 0.1);
+}
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--purdue-gold);
+  box-shadow: 0 0 0 4px rgba(207, 185, 145, 0.2);
+  background: #fff;
+}
 
 /* -------- Cards / Images -------- */
-.item-card{overflow:hidden; padding:0; border-radius:16px; background:#fff; border:1px solid #e8e8e8; transition:transform .15s, box-shadow .15s, border-color .15s; display:flex; flex-direction:column}
-.item-card:hover{transform:translateY(-4px); box-shadow:0 12px 28px rgba(0,0,0,.15); border-color:var(--purdue-gold)}
-.item-thumb-img{width:100%; aspect-ratio:4/3; object-fit:cover; display:block; border-bottom:3px solid var(--purdue-gold); transition:transform .2s}
-.item-card:hover .item-thumb-img{transform:scale(1.02)}
-.item-body{padding:16px 18px 20px; flex:1}
-.meta{color:var(--muted); font-size:.9rem; margin-top:auto}
-.badge-chip{
-  position:absolute; top:12px; right:12px;
-  padding:8px 14px; border-radius:8px; font-weight:800; font-size:.8rem;
-  border:none; text-transform:uppercase; letter-spacing:.3px;
-  background:var(--purdue-gold); color:var(--purdue-black); box-shadow:0 4px 12px rgba(207,185,145,.3);
+.item-card {
+  overflow: hidden;
+  padding: 0;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+  display: flex;
+  flex-direction: column;
 }
-.badge-chip.unavailable{background:#e74c3c; color:#fff; box-shadow:0 4px 12px rgba(231,76,60,.3)}
+.item-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+  border-color: var(--purdue-gold);
+}
+.item-thumb-img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  display: block;
+  border-bottom: 3px solid var(--purdue-gold);
+  transition: transform 0.2s;
+}
+.item-card:hover .item-thumb-img {
+  transform: scale(1.02);
+}
+.item-body {
+  padding: 16px 18px 20px;
+  flex: 1;
+}
+.meta {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-top: auto;
+}
+.badge-chip {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: 0.8rem;
+  border: none;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  background: var(--purdue-gold);
+  color: var(--purdue-black);
+  box-shadow: 0 4px 12px rgba(207, 185, 145, 0.3);
+}
+.badge-chip.unavailable {
+  background: #e74c3c;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
 
 /* -------- Browse controls / grids -------- */
-.section-head{margin-bottom:24px; animation:fadeInDown .6s ease-out}
-.section-head h1{margin:0 0 10px; color:var(--purdue-black); font-size:clamp(2rem, 5vw, 2.8rem); line-height:1.2}
-.section-sub{color:#666; margin:0; font-size:1.05rem; font-weight:500; max-width:700px}
-
-@keyframes fadeInDown{from{opacity:0; transform:translateY(-8px)} to{opacity:1; transform:translateY(0)}}
-
-.controls{
-  display:grid; grid-template-columns:1fr 220px 220px; gap:14px; margin:14px 0 16px;
+.section-head {
+  margin-bottom: 24px;
+  animation: fadeInDown 0.6s ease-out;
 }
-@media (max-width:900px){ .controls{grid-template-columns:1fr 1fr} }
-@media (max-width:600px){ .controls{grid-template-columns:1fr} }
+.section-head h1 {
+  margin: 0 0 10px;
+  color: var(--purdue-black);
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  line-height: 1.2;
+}
+.section-sub {
+  color: #666;
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 500;
+  max-width: 700px;
+}
 
-.search{display:flex; align-items:center; gap:10px; background:linear-gradient(135deg, #faf8f6 0%, #f9f5f0 100%); border:2.5px solid var(--purdue-gold); border-radius:14px; padding:12px 16px; box-shadow:0 2px 8px rgba(207,185,145,.1); transition:all .2s}
-.search:focus-within{border-color:var(--purdue-black); box-shadow:0 4px 16px rgba(207,185,145,.25); background:#fff}
-.search input{border:none; outline:none; width:100%; font-size:1rem; background:transparent; color:#2c3e50}
-.search input::placeholder{color:#999}
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: 1fr 220px 220px;
+  gap: 14px;
+  margin: 14px 0 16px;
+}
+@media (max-width: 900px) {
+  .controls {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 600px) {
+  .controls {
+    grid-template-columns: 1fr;
+  }
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #faf8f6 0%, #f9f5f0 100%);
+  border: 2.5px solid var(--purdue-gold);
+  border-radius: 14px;
+  padding: 12px 16px;
+  box-shadow: 0 2px 8px rgba(207, 185, 145, 0.1);
+  transition: all 0.2s;
+}
+.search:focus-within {
+  border-color: var(--purdue-black);
+  box-shadow: 0 4px 16px rgba(207, 185, 145, 0.25);
+  background: #fff;
+}
+.search input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 1rem;
+  background: transparent;
+  color: #2c3e50;
+}
+.search input::placeholder {
+  color: #999;
+}
 
 /* 3-up grid */
-.browse-grid,.catalog-grid,.outfit-grid{
-  display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:28px 24px;
+.browse-grid,
+.catalog-grid,
+.outfit-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px 24px;
 }
-@media (max-width:980px){
-  .browse-grid,.catalog-grid,.outfit-grid{grid-template-columns:repeat(2,1fr); gap:24px 18px}
+@media (max-width: 980px) {
+  .browse-grid,
+  .catalog-grid,
+  .outfit-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px 18px;
+  }
 }
-@media (max-width:640px){
-  .browse-grid,.catalog-grid,.outfit-grid{grid-template-columns:1fr; gap:18px}
+@media (max-width: 640px) {
+  .browse-grid,
+  .catalog-grid,
+  .outfit-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
 }
 
 /* -------- Filters: Categories chips -------- */
-.filters-sidebar{background:linear-gradient(135deg, #fff 0%, #fafaf9 100%); border-radius:14px; padding:24px; border:2px solid var(--purdue-gold); box-shadow:0 4px 16px rgba(207,185,145,.15); position:sticky; top:80px}
-.filters-sidebar section{margin-bottom:24px; padding-bottom:24px; border-bottom:2px solid #f5f1ed}
-.filters-sidebar section:last-child{margin-bottom:0; padding-bottom:0; border-bottom:none}
-.filter-header{display:flex; align-items:center; justify-content:space-between; margin:8px 0 14px; padding:8px 0}
-.filter-header h3{margin:0; color:var(--purdue-black); font-size:1rem; font-weight:600; text-transform:uppercase; letter-spacing:.3px}
-.filters-sidebar > section > h3{margin:0 0 12px 0; color:var(--purdue-black); font-size:.95rem; font-weight:600; text-transform:uppercase; letter-spacing:.2px}
-.filter-actions{display:flex; gap:8px}
-.btn-ghost{appearance:none; background:var(--purdue-gold); border:2px solid var(--purdue-black); padding:6px 12px; border-radius:8px; font-weight:600; cursor:pointer; color:var(--purdue-black); transition:all .2s; font-size:.75rem; text-transform:uppercase; letter-spacing:.2px}
-.btn-ghost:hover{background:#e8d9b8; transform:scale(1.05)}
-.btn-ghost:focus-visible{outline:3px solid var(--purdue-black); outline-offset:2px}
-
-.chip-grid{display:grid; grid-template-columns:1fr; gap:10px}
-
-.chip{
-  display:inline-flex; align-items:center; gap:10px; width:100%;
-  padding:12px 14px; border-radius:10px;
-  border:2.5px solid #d0a367;
-  background:linear-gradient(135deg, #f9f5f0 0%, #faf7f3 100%); color:#2c3e50; font-weight:600; cursor:pointer;
-  white-space:nowrap; line-height:1; text-decoration:none;
-  transition:all .2s ease;
-  position:relative; overflow:hidden;
+.filters-sidebar {
+  background: linear-gradient(135deg, #fff 0%, #fafaf9 100%);
+  border-radius: 14px;
+  padding: 24px;
+  border: 2px solid var(--purdue-gold);
+  box-shadow: 0 4px 16px rgba(207, 185, 145, 0.15);
+  position: sticky;
+  top: 80px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--purdue-gold) #f5f1ed;
 }
-.chip::before{content:''; position:absolute; inset:0; background:linear-gradient(135deg, var(--purdue-gold), transparent); opacity:0; transition:opacity .2s}
-.chip:hover{background:linear-gradient(135deg, #fef5f0 0%, #fef9f5 100%); border-color:#cfb991; transform:translateY(-2px); box-shadow:0 4px 12px rgba(207,185,145,.2)}
-.chip:hover::before{opacity:.25}
-.chip:focus-visible{outline:3px solid var(--purdue-black); outline-offset:2px; box-shadow:0 0 0 5px rgba(207,185,145,.3)}
-.chip--on{background:linear-gradient(135deg, var(--purdue-gold) 0%, #d4a574 100%); color:var(--purdue-black); border-color:var(--purdue-black); box-shadow:0 6px 16px rgba(207,185,145,.4); font-weight:700}
-.chip--on:hover{transform:translateY(-3px); box-shadow:0 8px 20px rgba(207,185,145,.5)}
-.chip--on::before{opacity:0}
-.chip-dot{display:none; flex:0 0 auto; width:10px; height:10px; border-radius:50%; background:currentColor; opacity:.9}
-.chip--on .chip-dot{background:var(--purdue-black); box-shadow:0 0 4px rgba(207,185,145,.6)}
-.chip > *{pointer-events:none; position:relative; z-index:1}
+.filters-sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+.filters-sidebar::-webkit-scrollbar-track {
+  background: #f5f1ed;
+  border-radius: 8px;
+}
+.filters-sidebar::-webkit-scrollbar-thumb {
+  background: var(--purdue-gold);
+  border-radius: 8px;
+}
+.filters-sidebar::-webkit-scrollbar-thumb:hover {
+  background: #bfa168;
+}
+.filters-sidebar section {
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 2px solid #f5f1ed;
+}
+.filters-sidebar section:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+.filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 8px 0 14px;
+  padding: 8px 0;
+}
+.filter-header h3 {
+  margin: 0;
+  color: var(--purdue-black);
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.filters-sidebar > section > h3 {
+  margin: 0 0 12px 0;
+  color: var(--purdue-black);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+}
+.filter-actions {
+  display: flex;
+  gap: 8px;
+}
+.btn-ghost {
+  appearance: none;
+  background: var(--purdue-gold);
+  border: 2px solid var(--purdue-black);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--purdue-black);
+  transition: all 0.2s;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+}
+.btn-ghost:hover {
+  background: #e8d9b8;
+  transform: scale(1.05);
+}
+.btn-ghost:focus-visible {
+  outline: 3px solid var(--purdue-black);
+  outline-offset: 2px;
+}
+
+.chip-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 2.5px solid #d0a367;
+  background: linear-gradient(135deg, #f9f5f0 0%, #faf7f3 100%);
+  color: #2c3e50;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  line-height: 1;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+.chip::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--purdue-gold), transparent);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.chip:hover {
+  background: linear-gradient(135deg, #fef5f0 0%, #fef9f5 100%);
+  border-color: #cfb991;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(207, 185, 145, 0.2);
+}
+.chip:hover::before {
+  opacity: 0.25;
+}
+.chip:focus-visible {
+  outline: 3px solid var(--purdue-black);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px rgba(207, 185, 145, 0.3);
+}
+.chip--on {
+  background: linear-gradient(135deg, var(--purdue-gold) 0%, #d4a574 100%);
+  color: var(--purdue-black);
+  border-color: var(--purdue-black);
+  box-shadow: 0 6px 16px rgba(207, 185, 145, 0.4);
+  font-weight: 700;
+}
+.chip--on:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(207, 185, 145, 0.5);
+}
+.chip--on::before {
+  opacity: 0;
+}
+.chip-dot {
+  display: none;
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.9;
+}
+.chip--on .chip-dot {
+  background: var(--purdue-black);
+  box-shadow: 0 0 4px rgba(207, 185, 145, 0.6);
+}
+.chip > * {
+  pointer-events: none;
+  position: relative;
+  z-index: 1;
+}
 
 /* -------- Size & Color filters -------- */
-.size-filter, .color-filter{display:flex; flex-wrap:wrap; gap:8px}
-.size-label, .color-label{display:inline-flex; align-items:center; gap:6px; padding:8px 12px; border:2px solid #d4b896; border-radius:8px; background:#faf8f6; color:#2c3e50; cursor:pointer; font-weight:500; transition:all .2s; font-size:.9rem}
-.size-label:hover, .color-label:hover{border-color:var(--purdue-gold); background:linear-gradient(135deg, #fef5f0 0%, #fef9f5 100%)}
-.size-label input, .color-label input{display:none}
-.size-label.checked, .color-label.checked{background:linear-gradient(135deg, var(--purdue-gold) 0%, #d4a574 100%); border-color:var(--purdue-black); color:var(--purdue-black); font-weight:700}
+.size-filter,
+.color-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.size-label,
+.color-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: 2px solid #d4b896;
+  border-radius: 8px;
+  background: #faf8f6;
+  color: #2c3e50;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+.size-label:hover,
+.color-label:hover {
+  border-color: var(--purdue-gold);
+  background: linear-gradient(135deg, #fef5f0 0%, #fef9f5 100%);
+}
+.size-label input,
+.color-label input {
+  display: none;
+}
+.size-label.checked,
+.color-label.checked {
+  background: linear-gradient(135deg, var(--purdue-gold) 0%, #d4a574 100%);
+  border-color: var(--purdue-black);
+  color: var(--purdue-black);
+  font-weight: 700;
+}
 
-.color-swatch{display:inline-block; width:16px; height:16px; border-radius:4px; border:2px solid rgba(0,0,0,.2); flex-shrink:0}
-.color-label.checked .color-swatch{border-color:var(--purdue-black); box-shadow:0 0 0 2px var(--purdue-gold)}
+.color-swatch {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
+}
+.color-label.checked .color-swatch {
+  border-color: var(--purdue-black);
+  box-shadow: 0 0 0 2px var(--purdue-gold);
+}
 
 /* Loading Animation */
 .loading-container {
@@ -216,7 +636,8 @@ input:focus,select:focus,textarea:focus{outline:none; border-color:var(--purdue-
 }
 
 @keyframes bobbing {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -234,7 +655,8 @@ input:focus,select:focus,textarea:focus{outline:none; border-color:var(--purdue-
 }
 
 @keyframes waterWave {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.4;
   }
   50% {
@@ -262,14 +684,54 @@ input:focus,select:focus,textarea:focus{outline:none; border-color:var(--purdue-
 }
 
 /* -------- Pagination & Accessibility -------- */
-.pagination-container{display:flex; align-items:center; justify-content:center; gap:16px; margin:40px 0; flex-wrap:wrap}
-.pagination-info{color:#666; font-weight:700; min-width:120px; text-align:center; font-size:1.05rem}
-.pagination-btn{appearance:none; background:var(--purdue-gold); border:2px solid var(--purdue-black); color:var(--purdue-black); padding:10px 18px; border-radius:8px; cursor:pointer; font-weight:700; transition:all .2s; font-size:.9rem; text-transform:uppercase; letter-spacing:.2px}
-.pagination-btn:hover:not(:disabled){background:#e8d9b8; transform:translateY(-2px); box-shadow:0 4px 12px rgba(207,185,145,.3)}
-.pagination-btn:disabled{opacity:.5; cursor:not-allowed}
-.pagination-btn:focus-visible{outline:3px solid var(--purdue-black); outline-offset:2px}
+.pagination-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 40px 0;
+  flex-wrap: wrap;
+}
+.pagination-info {
+  color: #666;
+  font-weight: 700;
+  min-width: 120px;
+  text-align: center;
+  font-size: 1.05rem;
+}
+.pagination-btn {
+  appearance: none;
+  background: var(--purdue-gold);
+  border: 2px solid var(--purdue-black);
+  color: var(--purdue-black);
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+}
+.pagination-btn:hover:not(:disabled) {
+  background: #e8d9b8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(207, 185, 145, 0.3);
+}
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.pagination-btn:focus-visible {
+  outline: 3px solid var(--purdue-black);
+  outline-offset: 2px;
+}
 
 /* Accessibility improvements */
-@media (prefers-reduced-motion: reduce){
-  * {animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
