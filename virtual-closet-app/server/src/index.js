@@ -48,9 +48,7 @@ dotenv.config({ path: join(__dirname, "..", ".env") });
 
 async function startServer() {
   try {
-    const app = express();
-
-
+    // Use the top-level `app` so the exported app includes routes during tests
     app.use(cors());
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
