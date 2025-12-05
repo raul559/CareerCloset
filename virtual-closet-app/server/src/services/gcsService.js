@@ -28,6 +28,9 @@ if (process.env.NODE_ENV === 'production') {
       projectId: process.env.GCS_PROJECT_ID || 'virtualcloset-477422'
     });
     credentialsAvailable = true;
+    console.log('✅ GCS Storage initialized with Application Default Credentials (production)');
+    console.log(`   Project ID: ${process.env.GCS_PROJECT_ID || 'virtualcloset-477422'}`);
+    console.log(`   Bucket: ${process.env.GCS_BUCKET_NAME || 'pfw-virtual-close'}`);
   } catch (err) {
     console.error('❌ GCS Storage initialization failed in production:', err.message);
     credentialsAvailable = false;
@@ -40,6 +43,7 @@ if (process.env.NODE_ENV === 'production') {
         storage = new Storage({ keyFilename: testPath });
         credentialsAvailable = true;
         credentialsPath = testPath;
+        console.log(`✅ GCS Storage initialized successfully with ${testPath}`);
         break;
       } catch (err) {
         console.error(`❌ GCS Storage initialization failed for ${testPath}:`, err.message);
@@ -50,6 +54,7 @@ if (process.env.NODE_ENV === 'production') {
   if (!credentialsAvailable) {
     console.warn("⚠️  GCS credentials file not found in any expected location");
     console.warn("    GCS features will be unavailable until credentials are added");
+    console.warn("    Expected paths:", possiblePaths.join(", "));
   }
 }
 
@@ -79,7 +84,14 @@ export async function getSignedUrl(filePath, expiresInSeconds = 3600) {
   
   if (cached && cached.expiresAt > now + CACHE_BUFFER_MS) {
     // Return cached URL if it's still valid (with buffer time)
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`Cache HIT for ${filePath}`);
+    }
     return cached.url;
+  }
+  
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`Cache MISS for ${filePath} - generating new URL`);
   }
 
   try {
