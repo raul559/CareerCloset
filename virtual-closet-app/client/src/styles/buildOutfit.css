@@ -98,6 +98,17 @@
   gap: 1rem;
   overflow-y: auto;
   padding-right: 0.5rem;
+  align-items: start;
+  justify-items: center;
+}
+
+.itemGrid .emptyMessage {
+  grid-column: 1 / -1;
+  width: 100%;
+  text-align: center;
+  color: #9ca3af;
+  padding: 3rem 1rem;
+  font-size: 1rem;
 }
 
 .itemGrid .emptyMessage {

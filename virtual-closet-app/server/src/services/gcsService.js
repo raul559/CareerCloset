@@ -30,7 +30,10 @@ for (const testPath of possiblePaths) {
       console.log(`GCS Storage initialized successfully with ${testPath}`);
       break;
     } catch (err) {
-      console.error(`GCS Storage initialization failed for ${testPath}:`, err.message);
+      console.error(
+        `GCS Storage initialization failed for ${testPath}:`,
+        err.message
+      );
     }
   }
 }
@@ -51,7 +54,7 @@ const BUCKET_NAME = process.env.GCS_BUCKET_NAME || "pfw-virtual-close";
  */
 export async function getSignedUrl(filePath, expiresInSeconds = 3600) {
   if (!filePath) return null;
-  
+
   if (!credentialsAvailable || !storage) {
     throw new Error(
       "GCS credentials not configured. Please add gcs-credentials.json to server root or set GCS_CREDENTIALS env var"

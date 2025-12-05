@@ -1,3 +1,4 @@
+// server/src/index.js
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -28,25 +29,30 @@ import clothingRoutes from "./routes/clothing.js";
 import imageRoutes from "./routes/images.js";
 import uploadRoute from "./routes/upload.js";
 import adminRoutes from "./routes/admin.js";
+import appointmentRoutes from "./routes/appointments.js";
+
 
 // ----------------------
 // Server Port
 // ----------------------
 const PORT = process.env.PORT || 5001;
 
+
+// Load .env from parent directory (server/.env)
+dotenv.config({ path: join(__dirname, "..", ".env") });
+
 async function startServer() {
   try {
     const app = express();
+
 
     app.use(cors());
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
 
-    // ----------------------
-    // Connect Database
-    // ----------------------
+    // Connect to MongoDB database
     await connectDB();
-    console.log("MongoDB connected");
+    console.log("MongoDB connected successfully");
 
     // ----------------------
     // API Routes
@@ -110,9 +116,14 @@ async function startServer() {
       });
     });
 
-    // ----------------------
-    // 404 Handler
-    // ----------------------
+    // Mount routes
+    app.use("/api/clothing", clothingRoutes);
+    app.use("/api/images", imageRoutes);
+    app.use("/api/appointments", appointmentRoutes);
+    app.use("/api/upload", uploadRoute);
+    app.use("/api/admin", adminRoutes);
+
+    // 404 handler - catches all undefined routes
     app.use((req, res) => {
       res.status(404).json({
         error: "Not Found",
