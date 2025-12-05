@@ -48,7 +48,6 @@ describe("Admin Routes", () => {
   describe("Analytics", () => {
     describe("GET /api/admin/analytics", () => {
       it("should handle GET analytics endpoint", async () => {
-        
         const res = await chai.request(app).get("/api/admin/analytics");
 
         expect([200, 401, 403, 500]).to.include(res.status);
