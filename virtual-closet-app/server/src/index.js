@@ -74,6 +74,7 @@ async function startServer() {
     app.use("/api/images", imageRoutes);
     app.use("/api/admin", adminRoutes);
     app.use("/api/appointments", appointmentRoutes);
+    app.use("/api/auth", authRoutes);
 
     // Health check
     app.get("/api/health", (req, res) => {
