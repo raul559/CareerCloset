@@ -253,13 +253,15 @@
 
 .appointment-content {
   display: grid;
-  grid-template-columns: 400px 1fr;
+  grid-template-columns: 480px 1fr;
   min-height: 600px;
+  align-items: start;
 }
 
 .calendar-section {
   padding: 2rem;
   border-right: 1px solid #eee;
+  overflow: visible;
 }
 
 .calendar-section h2 {
@@ -303,6 +305,7 @@
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 4px;
+  max-width: 100%;
 }
 
 .weekday-header {
@@ -319,9 +322,10 @@
   border-radius: 8px;
   background: white;
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   transition: all 0.2s;
   color: #333;
+  min-width: 0;
 }
 
 .calendar-day:hover:not(:disabled):not(.empty) {
@@ -350,11 +354,13 @@
 }
 
 .calendar-day.fully-blocked {
-  background: repeating-linear-gradient(45deg,
-      #f0f0f0,
-      #f0f0f0 5px,
-      #e0e0e0 5px,
-      #e0e0e0 10px);
+  background: repeating-linear-gradient(
+    45deg,
+    #f0f0f0,
+    #f0f0f0 5px,
+    #e0e0e0 5px,
+    #e0e0e0 10px
+  );
   color: #999;
   cursor: not-allowed;
   position: relative;
@@ -362,7 +368,7 @@
 }
 
 .calendar-day.fully-blocked::after {
-  content: '🚫';
+  content: "🚫";
   position: absolute;
   top: 2px;
   right: 2px;
