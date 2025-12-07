@@ -44,13 +44,10 @@ if (process.env.NODE_ENV === "test") {
 
         stream.on("error", (err) => reject(err));
 
-        stream.on("finish", async () => {
-          const [signedUrl] = await file.getSignedUrl({
-            action: "read",
-            expires: "03-17-2050",
-          });
-
-          resolve(signedUrl); // silent return
+        stream.on("finish", () => {
+          // Return the GCS path (not the signed URL)
+          // Signed URLs will be generated on-demand by gcsService
+          resolve(fileName);
         });
 
         stream.end(fileBuffer);
