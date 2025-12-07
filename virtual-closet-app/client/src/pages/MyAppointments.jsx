@@ -197,14 +197,14 @@ export default function MyAppointments({ userEmail }) {
                                     </div>
                                     <div className="appointment-details">
                                         <h3>{formatDate(appt.date)}</h3>
-                                        <p className="time">{formatTime(appt.time)} EST</p>
+                                        <p className="time">{formatTime(appt.time || appt.timeSlot)} EST</p>
                                         <span className={`status-badge status-${appt.status}`}>
                                             {appt.status}
                                         </span>
                                     </div>
                                 </div>
 
-                                <div className="appointment-status-message">
+                                <div className="appointment-status-message" style={{ marginTop: '12px' }}>
                                     <p>{getStatusMessage(appt.status)}</p>
                                 </div>
 
@@ -264,7 +264,7 @@ export default function MyAppointments({ userEmail }) {
                                     </div>
                                     <div className="appointment-details">
                                         <h3>{formatDate(appt.date)}</h3>
-                                        <p className="time">{formatTime(appt.time)} EST</p>
+                                        <p className="time">{formatTime(appt.time || appt.timeSlot)} EST</p>
                                         <span className={`status-badge status-${appt.status}`}>
                                             {appt.status}
                                         </span>

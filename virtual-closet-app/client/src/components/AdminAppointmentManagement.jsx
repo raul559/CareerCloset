@@ -124,11 +124,19 @@ export default function AdminAppointmentManagement() {
 
                         <div style={styles.cardBody}>
                             <p><strong>Date:</strong> {formatDate(appt.date)}</p>
-                            <p><strong>Time:</strong> {formatTime(appt.timeSlot)}</p>
-                            <p><strong>Purpose:</strong> {appt.purpose || "Not specified"}</p>
+                            <p><strong>Time:</strong> {formatTime(appt.time || appt.timeSlot)}</p>
                             {appt.notes && <p><strong>Notes:</strong> {appt.notes}</p>}
-                            {appt.requestedItems && appt.requestedItems.length > 0 && (
-                                <p><strong>Requested Items:</strong> {appt.requestedItems.length} item(s)</p>
+                            {appt.requestedItems && appt.requestedItems.length > 0 ? (
+                                <div>
+                                    <p><strong>Requested Items:</strong> {appt.requestedItems.length} item(s)</p>
+                                    <ul style={{ marginTop: '8px', paddingLeft: '20px' }}>
+                                        {appt.requestedItems.map((item, idx) => (
+                                            <li key={idx}>{item.name} ({item.category})</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            ) : (
+                                <p><strong>Requested Items:</strong> None</p>
                             )}
                         </div>
 

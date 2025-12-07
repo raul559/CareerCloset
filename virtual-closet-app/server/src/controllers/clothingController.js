@@ -27,6 +27,7 @@ export async function getAllItems(userId, options = {}) {
             webpUrl.includes("googleapis.com")
               ? webpUrl
               : null;
+
         } catch (e) {
           console.error(
             `Failed to generate signed URL for ${item.imageUrl}:`,
@@ -42,9 +43,6 @@ export async function getAllItems(userId, options = {}) {
       };
     })
   );
-  
-  // Timing info removed to avoid printing signed-url related activity to the terminal
-  const duration = Date.now() - startTime;
 
   return {
     success: true,

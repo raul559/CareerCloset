@@ -35,6 +35,8 @@ export default function BrowseClothing() {
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
 
+  // TODO: Replace hardcoded userId with authenticated user ID once user authentication is implemented
+  // Remove from query params; backend will know user from auth token
   const userId = "virtual-closet-user";
 
   // Load ALL clothing items once (filtering happens client-side)

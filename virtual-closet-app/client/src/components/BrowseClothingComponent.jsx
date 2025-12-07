@@ -156,7 +156,7 @@ export function FiltersSidebar({
                 title={c}
                 className={`color-label ${selectedColors.has(c) ? 'checked' : ''}`}
               >
-                <span 
+                <span
                   className="color-swatch"
                   style={{ backgroundColor: COLOR_MAP[c] || "#ccc" }}
                 />
@@ -254,7 +254,7 @@ export function ItemCard({ item, onDelete }) {
     const outfitItem = {
       ...item,
       id: item.clothingId || item.id,
-      img: item.thumbnailWebpUrl || item.img,
+      img: item.thumbnailWebpUrl || item.imageUrl || item.img,
     };
     addToOutfit(targetCategory, outfitItem);
   };
@@ -264,7 +264,7 @@ export function ItemCard({ item, onDelete }) {
       <div style={{ position: "relative" }} ref={imgRef}>
         <img
           className="item-thumb-img"
-          src={isVisible ? (item.thumbnailWebpUrl || item.img) : 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400"%3E%3Crect fill="%23f0f0f0" width="300" height="400"/%3E%3C/svg%3E'}
+          src={isVisible ? (item.thumbnailWebpUrl || item.imageUrl || item.img) : 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400"%3E%3Crect fill="%23f0f0f0" width="300" height="400"/%3E%3C/svg%3E'}
           alt={`${item.name}, ${item.color}, size ${item.size}`}
           loading="lazy"
           style={{ opacity: isVisible ? 1 : 0.5, transition: 'opacity 0.3s' }}

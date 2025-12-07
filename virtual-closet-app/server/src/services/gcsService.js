@@ -78,6 +78,17 @@ export async function getSignedUrl(filePath, expiresInSeconds = 3600) {
     throw new Error(errorMsg);
   }
 
+  // Normalize file path formats:
+  // 1. gs://bucket/path -> path
+  // 2. Relative paths like "Thumbnails-webp/IMG_6710.webp" -> as-is
+  let cleanPath = filePath;
+  if (filePath.startsWith('gs://')) {
+    const parts = filePath.slice(5).split('/');
+    cleanPath = parts.slice(1).join('/'); // Remove bucket name, keep path
+  }
+  // If it's a relative path like "Thumbnails-webp/IMG_6710.webp", use as-is
+  // It's already in the format GCS expects
+
   // Check cache first
   const cached = urlCache.get(filePath);
   const now = Date.now();
@@ -91,7 +102,7 @@ export async function getSignedUrl(filePath, expiresInSeconds = 3600) {
     const expiresAt = now + expiresInSeconds * 1000;
     const [url] = await storage
       .bucket(BUCKET_NAME)
-      .file(filePath)
+      .file(cleanPath)
       .getSignedUrl({
         version: "v4",
         action: "read",

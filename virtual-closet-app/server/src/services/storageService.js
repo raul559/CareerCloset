@@ -1,4 +1,5 @@
 import { Storage } from "@google-cloud/storage";
+import sharp from "sharp";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -34,23 +35,33 @@ if (process.env.NODE_ENV === "test") {
       try {
         if (!bucket) return reject(new Error("GCS bucket not configured"));
 
-        const fileName = `uploads/${Date.now()}_${originalName}`;
+        // Convert image to WebP for better compression
+        const webpBuffer = await sharp(fileBuffer)
+          .webp({ quality: 80 })
+          .toBuffer();
+
+        // Remove original extension and add .webp
+        const baseName = originalName.split('.')[0];
+        const fileName = `uploads/${Date.now()}_${baseName}.webp`;
         const file = bucket.file(fileName);
 
         const stream = file.createWriteStream({
-          metadata: { contentType: "image/jpeg" },
+          metadata: {
+            contentType: "image/webp",
+          },
           resumable: false,
         });
 
         stream.on("error", (err) => reject(err));
 
-        stream.on("finish", () => {
-          // Return the GCS path (not the signed URL)
-          // Signed URLs will be generated on-demand by gcsService
-          resolve(fileName);
+        stream.on("finish", async () => {
+          // Return the GCS path (not the signed URL which expires)
+          // Controller will generate fresh signed URLs as needed
+          const gcsPath = `gs://${BUCKET_NAME}/${fileName}`;
+          resolve(gcsPath);
         });
 
-        stream.end(fileBuffer);
+        stream.end(webpBuffer);
       } catch (err) {
         reject(err);
       }
