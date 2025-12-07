@@ -84,14 +84,7 @@ export async function getSignedUrl(filePath, expiresInSeconds = 3600) {
   
   if (cached && cached.expiresAt > now + CACHE_BUFFER_MS) {
     // Return cached URL if it's still valid (with buffer time)
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`Cache HIT for ${filePath}`);
-    }
     return cached.url;
-  }
-  
-  if (process.env.NODE_ENV === 'development') {
-    console.log(`Cache MISS for ${filePath} - generating new URL`);
   }
 
   try {
