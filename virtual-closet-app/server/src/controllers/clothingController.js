@@ -43,8 +43,8 @@ export async function getAllItems(userId, options = {}) {
     })
   );
   
+  // Timing info removed to avoid printing signed-url related activity to the terminal
   const duration = Date.now() - startTime;
-  console.log(`Generated ${itemsWithSignedUrls.length} signed URLs in ${duration}ms`);
 
   return {
     success: true,

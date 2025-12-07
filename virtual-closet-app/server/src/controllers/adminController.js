@@ -1,5 +1,6 @@
 import User from "../models/user.js";
 import Clothing from "../models/ClothingItem.js"; 
+import { deleteFile as deleteGcsFile, generateSignedUrl } from "../services/gcsService.js";
 // import Outfit from "../models/Outfit.js";   // add when you create it
 // import Appointment from "../models/Appointment.js"; // add when you create it
 
@@ -60,7 +61,28 @@ export const deleteUser = async (req, res) => {
 export const getAllClothing = async (req, res) => {
   try {
     const items = await Clothing.find();
-    res.json(items);
+    
+    // Generate signed URLs for all items
+    const itemsWithSignedUrls = await Promise.all(
+      items.map(async (item) => {
+        let thumbnailWebpUrl = null;
+        
+        if (item.imageUrl) {
+          try {
+            const url = await generateSignedUrl(item.imageUrl, 604800);
+            if (url && typeof url === "string" && url.includes("googleapis.com")) {
+              thumbnailWebpUrl = url;
+            }
+          } catch {
+            thumbnailWebpUrl = null;
+          }
+        }
+        
+        return { ...item.toObject(), thumbnailWebpUrl };
+      })
+    );
+    
+    res.json(itemsWithSignedUrls);
   } catch (err) {
     console.error("getAllClothing error:", err);
     res.status(500).json({ message: "Failed to fetch clothing items" });
@@ -91,7 +113,27 @@ export const deleteClothingItem = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const deleted = await Clothing.findByIdAndDelete(id);
+    const deleted = await Clothing.findById(id);
+    if (!deleted) {
+      return res.status(404).json({ message: "Clothing item not found" });
+    }
+
+    // If item has imageUrl, attempt to delete from GCS (best-effort)
+    if (deleted.imageUrl) {
+      try {
+        // Try to derive file path from imageUrl if it's a google storage url
+        // Expected forms: https://storage.googleapis.com/<bucket>/<path>
+        const match = deleted.imageUrl.match(/https?:\/\/[^/]+\/[^/]+\/(.+)$/);
+        const filePath = match ? match[1] : null;
+        if (filePath) {
+          await deleteGcsFile(filePath);
+        }
+      } catch (err) {
+        console.warn("Warning: failed to delete GCS file for clothing item:", err.message);
+      }
+    }
+
+    await Clothing.findByIdAndDelete(id);
     if (!deleted) {
       return res.status(404).json({ message: "Clothing item not found" });
     }
@@ -100,6 +142,87 @@ export const deleteClothingItem = async (req, res) => {
   } catch (err) {
     console.error("deleteClothingItem error:", err);
     res.status(500).json({ message: "Failed to delete clothing item" });
+  }
+};
+
+// -------- IMAGES (admin) --------
+/**
+ * Update image-related metadata on a clothing item (admin)
+ * Accepts body fields like: imageUrl, thumbnailWebp, tags (array), name, category, size, color, subcategory
+ */
+export const updateImageMetadata = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body || {};
+
+    const allowed = [
+      "imageUrl",
+      "thumbnailWebp",
+      "tags",
+      "name",
+      "category",
+      "subcategory",
+      "size",
+      "color",
+      "season",
+      "gender",
+      "status",
+    ];
+
+    const payload = {};
+    for (const k of Object.keys(updateData)) {
+      if (allowed.includes(k)) payload[k] = updateData[k];
+    }
+
+    if (Object.keys(payload).length === 0) {
+      return res.status(400).json({ message: "No valid fields to update" });
+    }
+
+    const updated = await Clothing.findByIdAndUpdate(id, payload, { new: true });
+    if (!updated) return res.status(404).json({ message: "Clothing item not found" });
+
+    res.json({ success: true, data: updated });
+  } catch (err) {
+    console.error("updateImageMetadata error:", err);
+    res.status(500).json({ message: "Failed to update image metadata" });
+  }
+};
+
+/**
+ * Delete an image for a clothing item: removes object from GCS and clears DB fields
+ */
+export const deleteImage = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const item = await Clothing.findById(id);
+    if (!item) return res.status(404).json({ message: "Clothing item not found" });
+
+    if (!item.imageUrl) {
+      return res.status(400).json({ message: "No image associated with this item" });
+    }
+
+    // Try to derive file path from imageUrl
+    const match = item.imageUrl.match(/https?:\/\/[^/]+\/[^/]+\/(.+)$/);
+    const filePath = match ? match[1] : null;
+
+    if (filePath) {
+      try {
+        await deleteGcsFile(filePath);
+      } catch (err) {
+        // log but continue to clear DB entry
+        console.warn("Warning: failed to delete GCS file:", err.message);
+      }
+    }
+
+    // Clear DB image fields
+    item.imageUrl = "";
+    item.thumbnailWebp = "";
+    await item.save();
+
+    res.json({ success: true, message: "Image deleted and metadata cleared" });
+  } catch (err) {
+    console.error("deleteImage error:", err);
+    res.status(500).json({ message: "Failed to delete image" });
   }
 };
 

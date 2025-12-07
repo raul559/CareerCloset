@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppointment } from "../context/AppointmentContext";
 import { useOutfit } from "../context/OutfitContext";
+import { useAuth } from "../utils/auth";
 
 // Color hex mapping
 const COLOR_MAP = {
@@ -183,10 +184,11 @@ export function FiltersSidebar({
 }
 
 /** Individual item card with lazy loading */
-export function ItemCard({ item }) {
+export function ItemCard({ item, onDelete }) {
   const navigate = useNavigate();
   const { addItem } = useAppointment();
   const { addToOutfit, availableItems } = useOutfit();
+  const { isAdmin } = useAuth();
   const [isVisible, setIsVisible] = React.useState(false);
   const imgRef = React.useRef(null);
 
@@ -296,6 +298,21 @@ export function ItemCard({ item }) {
           >
             {isAlreadyAdded ? "Added to Outfit" : "Add to Outfit"}
           </button>
+          {isAdmin && onDelete && (
+            <button
+              className="btn-delete"
+              onClick={() => {
+                const id = item._id || item.clothingId || item.id;
+                if (!id) return alert("Cannot determine item id");
+                if (window.confirm("Delete this clothing item? This cannot be undone.")) {
+                  onDelete(id);
+                }
+              }}
+              style={{ background: "#c62828", color: "white", marginLeft: 8 }}
+            >
+              Delete
+            </button>
+          )}
         </div>
       </div>
     </article>

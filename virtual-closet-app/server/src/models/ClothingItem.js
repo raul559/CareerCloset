@@ -58,6 +58,11 @@ const clothingItemSchema = new mongoose.Schema(
       enum: ["Spring", "Summer", "Fall", "Winter", "All"],
       default: "All",
     },
+    status: {
+      type: String,
+      enum: ["Available", "Unavailable"],
+      default: "Available",
+    },
     imageUrl: {
       type: String,
       default: "",

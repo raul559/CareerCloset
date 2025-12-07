@@ -39,6 +39,7 @@ export default function BrowseClothing() {
 
   // Load ALL clothing items once (filtering happens client-side)
   useEffect(() => {
+    // Load items function is defined here so it can be called on mount
     async function loadAllItems() {
       setLoading(true);
       try {
@@ -74,6 +75,26 @@ export default function BrowseClothing() {
     }
 
     loadAllItems();
+
+    // Listen for cross-tab/page updates from admin actions
+    const handler = () => {
+      loadAllItems();
+    };
+    window.addEventListener('virtualcloset:itemsUpdated', handler);
+
+    // Also listen for localStorage 'storage' events so other tabs/windows reload
+    const storageHandler = (e) => {
+      if (!e) return;
+      if (e.key === 'virtualcloset:itemsUpdated') {
+        loadAllItems();
+      }
+    };
+    window.addEventListener('storage', storageHandler);
+
+    return () => {
+      window.removeEventListener('virtualcloset:itemsUpdated', handler);
+      window.removeEventListener('storage', storageHandler);
+    };
   }, []); // Only load once on mount
 
 
@@ -269,7 +290,23 @@ export default function BrowseClothing() {
         <section>
           <div className="browse-grid">
             {paginatedItems.map((it) => (
-              <ItemCard key={it._id} item={it} />
+              <ItemCard
+                key={it._id}
+                item={it}
+                onDelete={async (id) => {
+                  try {
+                    // call admin API to delete item and remove locally
+                    const { deleteClothingItem } = await import("../services/adminApi");
+                    const result = await deleteClothingItem(id);
+                    console.log("Delete result:", result);
+                    setItems((prev) => prev.filter((p) => p._id !== id));
+                  } catch (err) {
+                    console.error("Failed to delete item:", err);
+                    console.error("Error response:", err.response?.data);
+                    alert("Failed to delete item. See console for details.");
+                  }
+                }}
+              />
             ))}
           </div>
 

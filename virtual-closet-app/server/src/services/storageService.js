@@ -1,27 +1,34 @@
-
 import { Storage } from "@google-cloud/storage";
 import dotenv from "dotenv";
 dotenv.config();
 
-// When running tests, avoid initializing GCS client or calling bucket()
-// which will throw if environment variables are not present in CI.
+// When running tests, avoid initializing GCS client
 let uploadImage;
-if (process.env.NODE_ENV === "test") {
-  // Safe stub for tests: return null (no URL) and avoid external calls
-  uploadImage = async function /* uploadImage */ () {
-    return null;
-  };
-} else {
-  // Initialize storage based on environment
-  const storage = process.env.NODE_ENV === 'production'
-    ? new Storage({ projectId: process.env.GCS_PROJECT_ID || 'virtualcloset-477422' })
-    : new Storage({ keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS });
+let deleteFromGCS;
 
-  const BUCKET_NAME = process.env.GCS_BUCKET_NAME || process.env.GCS_BUCKET || 'pfw-virtual-close';
+if (process.env.NODE_ENV === "test") {
+  uploadImage = async () => null;
+  deleteFromGCS = async () => null;
+} else {
+  const storage =
+    process.env.NODE_ENV === "production"
+      ? new Storage({
+          projectId: process.env.GCS_PROJECT_ID || "virtualcloset-477422",
+        })
+      : new Storage({
+          keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+        });
+
+  const BUCKET_NAME =
+    process.env.GCS_BUCKET_NAME ||
+    process.env.GCS_BUCKET ||
+    "pfw-virtual-close";
+
   const bucket = storage.bucket(BUCKET_NAME);
 
-  console.log(`📦 Storage Service initialized with bucket: ${BUCKET_NAME}`);
-
+  // ----------------------
+  // UPLOAD IMAGE
+  // ----------------------
   uploadImage = async function (fileBuffer, originalName) {
     return new Promise(async (resolve, reject) => {
       try {
@@ -31,21 +38,16 @@ if (process.env.NODE_ENV === "test") {
         const file = bucket.file(fileName);
 
         const stream = file.createWriteStream({
-          metadata: {
-            contentType: "image/jpeg",
-          },
+          metadata: { contentType: "image/jpeg" },
           resumable: false,
         });
 
         stream.on("error", (err) => reject(err));
 
-        stream.on("finish", async () => {
-          const [signedUrl] = await file.getSignedUrl({
-            action: "read",
-            expires: "03-17-2050",
-          });
-
-          resolve(signedUrl);
+        stream.on("finish", () => {
+          // Return the GCS path (not the signed URL)
+          // Signed URLs will be generated on-demand by gcsService
+          resolve(fileName);
         });
 
         stream.end(fileBuffer);
@@ -54,6 +56,24 @@ if (process.env.NODE_ENV === "test") {
       }
     });
   };
+
+  // ----------------------
+  // DELETE IMAGE (SILENT)
+  // ----------------------
+  deleteFromGCS = async function (publicUrl) {
+    if (!publicUrl) return;
+
+    try {
+      const url = new URL(publicUrl);
+      const key = url.pathname.replace(/^\/+/, "");
+      const file = bucket.file(key);
+
+      await file.delete();
+      // Silent: no console output
+    } catch (err) {
+      // Silent fail
+    }
+  };
 }
 
-export { uploadImage };
+export { uploadImage, deleteFromGCS };
