@@ -3,11 +3,14 @@ import {
   getAllClothing,
   updateClothingItem,
   deleteClothingItem,
+  updateImageMetadata,
+  deleteImage,
 } from "../services/adminApi";
 
 export default function AdminClothingManagement() {
   const [items, setItems] = useState([]);
   const [editItem, setEditItem] = useState(null);
+  const [imageEditItem, setImageEditItem] = useState(null);
 
   const load = () => {
     getAllClothing().then((res) => setItems(res.data));
@@ -38,6 +41,30 @@ export default function AdminClothingManagement() {
 
             <button style={styles.button} onClick={() => setEditItem(i)}>
               Edit
+            </button>
+            <button
+              style={styles.button}
+              onClick={() => {
+                // prepare image edit payload
+                setImageEditItem({
+                  _id: i._id,
+                  imageUrl: i.imageUrl || "",
+                  thumbnailWebp: i.thumbnailWebp || "",
+                  tags: (i.tags || []).join(", "),
+                });
+              }}
+            >
+              Edit Image
+            </button>
+            <button
+              style={styles.delete}
+              onClick={() =>
+                // confirm before deleting image
+                window.confirm("Delete image for this item?") &&
+                deleteImage(i._id).then(() => load())
+              }
+            >
+              Delete Image
             </button>
             <button
               style={styles.delete}
@@ -75,6 +102,69 @@ export default function AdminClothingManagement() {
             <button style={styles.delete} onClick={() => setEditItem(null)}>
               Cancel
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* IMAGE EDIT MODAL */}
+      {imageEditItem && (
+        <div style={styles.modal}>
+          <div style={styles.modalContent}>
+            <h3>Edit Image Metadata</h3>
+
+            <input
+              style={styles.input}
+              value={imageEditItem.imageUrl}
+              placeholder="imageUrl"
+              onChange={(e) =>
+                setImageEditItem({ ...imageEditItem, imageUrl: e.target.value })
+              }
+            />
+
+            <input
+              style={styles.input}
+              value={imageEditItem.thumbnailWebp}
+              placeholder="thumbnailWebp"
+              onChange={(e) =>
+                setImageEditItem({ ...imageEditItem, thumbnailWebp: e.target.value })
+              }
+            />
+
+            <input
+              style={styles.input}
+              value={imageEditItem.tags}
+              placeholder="tags (comma separated)"
+              onChange={(e) =>
+                setImageEditItem({ ...imageEditItem, tags: e.target.value })
+              }
+            />
+
+            <div>
+              <button
+                style={styles.button}
+                onClick={() => {
+                  // prepare payload
+                  const payload = {
+                    imageUrl: imageEditItem.imageUrl || undefined,
+                    thumbnailWebp: imageEditItem.thumbnailWebp || undefined,
+                    tags: imageEditItem.tags
+                      ? imageEditItem.tags.split(",").map((t) => t.trim()).filter(Boolean)
+                      : undefined,
+                  };
+
+                  updateImageMetadata(imageEditItem._id, payload).then(() => {
+                    setImageEditItem(null);
+                    load();
+                  });
+                }}
+              >
+                Save Image Metadata
+              </button>
+
+              <button style={styles.delete} onClick={() => setImageEditItem(null)}>
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}

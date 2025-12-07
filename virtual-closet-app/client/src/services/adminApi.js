@@ -14,6 +14,9 @@ export const updateClothingItem = (id, data) =>
   api.put(`/admin/clothing/${id}`, data);
 export const deleteClothingItem = (id) =>
   api.delete(`/admin/clothing/${id}`);
+export const updateImageMetadata = (id, data) =>
+  api.put(`/admin/clothing/${id}/image`, data);
+export const deleteImage = (id) => api.delete(`/admin/clothing/${id}/image`);
 
 // ---------- STATS ----------
 export const getStats = () => api.get("/admin/stats");

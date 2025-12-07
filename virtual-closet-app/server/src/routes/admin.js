@@ -32,6 +32,12 @@ router.get("/clothing", getAllClothing);
 router.put("/clothing/:id", updateClothingItem);
 router.delete("/clothing/:id", deleteClothingItem);
 
+// ----- Clothing Image Management (admin) -----
+// Update image metadata for a clothing item
+router.put("/clothing/:id/image", updateImageMetadata);
+// Delete image for a clothing item (clears DB fields and removes object from GCS)
+router.delete("/clothing/:id/image", deleteImage);
+
 // ----- Images (admin) -----
 router.put("/images/:id", updateImageMetadata);
 router.delete("/images/:id", deleteImage);

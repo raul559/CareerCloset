@@ -269,7 +269,21 @@ export default function BrowseClothing() {
         <section>
           <div className="browse-grid">
             {paginatedItems.map((it) => (
-              <ItemCard key={it._id} item={it} />
+              <ItemCard
+                key={it._id}
+                item={it}
+                onDelete={async (id) => {
+                  try {
+                    // call admin API to delete item and remove locally
+                    const { deleteClothingItem } = await import("../services/adminApi");
+                    await deleteClothingItem(id);
+                    setItems((prev) => prev.filter((p) => p._id !== id));
+                  } catch (err) {
+                    console.error("Failed to delete item:", err);
+                    alert("Failed to delete item. See console for details.");
+                  }
+                }}
+              />
             ))}
           </div>
 
