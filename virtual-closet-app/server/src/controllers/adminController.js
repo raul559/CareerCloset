@@ -166,6 +166,7 @@ export const updateImageMetadata = async (req, res) => {
       "color",
       "season",
       "gender",
+      "status",
     ];
 
     const payload = {};

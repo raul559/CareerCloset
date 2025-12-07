@@ -21,9 +21,21 @@ export default function AdminClothingManagement() {
   }, []);
 
   const saveEdit = () => {
-    updateClothingItem(editItem._id, editItem).then(() => {
+    updateClothingItem(editItem._id, editItem).then((res) => {
       setEditItem(null);
       load();
+      try {
+        // Notify other open pages (same-tab) that items changed
+        window.dispatchEvent(new CustomEvent('virtualcloset:itemsUpdated', { detail: { id: res.data._id } }));
+        // Also write a small localStorage ping so other tabs receive a storage event
+        try {
+          localStorage.setItem('virtualcloset:itemsUpdated', JSON.stringify({ id: res.data._id, ts: Date.now() }));
+        } catch (e) {
+          // ignore storage failures (private mode, etc.)
+        }
+      } catch (e) {
+        // ignore in non-browser environments
+      }
     });
   };
 
@@ -58,6 +70,7 @@ export default function AdminClothingManagement() {
                   color: i.color || "",
                   gender: i.gender || "",
                   season: i.season || "",
+                  status: i.status || (i.status === 0 ? i.status : "Available"),
                 });
               }}
             >
@@ -169,6 +182,15 @@ export default function AdminClothingManagement() {
               <option value="Winter">Winter</option>
             </select>
 
+            <select
+              style={styles.input}
+              value={editItem.status || "Available"}
+              onChange={(e) => setEditItem({ ...editItem, status: e.target.value })}
+            >
+              <option value="Available">Available</option>
+              <option value="Unavailable">Unavailable</option>
+            </select>
+
             <button style={styles.button} onClick={saveEdit}>
               Save
             </button>
@@ -271,6 +293,15 @@ export default function AdminClothingManagement() {
               <option value="Winter">Winter</option>
             </select>
 
+            <select
+              style={styles.input}
+              value={imageEditItem.status || "Available"}
+              onChange={(e) => setImageEditItem({ ...imageEditItem, status: e.target.value })}
+            >
+              <option value="Available">Available</option>
+              <option value="Unavailable">Unavailable</option>
+            </select>
+
             <input
               style={styles.input}
               value={imageEditItem.imageUrl}
@@ -311,6 +342,7 @@ export default function AdminClothingManagement() {
                     color: imageEditItem.color || undefined,
                     gender: imageEditItem.gender || undefined,
                     season: imageEditItem.season || undefined,
+                    status: imageEditItem.status || undefined,
                     imageUrl: imageEditItem.imageUrl || undefined,
                     thumbnailWebp: imageEditItem.thumbnailWebp || undefined,
                     tags: imageEditItem.tags
@@ -321,6 +353,12 @@ export default function AdminClothingManagement() {
                   updateImageMetadata(imageEditItem._id, payload).then(() => {
                     setImageEditItem(null);
                     load();
+                    try {
+                      window.dispatchEvent(new CustomEvent('virtualcloset:itemsUpdated', { detail: { id: imageEditItem._id } }));
+                      try {
+                        localStorage.setItem('virtualcloset:itemsUpdated', JSON.stringify({ id: imageEditItem._id, ts: Date.now() }));
+                      } catch (e) {}
+                    } catch (e) {}
                   });
                 }}
               >
