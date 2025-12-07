@@ -276,10 +276,12 @@ export default function BrowseClothing() {
                   try {
                     // call admin API to delete item and remove locally
                     const { deleteClothingItem } = await import("../services/adminApi");
-                    await deleteClothingItem(id);
+                    const result = await deleteClothingItem(id);
+                    console.log("Delete result:", result);
                     setItems((prev) => prev.filter((p) => p._id !== id));
                   } catch (err) {
                     console.error("Failed to delete item:", err);
+                    console.error("Error response:", err.response?.data);
                     alert("Failed to delete item. See console for details.");
                   }
                 }}

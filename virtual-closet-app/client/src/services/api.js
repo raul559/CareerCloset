@@ -8,9 +8,16 @@ const api = axios.create({
 
 // Interceptor to add X-User-Email header to all requests
 api.interceptors.request.use((config) => {
-  const headers = auth.getAuthHeaders();
-  if (headers['X-User-Email']) {
-    config.headers['X-User-Email'] = headers['X-User-Email'];
+  const user = auth.getCurrentUser();
+  if (user && user.email) {
+    config.headers['X-User-Email'] = user.email;
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`[API] Adding auth header for ${user.email}`);
+    }
+  } else {
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('[API] No authenticated user found');
+    }
   }
   return config;
 });
