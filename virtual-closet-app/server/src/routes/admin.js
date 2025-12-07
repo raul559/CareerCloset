@@ -7,6 +7,8 @@ import {
   getAllClothing,
   updateClothingItem,
   deleteClothingItem,
+  updateImageMetadata,
+  deleteImage,
   getSystemStats,
   getAllAppointments,
   updateAppointment,
@@ -29,6 +31,10 @@ router.delete("/users/:id", deleteUser);
 router.get("/clothing", getAllClothing);
 router.put("/clothing/:id", updateClothingItem);
 router.delete("/clothing/:id", deleteClothingItem);
+
+// ----- Images (admin) -----
+router.put("/images/:id", updateImageMetadata);
+router.delete("/images/:id", deleteImage);
 
 // ----- Stats -----
 router.get("/stats", getSystemStats);

@@ -120,3 +120,31 @@ export async function getSignedUrl(filePath, expiresInSeconds = 3600) {
 
 // Alias for compatibility
 export const generateSignedUrl = getSignedUrl;
+
+/**
+ * Delete a file from the configured bucket
+ * @param {string} filePath - path of the file in the bucket
+ * @returns {Promise<boolean>} - true if deleted
+ */
+export async function deleteFile(filePath) {
+  if (!filePath) return false;
+
+  if (!storage) {
+    const errorMsg = process.env.NODE_ENV === 'production'
+      ? "GCS Storage not initialized. Check Cloud Run service account permissions."
+      : "GCS credentials not configured. Cannot delete file without credentials.";
+    throw new Error(errorMsg);
+  }
+
+  try {
+    await storage.bucket(BUCKET_NAME).file(filePath).delete();
+    return true;
+  } catch (err) {
+    // If file not found, treat as success for idempotency
+    if (err && err.code === 404) {
+      return true;
+    }
+    console.error(`❌ GCS DELETE ERROR for ${filePath}:`, err.message);
+    throw err;
+  }
+}
