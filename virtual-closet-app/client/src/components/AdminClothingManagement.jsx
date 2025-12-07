@@ -33,11 +33,11 @@ export default function AdminClothingManagement() {
 
       {items.map((i) => (
         <div key={i._id} style={styles.card}>
-          <img src={i.imageUrl} style={styles.img} />
+          <img src={i.thumbnailWebpUrl || i.imageUrl} style={styles.img} alt={i.name} />
 
           <div>
             <p><strong>{i.name}</strong></p>
-            <p>{i.category}</p>
+            <p>{i.category} · Size {i.size}</p>
 
             <button style={styles.button} onClick={() => setEditItem(i)}>
               Edit
@@ -51,6 +51,13 @@ export default function AdminClothingManagement() {
                   imageUrl: i.imageUrl || "",
                   thumbnailWebp: i.thumbnailWebp || "",
                   tags: (i.tags || []).join(", "),
+                  name: i.name || "",
+                  category: i.category || "",
+                  subcategory: i.subcategory || "",
+                  size: i.size || "",
+                  color: i.color || "",
+                  gender: i.gender || "",
+                  season: i.season || "",
                 });
               }}
             >
@@ -85,16 +92,82 @@ export default function AdminClothingManagement() {
             <input
               style={styles.input}
               value={editItem.name}
+              placeholder="Name"
               onChange={(e) => setEditItem({ ...editItem, name: e.target.value })}
             />
 
-            <input
+            <select
               style={styles.input}
               value={editItem.category}
               onChange={(e) =>
                 setEditItem({ ...editItem, category: e.target.value })
               }
+            >
+              <option value="">Category</option>
+              <option value="Tops">Tops</option>
+              <option value="Bottoms">Bottoms</option>
+              <option value="Dresses">Dresses</option>
+              <option value="Outerwear">Outerwear</option>
+              <option value="Shoes">Shoes</option>
+              <option value="Accessories">Accessories</option>
+            </select>
+
+            <input
+              style={styles.input}
+              value={editItem.subcategory}
+              placeholder="Subcategory"
+              onChange={(e) => setEditItem({ ...editItem, subcategory: e.target.value })}
             />
+
+            <select
+              style={styles.input}
+              value={editItem.size}
+              onChange={(e) =>
+                setEditItem({ ...editItem, size: e.target.value })
+              }
+            >
+              <option value="">Size</option>
+              <option value="XS">XS</option>
+              <option value="S">S</option>
+              <option value="M">M</option>
+              <option value="L">L</option>
+              <option value="XL">XL</option>
+            </select>
+
+            <input
+              style={styles.input}
+              value={editItem.color}
+              placeholder="Color"
+              onChange={(e) => setEditItem({ ...editItem, color: e.target.value })}
+            />
+
+            <select
+              style={styles.input}
+              value={editItem.gender}
+              onChange={(e) =>
+                setEditItem({ ...editItem, gender: e.target.value })
+              }
+            >
+              <option value="">Gender</option>
+              <option value="Mens">Mens</option>
+              <option value="Womens">Womens</option>
+              <option value="Unisex">Unisex</option>
+            </select>
+
+            <select
+              style={styles.input}
+              value={editItem.season}
+              onChange={(e) =>
+                setEditItem({ ...editItem, season: e.target.value })
+              }
+            >
+              <option value="">Season</option>
+              <option value="All">All</option>
+              <option value="Spring">Spring</option>
+              <option value="Summer">Summer</option>
+              <option value="Fall">Fall</option>
+              <option value="Winter">Winter</option>
+            </select>
 
             <button style={styles.button} onClick={saveEdit}>
               Save
@@ -114,8 +187,94 @@ export default function AdminClothingManagement() {
 
             <input
               style={styles.input}
+              value={imageEditItem.name}
+              placeholder="Name"
+              onChange={(e) =>
+                setImageEditItem({ ...imageEditItem, name: e.target.value })
+              }
+            />
+
+            <select
+              style={styles.input}
+              value={imageEditItem.category}
+              onChange={(e) =>
+                setImageEditItem({ ...imageEditItem, category: e.target.value })
+              }
+            >
+              <option value="">Category</option>
+              <option value="Tops">Tops</option>
+              <option value="Bottoms">Bottoms</option>
+              <option value="Dresses">Dresses</option>
+              <option value="Outerwear">Outerwear</option>
+              <option value="Shoes">Shoes</option>
+              <option value="Accessories">Accessories</option>
+            </select>
+
+            <input
+              style={styles.input}
+              value={imageEditItem.subcategory}
+              placeholder="Subcategory"
+              onChange={(e) =>
+                setImageEditItem({ ...imageEditItem, subcategory: e.target.value })
+              }
+            />
+
+            <select
+              style={styles.input}
+              value={imageEditItem.size}
+              onChange={(e) =>
+                setImageEditItem({ ...imageEditItem, size: e.target.value })
+              }
+            >
+              <option value="">Size</option>
+              <option value="XS">XS</option>
+              <option value="S">S</option>
+              <option value="M">M</option>
+              <option value="L">L</option>
+              <option value="XL">XL</option>
+            </select>
+
+            <input
+              style={styles.input}
+              value={imageEditItem.color}
+              placeholder="Color"
+              onChange={(e) =>
+                setImageEditItem({ ...imageEditItem, color: e.target.value })
+              }
+            />
+
+            <select
+              style={styles.input}
+              value={imageEditItem.gender}
+              onChange={(e) =>
+                setImageEditItem({ ...imageEditItem, gender: e.target.value })
+              }
+            >
+              <option value="">Gender</option>
+              <option value="Mens">Mens</option>
+              <option value="Womens">Womens</option>
+              <option value="Unisex">Unisex</option>
+            </select>
+
+            <select
+              style={styles.input}
+              value={imageEditItem.season}
+              onChange={(e) =>
+                setImageEditItem({ ...imageEditItem, season: e.target.value })
+              }
+            >
+              <option value="">Season</option>
+              <option value="All">All</option>
+              <option value="Spring">Spring</option>
+              <option value="Summer">Summer</option>
+              <option value="Fall">Fall</option>
+              <option value="Winter">Winter</option>
+            </select>
+
+            <input
+              style={styles.input}
               value={imageEditItem.imageUrl}
-              placeholder="imageUrl"
+              placeholder="Image URL"
               onChange={(e) =>
                 setImageEditItem({ ...imageEditItem, imageUrl: e.target.value })
               }
@@ -124,7 +283,7 @@ export default function AdminClothingManagement() {
             <input
               style={styles.input}
               value={imageEditItem.thumbnailWebp}
-              placeholder="thumbnailWebp"
+              placeholder="Thumbnail WebP"
               onChange={(e) =>
                 setImageEditItem({ ...imageEditItem, thumbnailWebp: e.target.value })
               }
@@ -133,7 +292,7 @@ export default function AdminClothingManagement() {
             <input
               style={styles.input}
               value={imageEditItem.tags}
-              placeholder="tags (comma separated)"
+              placeholder="Tags (comma separated)"
               onChange={(e) =>
                 setImageEditItem({ ...imageEditItem, tags: e.target.value })
               }
@@ -145,6 +304,13 @@ export default function AdminClothingManagement() {
                 onClick={() => {
                   // prepare payload
                   const payload = {
+                    name: imageEditItem.name || undefined,
+                    category: imageEditItem.category || undefined,
+                    subcategory: imageEditItem.subcategory || undefined,
+                    size: imageEditItem.size || undefined,
+                    color: imageEditItem.color || undefined,
+                    gender: imageEditItem.gender || undefined,
+                    season: imageEditItem.season || undefined,
                     imageUrl: imageEditItem.imageUrl || undefined,
                     thumbnailWebp: imageEditItem.thumbnailWebp || undefined,
                     tags: imageEditItem.tags
@@ -158,7 +324,7 @@ export default function AdminClothingManagement() {
                   });
                 }}
               >
-                Save Image Metadata
+                Save Changes
               </button>
 
               <button style={styles.delete} onClick={() => setImageEditItem(null)}>

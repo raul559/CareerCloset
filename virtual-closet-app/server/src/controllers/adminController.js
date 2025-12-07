@@ -1,6 +1,6 @@
 import User from "../models/user.js";
 import Clothing from "../models/ClothingItem.js"; 
-import { deleteFile as deleteGcsFile } from "../services/gcsService.js";
+import { deleteFile as deleteGcsFile, generateSignedUrl } from "../services/gcsService.js";
 // import Outfit from "../models/Outfit.js";   // add when you create it
 // import Appointment from "../models/Appointment.js"; // add when you create it
 
@@ -61,7 +61,28 @@ export const deleteUser = async (req, res) => {
 export const getAllClothing = async (req, res) => {
   try {
     const items = await Clothing.find();
-    res.json(items);
+    
+    // Generate signed URLs for all items
+    const itemsWithSignedUrls = await Promise.all(
+      items.map(async (item) => {
+        let thumbnailWebpUrl = null;
+        
+        if (item.imageUrl) {
+          try {
+            const url = await generateSignedUrl(item.imageUrl, 604800);
+            if (url && typeof url === "string" && url.includes("googleapis.com")) {
+              thumbnailWebpUrl = url;
+            }
+          } catch {
+            thumbnailWebpUrl = null;
+          }
+        }
+        
+        return { ...item.toObject(), thumbnailWebpUrl };
+      })
+    );
+    
+    res.json(itemsWithSignedUrls);
   } catch (err) {
     console.error("getAllClothing error:", err);
     res.status(500).json({ message: "Failed to fetch clothing items" });
