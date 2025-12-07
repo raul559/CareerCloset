@@ -78,7 +78,8 @@ export async function register(req, res) {
       email: email.toLowerCase(),
       password,
       name,
-      role: role || 'user'
+      role: role || 'user',
+      userId: email.toLowerCase() // Use email as unique userId
     });
 
     await user.save();
