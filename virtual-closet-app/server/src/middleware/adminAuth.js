@@ -29,15 +29,17 @@ export const adminAuth = async (req, res, next) => {
 
     // Fallback to simple auth header (development)
     if (userEmail) {
-      const isAdmin = userEmail.toLowerCase() === 'admin@pfw.edu';
-      if (!isAdmin) {
+      // Fetch user from database to check role
+      const user = await User.findOne({ email: userEmail.toLowerCase() });
+      
+      if (!user || user.role !== 'admin') {
         return res.status(403).json({ message: "Admin access only" });
       }
       
       req.user = {
-        id: userEmail,
-        email: userEmail,
-        isAdmin: true,
+        id: user._id,
+        email: user.email,
+        role: user.role,
       };
       return next();
     }

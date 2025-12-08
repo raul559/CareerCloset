@@ -31,11 +31,13 @@ function AppContent() {
   }, []);
 
   const handleLogin = (email, password, remember) => {
-    const result = auth.login(email, password, remember);
-    if (result.success) {
-      setUser(auth.getCurrentUser());
+    // Fetch the user from storage (it should already be set by SignIn component)
+    const user = auth.getCurrentUser();
+    if (user) {
+      setUser(user);
+      return { success: true };
     }
-    return result;
+    return { success: false, error: 'Login failed' };
   };
 
   const handleLogout = () => {

@@ -215,7 +215,6 @@ export function ItemCard({ item, onDelete }) {
 
   const handleReserve = () => {
     addItem(item);
-    navigate("/book");
   };
 
   const mapCategory = (cat) => {

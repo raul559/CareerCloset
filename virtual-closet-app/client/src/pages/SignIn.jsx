@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "../styles/SignIn.css";
 import { auth } from "../utils/auth";
+import api from "../services/api";
 
 const isPFWEmail = (v) => /^[^\s@]+@pfw\.edu$/i.test((v || "").trim());
 
@@ -13,7 +14,7 @@ export default function SignIn({ onLogin, loggedIn }) {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [showPass, setShowPass] = useState(false);
-  const [remember, setRemember] = useState(true);
+  const [remember, setRemember] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [isRegister, setIsRegister] = useState(false);
@@ -24,6 +25,13 @@ export default function SignIn({ onLogin, loggedIn }) {
     location.state?.from?.pathname ||
     location.state?.from ||
     "/browse";
+
+  // Redirect if already logged in
+  React.useEffect(() => {
+    if (loggedIn) {
+      navigate(from, { replace: true });
+    }
+  }, [loggedIn, navigate, from]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -49,34 +57,27 @@ export default function SignIn({ onLogin, loggedIn }) {
       // Try server login first
       let serverResult = null;
       try {
-        const res = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: trimmedEmail, password }),
+        const res = await api.post('/auth/login', {
+          email: trimmedEmail,
+          password
         });
-        const data = await res.json();
-        serverResult = data;
-        if (!res.ok) throw new Error(data?.message || 'Login failed');
+        serverResult = res.data;
 
         // store minimal user info in storage as app expects
         const storage = remember ? localStorage : sessionStorage;
-        storage.setItem('vc_temp_userEmail', data.user.email);
-        storage.setItem('vc_temp_userName', data.user.name || data.user.email.split('@')[0]);
+        storage.setItem('vc_temp_userEmail', res.data.user.email);
+        storage.setItem('vc_temp_userName', res.data.user.name || res.data.user.email.split('@')[0]);
+        storage.setItem('vc_temp_userRole', res.data.user.role || 'user');
 
         // call onLogin so parent app updates if provided
         if (onLogin) onLogin(trimmedEmail, password, remember);
         navigate(from, { replace: true });
         return;
       } catch (err) {
-        // fallback to local auth if server not reachable or login failed
-        console.warn('Server login failed, falling back to local auth:', err.message);
-        const result = onLogin ? onLogin(trimmedEmail, password, remember) : auth.login(trimmedEmail, password, remember);
-        if (result && !result.success) {
-          setError(result.error || "Login failed");
-          setLoading(false);
-          return;
-        }
-        navigate(from, { replace: true });
+        // No fallback - login must go through server with database validation
+        console.error('Server login failed:', err.message);
+        setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
+        setLoading(false);
         return;
       }
     } finally {
@@ -109,49 +110,37 @@ export default function SignIn({ onLogin, loggedIn }) {
     setLoading(true);
     try {
       try {
-        const res = await fetch('/api/auth/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: trimmedEmail, password, name }),
+        const res = await api.post('/auth/register', {
+          email: trimmedEmail,
+          password,
+          name
         });
-        const data = await res.json();
-        if (!res.ok) {
-          setError(data?.message || 'Registration failed');
-          return;
-        }
 
         // store user info in preferred storage
         const storage = remember ? localStorage : sessionStorage;
-        storage.setItem('vc_temp_userEmail', data.user.email);
-        storage.setItem('vc_temp_userName', data.user.name || name);
+        storage.setItem('vc_temp_userEmail', res.data.user.email);
+        storage.setItem('vc_temp_userName', res.data.user.name || name);
+        storage.setItem('vc_temp_userRole', res.data.user.role || 'user');
 
-        // optionally sign in the user by calling login endpoint
-        if (res.status === 201) {
-          // call login to verify and get user info
-          const loginRes = await fetch('/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: trimmedEmail, password }),
-          });
-          if (loginRes.ok) {
-            const loginData = await loginRes.json();
-            const storage2 = remember ? localStorage : sessionStorage;
-            storage2.setItem('vc_temp_userEmail', loginData.user.email);
-            storage2.setItem('vc_temp_userName', loginData.user.name || name);
-          }
+        // call login to verify and get user info
+        const loginRes = await api.post('/auth/login', {
+          email: trimmedEmail,
+          password
+        });
+        if (loginRes.status === 200) {
+          const storage2 = remember ? localStorage : sessionStorage;
+          storage2.setItem('vc_temp_userEmail', loginRes.data.user.email);
+          storage2.setItem('vc_temp_userName', loginRes.data.user.name || name);
+          storage2.setItem('vc_temp_userRole', loginRes.data.user.role || 'user');
         }
 
         if (onLogin) onLogin(trimmedEmail, password, remember);
         navigate(from, { replace: true });
         return;
       } catch (err) {
-        console.warn('Server registration failed, falling back to client-only create:', err.message);
-        // fallback client-side: mimic a created account locally
-        const storage = remember ? localStorage : sessionStorage;
-        storage.setItem('vc_temp_userEmail', trimmedEmail);
-        storage.setItem('vc_temp_userName', name);
-        if (onLogin) onLogin(trimmedEmail, password, remember);
-        navigate(from, { replace: true });
+        console.error('Server registration failed:', err.message);
+        setError(err.response?.data?.message || 'Registration failed. Please try again.');
+        setLoading(false);
         return;
       }
     } finally {

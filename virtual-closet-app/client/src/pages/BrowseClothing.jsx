@@ -54,7 +54,7 @@ export default function BrowseClothing() {
 
         while (hasMore) {
           const res = await fetch(
-            `${API_URL}/clothing?userId=${userId}&page=${page}&limit=100`
+            `${API_URL}/clothing?userId=${userId}&page=${page}&limit=100&t=${Date.now()}`
           );
           const data = await res.json();
 

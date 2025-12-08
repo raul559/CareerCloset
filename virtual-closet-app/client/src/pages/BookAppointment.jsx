@@ -27,7 +27,7 @@ export default function BookAppointment({ userEmail, isAdmin = false }) {
   const [success, setSuccess] = useState("");
   const [bookedSlots, setBookedSlots] = useState([]);
 
-  const { requestedItems, clearItems } = useAppointment();
+  const { requestedItems, clearItems, removeItem } = useAppointment();
 
   // Admin blocking state
   const [blockedDates, setBlockedDates] = useState([]);
@@ -397,11 +397,35 @@ export default function BookAppointment({ userEmail, isAdmin = false }) {
 
               {requestedItems.length > 0 && (
                 <div className="requested-items-summary">
-                  <strong>Requested Items:</strong>
+                  <strong>Requested Items ({requestedItems.length}):</strong>
                   <ul>
-                    {requestedItems.map(item => (
-                      <li key={item.id}>{item.name}</li>
-                    ))}
+                    {requestedItems.map(item => {
+                      const itemId = item._id || item.id || item.clothingId;
+                      return (
+                        <li key={itemId} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                          <span>
+                            {item.name}
+                            {item.size && <span> - Size: {item.size}</span>}
+                            {item.color && <span> - Color: {item.color}</span>}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => removeItem(itemId)}
+                            style={{
+                              background: '#ff6b6b',
+                              color: 'white',
+                              border: 'none',
+                              padding: '4px 8px',
+                              borderRadius: '4px',
+                              cursor: 'pointer',
+                              fontSize: '12px'
+                            }}
+                          >
+                            Remove
+                          </button>
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
               )}

@@ -3,6 +3,8 @@ import { adminAuth } from "../middleware/adminAuth.js";
 import {
   getAllUsers,
   updateUserRole,
+  promoteUser,
+  demoteUser,
   deleteUser,
   getAllClothing,
   updateClothingItem,
@@ -25,6 +27,8 @@ router.use(adminAuth);
 // ----- Users -----
 router.get("/users", getAllUsers);
 router.put("/users/:id/role", updateUserRole);
+router.patch("/users/:id/promote", promoteUser);
+router.patch("/users/:id/demote", demoteUser);
 router.delete("/users/:id", deleteUser);
 
 // ----- Clothing -----

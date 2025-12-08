@@ -3,11 +3,13 @@
  * For SSO: only update this file to validate JWT tokens
  */
 
+import User from '../models/user.js';
+
 /**
  * Simple authentication check (temporary for testing)
  * SSO TODO: Validate JWT token from Authorization header
  */
-export function authenticate(req, res, next) {
+export async function authenticate(req, res, next) {
   // Simple approach: check for X-User-Email header
   // SSO TODO: Verify JWT token instead
   const userEmail = req.headers['x-user-email'];
@@ -19,13 +21,26 @@ export function authenticate(req, res, next) {
     });
   }
 
-  // Attach user info to request
-  // SSO TODO: Parse from verified JWT token claims
-  req.user = {
-    id: userEmail, // SSO TODO: Use SSO unique userId
-    email: userEmail,
-    isAdmin: userEmail.toLowerCase() === 'admin@pfw.edu', // SSO TODO: Read from token roles
-  };
+  try {
+    // Get user from database to fetch their role
+    const user = await User.findOne({ email: userEmail.toLowerCase() });
+    
+    // Attach user info to request
+    // SSO TODO: Parse from verified JWT token claims
+    req.user = {
+      id: user?._id || userEmail, // SSO TODO: Use SSO unique userId
+      email: userEmail,
+      role: user?.role || 'user', // Default to 'user' if not found
+    };
+  } catch (err) {
+    console.error('Error fetching user role:', err);
+    // Fallback - set basic user info without role check
+    req.user = {
+      id: userEmail,
+      email: userEmail,
+      role: 'user',
+    };
+  }
 
   next();
 }
@@ -34,15 +49,28 @@ export function authenticate(req, res, next) {
  * Optional auth - allows both authenticated and public access
  * Useful for endpoints that behave differently when authenticated
  */
-export function optionalAuth(req, res, next) {
+export async function optionalAuth(req, res, next) {
   const userEmail = req.headers['x-user-email'];
   
   if (userEmail) {
-    req.user = {
-      id: userEmail,
-      email: userEmail,
-      isAdmin: userEmail.toLowerCase() === 'admin@pfw.edu',
-    };
+    try {
+      // Get user from database to fetch their role
+      const user = await User.findOne({ email: userEmail.toLowerCase() });
+      
+      req.user = {
+        id: user?._id || userEmail,
+        email: userEmail,
+        role: user?.role || 'user',
+      };
+    } catch (err) {
+      console.error('Error fetching user role:', err);
+      // Fallback - set basic user info
+      req.user = {
+        id: userEmail,
+        email: userEmail,
+        role: 'user',
+      };
+    }
   } else {
     req.user = null;
   }
@@ -62,7 +90,7 @@ export function requireAdmin(req, res, next) {
     });
   }
 
-  if (!req.user.isAdmin) {
+  if (req.user.role !== 'admin') {
     return res.status(403).json({
       success: false,
       error: 'Admin access required',
@@ -96,15 +124,23 @@ export async function simpleLogin(req, res) {
 
   // For testing - accept any password
   // SSO TODO: Remove this, redirect to SSO provider
-  return res.json({
-    success: true,
-    user: {
-      id: email,
-      email: email.toLowerCase(),
-      name: email.split('@')[0],
-      isAdmin: email.toLowerCase() === 'admin@pfw.edu',
-    },
-  });
+  try {
+    const user = await User.findOne({ email: email.toLowerCase() });
+    const role = user?.role || 'user';
+    
+    return res.json({
+      success: true,
+      user: {
+        id: user?._id || email,
+        email: email.toLowerCase(),
+        name: user?.name || email.split('@')[0],
+        role: role,
+      },
+    });
+  } catch (err) {
+    console.error('Error in simpleLogin:', err);
+    return res.status(500).json({ success: false, error: 'Server error' });
+  }
 }
 
 /**

@@ -6,16 +6,23 @@ export function AppointmentProvider({ children }) {
   const [requestedItems, setRequestedItems] = useState([]);
 
   const addItem = (item) => {
-    // Avoid duplicates based on item id
+    // Avoid duplicates based on item id (handle both _id and id)
     setRequestedItems((prev) => {
-      const exists = prev.some((i) => i.id === item.id);
+      const itemId = item._id || item.id || item.clothingId;
+      const exists = prev.some((i) => {
+        const existingId = i._id || i.id || i.clothingId;
+        return existingId === itemId;
+      });
       if (exists) return prev;
       return [...prev, item];
     });
   };
 
   const removeItem = (id) => {
-    setRequestedItems((prev) => prev.filter((item) => item.id !== id));
+    setRequestedItems((prev) => prev.filter((item) => {
+      const itemId = item._id || item.id || item.clothingId;
+      return itemId !== id;
+    }));
   };
 
   const clearItems = () => {
