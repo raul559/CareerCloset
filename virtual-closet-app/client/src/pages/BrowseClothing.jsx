@@ -11,7 +11,7 @@ import {
 // Categories should match the schema enum used on the server
 const CATEGORIES = ["Tops", "Bottoms", "Dresses", "Outerwear", "Shoes", "Accessories"];
 const SIZES = ["XS", "S", "M", "L", "XL"];
-const COLORS = ["Black", "Brown", "Green", "White", "Gray", "Tan", "Navy"];
+const COLORS = ["Black", "Brown", "Green", "White", "Gray", "Tan", "Navy", "Blue", "Yellow", "Red", "Pink", "Purple", "Orange"];
 
 const ITEMS_PER_PAGE = 30; // Reduced from 50 for faster initial load
 
