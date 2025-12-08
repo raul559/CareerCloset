@@ -13,6 +13,12 @@ const COLOR_MAP = {
   "Gray": "#808080",
   "Tan": "#c9a961",
   "Navy": "#001f3f",
+  "Blue": "#0074D9",
+  "Yellow": "#FFDC00",
+  "Red": "#E63946",
+  "Pink": "#FF69B4",
+  "Purple": "#9B59B6",
+  "Orange": "#FF851B",
 };
 
 // Category icons mapping
