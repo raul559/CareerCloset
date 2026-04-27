@@ -32,7 +32,6 @@ import clothingRoutes from "./routes/clothing.js";
 import imageRoutes from "./routes/images.js";
 import uploadRoute from "./routes/upload.js";
 import adminRoutes from "./routes/admin.js";
-import appointmentRoutes from "./routes/appointments.js";
 import authRoutes from "./routes/auth.js";
 
 // Server Port
@@ -73,7 +72,6 @@ async function startServer() {
     app.use("/api/clothing", clothingRoutes);
     app.use("/api/images", imageRoutes);
     app.use("/api/admin", adminRoutes);
-    app.use("/api/appointments", appointmentRoutes);
     app.use("/api/auth", authRoutes);
 
     // Health check
@@ -101,16 +99,6 @@ async function startServer() {
             syncUrls: "PUT /api/images/sync-urls",
             missing: "GET /api/images/missing?userId=virtual-closet-user",
           },
-          appointments: {
-            getAll: "GET /api/appointments",
-            getById: "GET /api/appointments/:id",
-            create: "POST /api/appointments",
-            update: "PUT /api/appointments/:id",
-            cancel: "PATCH /api/appointments/:id/cancel",
-            delete: "DELETE /api/appointments/:id",
-            availableSlots: "GET /api/appointments/available-slots?date=2025-11-22",
-            blockSlot: "POST /api/appointments/admin/block",
-          },
         },
         users: {
           default: "virtual-closet-user (1,033 items)",
@@ -120,8 +108,6 @@ async function startServer() {
           "GET /api/health",
           "GET /api/clothing?userId=virtual-closet-user",
           "GET /api/clothing/1001",
-          "GET /api/appointments",
-          "GET /api/appointments/available-slots?date=2025-11-22",
         ],
       });
     });

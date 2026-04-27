@@ -11,7 +11,7 @@ function getInitials(email) {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-export default function Navbar({ loggedIn, userEmail, onLogout, reservedItemsCount = 0, isAdmin = false }) {
+export default function Navbar({ loggedIn, userEmail, onLogout, isAdmin = false }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
@@ -50,15 +50,6 @@ export default function Navbar({ loggedIn, userEmail, onLogout, reservedItemsCou
           <NavLink to="/browse">Browse Clothing</NavLink>
         </li>
 
-        <li style={{ position: "relative" }}>
-          <NavLink to="/book">
-            Book Appointment
-            {loggedIn && reservedItemsCount > 0 && (
-              <span className="nav-badge">{reservedItemsCount}</span>
-            )}
-          </NavLink>
-        </li>
-
         <li>
           <NavLink to="/build">Build Outfit</NavLink>
         </li>
@@ -83,8 +74,8 @@ export default function Navbar({ loggedIn, userEmail, onLogout, reservedItemsCou
                       Admin Dashboard
                     </NavLink>
                   ) : (
-                    <NavLink to="/my-appointments" className="dropdown-item" style={{ display: "block", width: "100%", padding: "10px 16px", textDecoration: "none", color: "inherit" }} onClick={() => setMenuOpen(false)}>
-                      My Appointments
+                    <NavLink to="/" className="dropdown-item" style={{ display: "block", width: "100%", padding: "10px 16px", textDecoration: "none", color: "inherit" }} onClick={() => setMenuOpen(false)}>
+                      Home
                     </NavLink>
                   )}
                   <button className="dropdown-item" style={{ width: "100%", padding: "10px 16px", background: "none", border: "none", textAlign: "left", cursor: "pointer" }} onClick={handleSignOut}>

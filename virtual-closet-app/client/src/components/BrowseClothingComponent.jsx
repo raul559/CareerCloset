@@ -1,6 +1,5 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useAppointment } from "../context/AppointmentContext";
 import { useOutfit } from "../context/OutfitContext";
 import { useAuth } from "../utils/auth";
 
@@ -192,7 +191,6 @@ export function FiltersSidebar({
 /** Individual item card with lazy loading */
 export function ItemCard({ item, onDelete }) {
   const navigate = useNavigate();
-  const { addItem } = useAppointment();
   const { addToOutfit, availableItems } = useOutfit();
   const { isAdmin } = useAuth();
   const [isVisible, setIsVisible] = React.useState(false);
@@ -218,10 +216,6 @@ export function ItemCard({ item, onDelete }) {
 
     return () => observer.disconnect();
   }, []);
-
-  const handleReserve = () => {
-    addItem(item);
-  };
 
   const mapCategory = (cat) => {
     const c = (cat || "").toLowerCase();
@@ -284,17 +278,6 @@ export function ItemCard({ item, onDelete }) {
           {item.category} · {item.color} · Size {item.size} · #{item.clothingId}
         </p>
         <div className="btn-row">
-          <button
-            className="btn"
-            onClick={handleReserve}
-            disabled={item.status === "Unavailable"}
-            style={{
-              opacity: item.status === "Unavailable" ? 0.5 : 1,
-              cursor: item.status === "Unavailable" ? "not-allowed" : "pointer"
-            }}
-          >
-            Reserve
-          </button>
           <button
             className="btn-outline"
             onClick={handleAddToOutfit}

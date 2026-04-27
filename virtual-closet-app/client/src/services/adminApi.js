@@ -21,10 +21,5 @@ export const deleteImage = (id) => api.delete(`/admin/clothing/${id}/image`);
 // ---------- STATS ----------
 export const getStats = () => api.get("/admin/stats");
 
-// ---------- APPOINTMENTS ----------
-export const getAppointments = () => api.get("/admin/appointments");
-export const updateAppointment = (id, data) =>
-  api.patch(`/admin/appointments/${id}`, data);
-
 // ---------- EXPORT (later) ----------
 export const exportData = (type) => api.get(`/admin/export?type=${type}`);

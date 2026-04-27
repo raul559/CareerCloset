@@ -1,6 +1,4 @@
 // Simple auth utility - abstraction layer for easy SSO migration
-// This allows appointment features to work with simple login now,
-// and SSO team can swap implementation without touching other files
 
 /**
  * Auth interface that can be swapped between simple login and SSO

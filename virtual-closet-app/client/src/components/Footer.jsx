@@ -16,7 +16,6 @@ export default function Footer() {
                 <h2>Quick Links</h2>
                 <div className="footer-buttons">
                     <button id="lowerBrowseBtn" onClick={() => navigate("/browse")}>Browse Clothing</button>
-                    <button id="lowerBookBtn" onClick={() => navigate("/book")}>Book Appointment</button>
                     <button id="lowerBuildBtn" onClick={() => navigate("/build")}>Build Outfit</button>
                 </div>
             </div>

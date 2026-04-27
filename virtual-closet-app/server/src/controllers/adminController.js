@@ -2,7 +2,6 @@ import User from "../models/user.js";
 import Clothing from "../models/ClothingItem.js"; 
 import { deleteFile as deleteGcsFile, generateSignedUrl } from "../services/gcsService.js";
 // import Outfit from "../models/Outfit.js";   // add when you create it
-// import Appointment from "../models/Appointment.js"; // add when you create it
 
 // -------- USERS --------
 export const getAllUsers = async (req, res) => {
@@ -275,15 +274,13 @@ export const getSystemStats = async (req, res) => {
       User.countDocuments(),
       Clothing.countDocuments(),
       // Outfit.countDocuments(),       // add these later
-      // Appointment.countDocuments(),
     ]);
 
-    // Fill in outfits/appointments later
+    // Fill in outfits later
     const stats = {
       totalUsers: userCount,
       totalClothingItems: clothingCount,
       totalOutfits: 0,
-      totalAppointments: 0,
     };
 
     res.json(stats);
@@ -292,30 +289,6 @@ export const getSystemStats = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch stats" });
   }
 };
-
-// -------- APPOINTMENTS (stubs for now) --------
-export const getAllAppointments = async (req, res) => {
-  try {
-    // TODO: replace when Appointment model exists
-    // const appointments = await Appointment.find();
-    // return res.json(appointments);
-    res.status(501).json({ message: "Appointments not implemented yet" });
-  } catch (err) {
-    console.error("getAllAppointments error:", err);
-    res.status(500).json({ message: "Failed to fetch appointments" });
-  }
-};
-
-export const updateAppointment = async (req, res) => {
-  try {
-    // TODO: Replace with real Appointment update logic
-    res.status(501).json({ message: "Appointment update not implemented yet" });
-  } catch (err) {
-    console.error("updateAppointment error:", err);
-    res.status(500).json({ message: "Failed to update appointment" });
-  }
-};
-
 // -------- EXPORTS --------
 const buildCsv = (rows, headers) => {
   const headerLine = headers.join(",");

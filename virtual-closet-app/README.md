@@ -1,6 +1,6 @@
 # Virtual Closet - PFW Career Services
 
-A modern web application for managing Purdue Fort Wayne's Career Closet, enabling students to browse professional clothing, build outfits, and book appointments for in-person consultations.
+A modern web application for managing Purdue Fort Wayne's Career Closet, enabling students to browse professional clothing and build outfits.
 
 ## Table of Contents
 
@@ -20,15 +20,11 @@ A modern web application for managing Purdue Fort Wayne's Career Closet, enablin
 
 - **Browse Clothing**: Filter by category, size, color, and availability
 - **Build Outfits**: Create complete outfits from available items
-- **Book Appointments**: Schedule 30-minute in-person consultations
-- **View Appointments**: Manage and track scheduled appointments
 
 ### Admin Features
 
 - **Clothing Management**: Add, edit, and delete clothing items
 - **User Management**: View and manage user accounts
-- **Appointment Management**: View, approve, and manage student appointments
-- **Block Dates**: Control availability for appointments
 - **Bulk Upload**: Import clothing items via CSV
 
 ## Tech Stack
@@ -166,23 +162,18 @@ virtual-closet-app/
 │   │   └── pfw-Logo.svg  # PFW logo
 │   ├── src/
 │   │   ├── components/    # Reusable components
-│   │   │   ├── AdminAppointmentManagement.jsx
 │   │   │   ├── AdminClothingManagement.jsx
 │   │   │   ├── AdminUserManagement.jsx
 │   │   │   ├── BrowseClothingComponent.jsx
 │   │   │   ├── Footer.jsx
 │   │   │   └── NavBar.jsx
 │   │   ├── context/       # React Context providers
-│   │   │   ├── AppointmentContext.jsx
 │   │   │   └── OutfitContext.jsx
 │   │   ├── pages/         # Page components
 │   │   │   ├── AdminDashboard.jsx
-│   │   │   ├── BookAppointment.jsx
 │   │   │   ├── BrowseClothing.jsx
 │   │   │   ├── BuildOutfit.jsx
 │   │   │   ├── Home.jsx
-│   │   │   ├── ManageAppointments.jsx
-│   │   │   ├── MyAppointments.jsx
 │   │   │   ├── SignIn.jsx
 │   │   │   └── UploadImages.jsx
 │   │   ├── services/      # API services
@@ -200,7 +191,6 @@ virtual-closet-app/
 │   │   │   └── gcs-credentials.json (gitignored)
 │   │   ├── controllers/   # Route controllers
 │   │   │   ├── adminController.js
-│   │   │   ├── appointmentController.js
 │   │   │   ├── authController.js
 │   │   │   ├── clothingController.js
 │   │   │   └── imageController.js
@@ -209,12 +199,10 @@ virtual-closet-app/
 │   │   │   ├── auth.js
 │   │   │   └── csvUpload.js
 │   │   ├── models/        # Mongoose models
-│   │   │   ├── Appointment.js
 │   │   │   ├── ClothingItem.js
 │   │   │   └── user.js
 │   │   ├── routes/        # API routes
 │   │   │   ├── admin.js
-│   │   │   ├── appointments.js
 │   │   │   ├── auth.js
 │   │   │   ├── clothing.js
 │   │   │   ├── images.js
@@ -293,52 +281,18 @@ Content-Type: application/json
 }
 ```
 
-### Appointment Endpoints
-
-#### Book Appointment
-
-```http
-POST /api/appointments
-Content-Type: application/json
-
-{
-  "userId": "user@pfw.edu",
-  "userName": "John Doe",
-  "userEmail": "user@pfw.edu",
-  "date": "2025-12-15",
-  "time": "10:00",
-  "requestedItems": [
-    {
-      "id": "item_id",
-      "name": "Blue Blazer",
-      "category": "Outerwear"
-    }
-  ]
-}
-```
-
-#### Get User Appointments
-
-```http
-GET /api/appointments?email=user@pfw.edu
-```
-
 ## User Roles
 
 ### Student/User Role
 
 - Browse and search clothing items
 - Build and save outfits
-- Book appointments
-- View their appointments
 
 ### Admin Role
 
 - All user permissions
 - Manage clothing inventory
 - Manage user accounts
-- Approve/reject appointments
-- Block appointment dates
 - Upload items via CSV
 
 ## Color Options

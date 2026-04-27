@@ -12,8 +12,6 @@ import {
   updateImageMetadata,
   deleteImage,
   getSystemStats,
-  getAllAppointments,
-  updateAppointment,
   exportUsersCsv,
   exportClothingCsv,
   exportOutfitsJson,
@@ -48,10 +46,6 @@ router.delete("/images/:id", deleteImage);
 
 // ----- Stats -----
 router.get("/stats", getSystemStats);
-
-// ----- Appointments -----
-router.get("/appointments", getAllAppointments);
-router.put("/appointments/:id", updateAppointment);
 
 // ----- Export -----
 router.get("/export/users/csv", exportUsersCsv);

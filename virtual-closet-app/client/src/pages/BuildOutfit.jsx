@@ -21,7 +21,7 @@ export default function BuildOutfit() {
     <div className="buildOutfitPage">
       <div className="pageHeader">
         <h1>Build Your Outfit</h1>
-        <p className="pageSubtitle">Create and preview professional outfit combinations before your appointment.</p>
+        <p className="pageSubtitle">Create and preview professional outfit combinations to help you succeed in your career journey.</p>
       </div>
 
       <div className="buildOutfitContainer">

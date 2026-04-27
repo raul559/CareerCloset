@@ -3,11 +3,10 @@ import { useNavigate } from "react-router-dom";
 
 import AdminUserManagement from "../components/AdminUserManagement";
 import AdminClothingManagement from "../components/AdminClothingManagement";
-import AdminAppointmentManagement from "../components/AdminAppointmentManagement";
 
 import UploadImages from "./UploadImages";
 
-import { getStats, getAppointments } from "../services/adminApi";
+import { getStats } from "../services/adminApi";
 import auth from "../utils/auth";
 
 export default function AdminDashboard() {
@@ -15,7 +14,6 @@ export default function AdminDashboard() {
 
   const [tab, setTab] = useState("users");
   const [stats, setStats] = useState(null);
-  const [appointments, setAppointments] = useState([]);
 
   // -------- ROUTE PROTECTION --------
   useEffect(() => {
@@ -28,7 +26,6 @@ export default function AdminDashboard() {
   // -------- LOAD DASHBOARD DATA --------
   useEffect(() => {
     getStats().then((res) => setStats(res.data));
-    getAppointments().then((res) => setAppointments(res.data));
   }, []);
 
   return (
@@ -50,13 +47,6 @@ export default function AdminDashboard() {
 
         <button onClick={() => setTab("stats")} style={styles.tab(tab === "stats")}>
           Stats
-        </button>
-
-        <button
-          onClick={() => setTab("appointments")}
-          style={styles.tab(tab === "appointments")}
-        >
-          Appointments
         </button>
 
         {/* ⭐ NEW TAB BUTTON — Upload */}
@@ -82,13 +72,10 @@ export default function AdminDashboard() {
                 <li>Total Users: {stats.totalUsers}</li>
                 <li>Total Items: {stats.totalItems}</li>
                 <li>Total Outfits: {stats.totalOutfits}</li>
-                <li>Total Appointments: {stats.totalAppointments}</li>
               </ul>
             )}
           </div>
         )}
-
-        {tab === "appointments" && <AdminAppointmentManagement />}
 
         {tab === "upload" && <UploadImages />}
       </div>
@@ -97,7 +84,7 @@ export default function AdminDashboard() {
 }
 
 const styles = {
-  container: { 
+  container: {
     minHeight: "100vh",
     background: "linear-gradient(135deg, #cfb991 0%, #d4c5a3 100%)",
     padding: "40px 20px",
@@ -123,9 +110,9 @@ const styles = {
     marginBottom: "30px",
     overflowX: "auto",
   },
-  tabs: { 
-    display: "flex", 
-    gap: "12px", 
+  tabs: {
+    display: "flex",
+    gap: "12px",
     minWidth: "fit-content",
     justifyContent: "center",
     flexWrap: "wrap",

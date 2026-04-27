@@ -30,20 +30,12 @@
 
 ## Test Results
 ```
-✅ 17 passing (30s)
+✅ 11 passing (20s)
 
 ✓ Admin Routes (5 tests)
   ├─ User Management
   ├─ Clothing Management  
   └─ Analytics
-
-✓ Appointment Routes (6 tests)
-  ├─ GET all appointments
-  ├─ Available slots
-  ├─ POST create
-  ├─ PUT update
-  ├─ PATCH cancel
-  └─ DELETE
 
 ✓ Clothing Routes (3 tests)
   ├─ GET all items

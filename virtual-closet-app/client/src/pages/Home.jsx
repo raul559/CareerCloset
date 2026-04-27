@@ -11,7 +11,7 @@ export default function Home() {
           <h3>
             Access professional clothing and accessories to help you succeed in
             interviews, career fairs, and your professional journey. Browse our
-            collection online and schedule convenient appointments.
+            collection online and build your perfect outfit.
           </h3>
 
           <div className="main-buttons">
@@ -19,9 +19,9 @@ export default function Home() {
               <span className="btn-icon">👔</span>
               Browse Closet
             </button>
-            <button className="secondary-btn" onClick={() => navigate("/book")}>
-              <span className="btn-icon">📅</span>
-              Book Appointment
+            <button className="secondary-btn" onClick={() => navigate("/build")}>
+              <span className="btn-icon">✨</span>
+              Build Outfit
             </button>
           </div>
         </div>
