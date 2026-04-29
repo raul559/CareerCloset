@@ -367,8 +367,8 @@ export default function AdminClothingManagement() {
                       window.dispatchEvent(new CustomEvent('virtualcloset:itemsUpdated', { detail: { id: imageEditItem._id } }));
                       try {
                         localStorage.setItem('virtualcloset:itemsUpdated', JSON.stringify({ id: imageEditItem._id, ts: Date.now() }));
-                      } catch (e) {}
-                    } catch (e) {}
+                      } catch (e) { }
+                    } catch (e) { }
                   });
                 }}
               >
