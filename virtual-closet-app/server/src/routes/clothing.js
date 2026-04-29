@@ -13,7 +13,8 @@ router.get("/", async (req, res) => {
     const skip = (page - 1) * limit;
 
     const result = await clothingController.getAllItems(userId, { skip, limit });
-    res.setHeader("Cache-Control", "public, max-age=300");
+    // Cache for 10 minutes - clothing items don't change frequently
+    res.setHeader("Cache-Control", "public, max-age=600");
     res.json(result);
   } catch (error) {
     res.status(500).json({

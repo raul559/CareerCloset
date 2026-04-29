@@ -78,6 +78,9 @@ export default function Navbar({ loggedIn, userEmail, onLogout, isAdmin = false 
                       Home
                     </NavLink>
                   )}
+                  <NavLink to="/favorites" className="dropdown-item" style={{ display: "block", width: "100%", padding: "10px 16px", textDecoration: "none", color: "inherit" }} onClick={() => setMenuOpen(false)}>
+                    My Favorites
+                  </NavLink>
                   <button className="dropdown-item" style={{ width: "100%", padding: "10px 16px", background: "none", border: "none", textAlign: "left", cursor: "pointer" }} onClick={handleSignOut}>
                     Sign Out
                   </button>

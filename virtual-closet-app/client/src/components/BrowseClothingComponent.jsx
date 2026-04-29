@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useOutfit } from "../context/OutfitContext";
 import { useAuth } from "../utils/auth";
+import { addFavorite, removeFavorite } from "../services/favoritesApi";
 
 // Color hex mapping
 const COLOR_MAP = {
@@ -188,13 +189,18 @@ export function FiltersSidebar({
   );
 }
 
-/** Individual item card with lazy loading */
-export function ItemCard({ item, onDelete }) {
+/** Individual item card with lazy loading and favorites */
+export function ItemCard({ item, onDelete, onFavoriteChange, isFavoritedInitially }) {
   const navigate = useNavigate();
   const { addToOutfit, availableItems } = useOutfit();
-  const { isAdmin } = useAuth();
+  const { isAuthenticated, isAdmin, user } = useAuth();
+  const [isFav, setIsFav] = useState(isFavoritedInitially ?? false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isVisible, setIsVisible] = React.useState(false);
   const imgRef = React.useRef(null);
+
+  // Skip the individual favorite check since we now get it from parent (BrowseClothing)
+  // This eliminates the 30+ individual API calls that were causing the slowdown
 
   // Intersection Observer for lazy loading
   React.useEffect(() => {
@@ -258,6 +264,35 @@ export function ItemCard({ item, onDelete }) {
     addToOutfit(targetCategory, outfitItem);
   };
 
+  const handleToggleFavorite = async () => {
+    if (!isAuthenticated || !user) {
+      alert("Please sign in to save favorites");
+      navigate("/signin");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const clothingId = item.clothingId || item.id;
+      if (isFav) {
+        await removeFavorite(clothingId);
+      } else {
+        await addFavorite(clothingId);
+      }
+      const newState = !isFav;
+      setIsFav(newState);
+      // Notify parent of favorite change
+      if (onFavoriteChange) {
+        onFavoriteChange(clothingId, newState);
+      }
+    } catch (error) {
+      alert("Failed to update favorite. Please try again.");
+      console.error("Error toggling favorite:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <article className="card item-card">
       <div style={{ position: "relative" }} ref={imgRef}>
@@ -271,6 +306,39 @@ export function ItemCard({ item, onDelete }) {
         <span className={`badge-chip ${item.status === "Unavailable" ? "unavailable" : ""}`}>
           {item.status || "Available"}
         </span>
+        <button
+          className="btn-favorite"
+          onClick={handleToggleFavorite}
+          disabled={isLoading}
+          title={isFav ? "Remove from favorites" : "Add to favorites"}
+          style={{
+            position: "absolute",
+            top: 8,
+            left: 8,
+            background: isFav ? "#ff4757" : "rgba(255, 255, 255, 0.9)",
+            border: "none",
+            borderRadius: "50%",
+            width: 40,
+            height: 40,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: isLoading ? "not-allowed" : "pointer",
+            fontSize: "1.2rem",
+            opacity: isLoading ? 0.6 : 1,
+            transition: "all 0.2s ease",
+            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
+            zIndex: 10,
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = "scale(1.1)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = "scale(1)";
+          }}
+        >
+          {isFav ? "❤️" : "🤍"}
+        </button>
       </div>
       <div className="item-body">
         <h3 className="item-title">{item.name}</h3>
