@@ -11,6 +11,8 @@ export default function AdminClothingManagement() {
   const [items, setItems] = useState([]);
   const [editItem, setEditItem] = useState(null);
   const [imageEditItem, setImageEditItem] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20;
 
   const load = () => {
     getAllClothing().then((res) => setItems(res.data));
@@ -19,6 +21,11 @@ export default function AdminClothingManagement() {
   useEffect(() => {
     load();
   }, []);
+
+  // Calculate pagination
+  const totalPages = Math.ceil(items.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedItems = items.slice(startIndex, startIndex + itemsPerPage);
 
   const saveEdit = () => {
     updateClothingItem(editItem._id, editItem).then((res) => {
@@ -42,8 +49,11 @@ export default function AdminClothingManagement() {
   return (
     <div>
       <h2>Clothing Management</h2>
+      <p style={{ marginBottom: "15px", color: "#666" }}>
+        Total Items: {items.length} | Page {currentPage} of {totalPages}
+      </p>
 
-      {items.map((i) => (
+      {paginatedItems.map((i) => (
         <div key={i._id} style={styles.card}>
           <img src={i.thumbnailWebpUrl || i.imageUrl} style={styles.img} alt={i.name} />
 
@@ -357,8 +367,8 @@ export default function AdminClothingManagement() {
                       window.dispatchEvent(new CustomEvent('virtualcloset:itemsUpdated', { detail: { id: imageEditItem._id } }));
                       try {
                         localStorage.setItem('virtualcloset:itemsUpdated', JSON.stringify({ id: imageEditItem._id, ts: Date.now() }));
-                      } catch (e) {}
-                    } catch (e) {}
+                      } catch (e) { }
+                    } catch (e) { }
                   });
                 }}
               >
@@ -370,6 +380,45 @@ export default function AdminClothingManagement() {
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* PAGINATION */}
+      {items.length > itemsPerPage && (
+        <div style={styles.pagination}>
+          <button
+            style={styles.paginationButton}
+            onClick={() => setCurrentPage(1)}
+            disabled={currentPage === 1}
+          >
+            First
+          </button>
+          <button
+            style={styles.paginationButton}
+            onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+
+          <span style={{ margin: "0 10px" }}>
+            Page {currentPage} of {totalPages}
+          </span>
+
+          <button
+            style={styles.paginationButton}
+            onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+          <button
+            style={styles.paginationButton}
+            onClick={() => setCurrentPage(totalPages)}
+            disabled={currentPage === totalPages}
+          >
+            Last
+          </button>
         </div>
       )}
     </div>
@@ -425,5 +474,21 @@ const styles = {
     marginBottom: "10px",
     border: "1px solid #ccc",
     borderRadius: "6px",
+  },
+  pagination: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: "10px",
+    marginTop: "30px",
+    padding: "20px",
+  },
+  paginationButton: {
+    padding: "8px 12px",
+    cursor: "pointer",
+    border: "1px solid #ccc",
+    borderRadius: "4px",
+    backgroundColor: "#f5f5f5",
+    fontSize: "14px",
   },
 };

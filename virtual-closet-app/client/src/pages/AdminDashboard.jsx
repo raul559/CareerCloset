@@ -68,11 +68,57 @@ export default function AdminDashboard() {
             {!stats ? (
               <p>Loading...</p>
             ) : (
-              <ul>
-                <li>Total Users: {stats.totalUsers}</li>
-                <li>Total Items: {stats.totalItems}</li>
-                <li>Total Outfits: {stats.totalOutfits}</li>
-              </ul>
+              <div style={styles.statsContainer}>
+                {/* USERS SECTION */}
+                <div style={styles.statsCard}>
+                  <h3>Users</h3>
+                  <ul style={styles.statsList}>
+                    <li><strong>Total Users:</strong> {stats.users.total}</li>
+                    <li><strong>Admin Users:</strong> {stats.users.admins}</li>
+                    <li><strong>Regular Users:</strong> {stats.users.regularUsers}</li>
+                  </ul>
+                </div>
+
+                {/* CLOTHING SECTION */}
+                <div style={styles.statsCard}>
+                  <h3>Clothing Items</h3>
+                  <ul style={styles.statsList}>
+                    <li><strong>Total Items:</strong> {stats.clothing.total}</li>
+                    <li><strong>With Images:</strong> {stats.clothing.withImages} ({stats.clothing.imagePercentage}%)</li>
+                    <li><strong>Without Images:</strong> {stats.clothing.withoutImages}</li>
+                  </ul>
+                </div>
+
+                {/* CATEGORY BREAKDOWN */}
+                <div style={styles.statsCard}>
+                  <h3>By Category</h3>
+                  <ul style={styles.statsList}>
+                    {Object.entries(stats.categoryBreakdown).map(([cat, count]) => (
+                      <li key={cat}><strong>{cat}:</strong> {count}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* GENDER BREAKDOWN */}
+                <div style={styles.statsCard}>
+                  <h3>By Gender</h3>
+                  <ul style={styles.statsList}>
+                    {Object.entries(stats.genderBreakdown).map(([gen, count]) => (
+                      <li key={gen}><strong>{gen}:</strong> {count}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* STATUS BREAKDOWN */}
+                <div style={styles.statsCard}>
+                  <h3>By Status</h3>
+                  <ul style={styles.statsList}>
+                    {Object.entries(stats.statusBreakdown).map(([status, count]) => (
+                      <li key={status}><strong>{status}:</strong> {count}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
             )}
           </div>
         )}
@@ -177,5 +223,23 @@ const styles = {
     borderRadius: "8px",
     marginBottom: "10px",
     background: "#f9f9f9",
+  },
+  statsContainer: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+    gap: "20px",
+    marginTop: "20px",
+  },
+  statsCard: {
+    background: "linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%)",
+    padding: "20px",
+    borderRadius: "10px",
+    border: "1px solid #ddd",
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.05)",
+  },
+  statsList: {
+    listStyle: "none",
+    padding: "0",
+    margin: "0",
   },
 };
