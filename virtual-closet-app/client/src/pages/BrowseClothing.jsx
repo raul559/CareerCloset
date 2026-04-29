@@ -36,8 +36,8 @@ export default function BrowseClothing() {
   const [currentPage, setCurrentPage] = useState(1);
 
   // TODO: Replace hardcoded userId with authenticated user ID once user authentication is implemented
-  // Remove from query params; backend will know user from auth token
-  const userId = "virtual-closet-user";
+  // For now, fetch ALL items (no userId filter) so users can browse all clothing
+  // const userId = "virtual-closet-user";
 
   // Load ALL clothing items once (filtering happens client-side)
   useEffect(() => {
@@ -54,7 +54,7 @@ export default function BrowseClothing() {
 
         while (hasMore) {
           const res = await fetch(
-            `${API_URL}/clothing?userId=${userId}&page=${page}&limit=100&t=${Date.now()}`
+            `${API_URL}/clothing?page=${page}&limit=100&t=${Date.now()}`
           );
           const data = await res.json();
 

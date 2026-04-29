@@ -1,11 +1,12 @@
 import ClothingItem from "../models/ClothingItem.js";
 
 /**
- * Find all items for a user, with optional pagination
+ * Find all items for a user (or all items if userId is null), with optional pagination
  */
 export async function findByUserId(userId, options = {}) {
   const { limit = null, skip = 0 } = options;
-  const query = ClothingItem.find({ userId: userId || "default" });
+  const filter = userId ? { userId } : {}; // If no userId, fetch ALL items
+  const query = ClothingItem.find(filter);
 
   if (skip > 0) {
     query.skip(skip);
@@ -19,10 +20,11 @@ export async function findByUserId(userId, options = {}) {
 }
 
 /**
- * Count total items for a user
+ * Count total items for a user (or all items if userId is null)
  */
 export async function countByUserId(userId) {
-  return await ClothingItem.countDocuments({ userId: userId || "default" });
+  const filter = userId ? { userId } : {}; // If no userId, count ALL items
+  return await ClothingItem.countDocuments(filter);
 }
 
 /**
