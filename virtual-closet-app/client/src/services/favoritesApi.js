@@ -45,11 +45,20 @@ export function invalidateFavoritesCache() {
  */
 export async function addFavorite(clothingId) {
   try {
+    const user = auth.getCurrentUser();
+    console.log('[FAVORITES] Adding favorite:', { clothingId, userEmail: user?.email });
+    
     const response = await api.post(`/favorites/${clothingId}`);
+    console.log('[FAVORITES] Successfully added favorite:', response.data);
     invalidateFavoritesCache(); // Clear cache so next fetch gets fresh data
     return response.data;
   } catch (error) {
-    console.error("Error adding favorite:", error);
+    console.error("[FAVORITES] Error adding favorite:", {
+      clothingId,
+      status: error.response?.status,
+      message: error.response?.data?.message || error.message,
+      error: error.response?.data || error,
+    });
     throw error;
   }
 }
@@ -60,11 +69,20 @@ export async function addFavorite(clothingId) {
  */
 export async function removeFavorite(clothingId) {
   try {
+    const user = auth.getCurrentUser();
+    console.log('[FAVORITES] Removing favorite:', { clothingId, userEmail: user?.email });
+    
     const response = await api.delete(`/favorites/${clothingId}`);
+    console.log('[FAVORITES] Successfully removed favorite:', response.data);
     invalidateFavoritesCache(); // Clear cache so next fetch gets fresh data
     return response.data;
   } catch (error) {
-    console.error("Error removing favorite:", error);
+    console.error("[FAVORITES] Error removing favorite:", {
+      clothingId,
+      status: error.response?.status,
+      message: error.response?.data?.message || error.message,
+      error: error.response?.data || error,
+    });
     throw error;
   }
 }

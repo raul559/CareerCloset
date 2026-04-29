@@ -14,7 +14,11 @@ export async function authenticate(req, res, next) {
   // SSO TODO: Verify JWT token instead
   const userEmail = req.headers['x-user-email'];
   
+  console.log('[AUTH] Request headers:', Object.keys(req.headers));
+  console.log('[AUTH] x-user-email header:', userEmail);
+  
   if (!userEmail) {
+    console.warn('[AUTH] Missing x-user-email header');
     return res.status(401).json({
       success: false,
       error: 'Authentication required',
@@ -32,6 +36,7 @@ export async function authenticate(req, res, next) {
       email: userEmail,
       role: user?.role || 'user', // Default to 'user' if not found
     };
+    console.log('[AUTH] Authenticated user:', { email: userEmail, role: req.user.role });
   } catch (err) {
     console.error('Error fetching user role:', err);
     // Fallback - set basic user info without role check

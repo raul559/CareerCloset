@@ -1,4 +1,5 @@
 // Simple auth utility - abstraction layer for easy SSO migration
+import React from 'react';
 
 /**
  * Auth interface that can be swapped between simple login and SSO
@@ -88,15 +89,51 @@ export const auth = {
  * This keeps the same interface when switching to SSO
  */
 export const useAuth = () => {
-  // For now, return static values
-  // SSO TODO: Subscribe to auth context/provider
-  const user = auth.getCurrentUser();
-  const isAuthenticated = auth.isAuthenticated();
-  
+  const [authState, setAuthState] = React.useState(() => {
+    const user = auth.getCurrentUser();
+    const isAuth = auth.isAuthenticated();
+    if (user && isAuth) {
+      console.log('[AUTH] Initial auth state:', { user: user.email, isAuth });
+    }
+    return {
+      user,
+      isAuthenticated: isAuth,
+      isAdmin: user?.isAdmin || false,
+    };
+  });
+
+  React.useEffect(() => {
+    // Re-check auth state when component mounts or whenever storage might have changed
+    const updateAuthState = () => {
+      const user = auth.getCurrentUser();
+      const isAuth = auth.isAuthenticated();
+      setAuthState({
+        user,
+        isAuthenticated: isAuth,
+        isAdmin: user?.isAdmin || false,
+      });
+      if (user && isAuth) {
+        console.log('[AUTH] Updated auth state:', { user: user.email, isAuth });
+      }
+    };
+
+    // Check immediately
+    updateAuthState();
+
+    // Also listen for storage changes (e.g., in another tab or when login completes)
+    const handleStorageChange = () => {
+      console.log('[AUTH] Storage changed, updating auth state');
+      updateAuthState();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Cleanup
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
   return {
-    user,
-    isAuthenticated,
-    isAdmin: user?.isAdmin || false,
+    ...authState,
     login: auth.login,
     logout: auth.logout,
   };
