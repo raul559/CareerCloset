@@ -55,10 +55,9 @@ if (process.env.NODE_ENV === "test") {
         stream.on("error", (err) => reject(err));
 
         stream.on("finish", async () => {
-          // Return the GCS path (not the signed URL which expires)
-          // Controller will generate fresh signed URLs as needed
-          const gcsPath = `gs://${BUCKET_NAME}/${fileName}`;
-          resolve(gcsPath);
+          // Return the public HTTPS URL (bucket is public with CORS configured)
+          const publicUrl = `https://storage.googleapis.com/${BUCKET_NAME}/${fileName}`;
+          resolve(publicUrl);
         });
 
         stream.end(webpBuffer);
