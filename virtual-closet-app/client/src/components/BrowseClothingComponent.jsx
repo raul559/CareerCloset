@@ -266,7 +266,7 @@ export function ItemCard({ item, onDelete, onFavoriteChange, isFavoritedInitiall
 
   const handleToggleFavorite = async () => {
     console.log('[DEBUG] Toggle favorite clicked:', { isAuthenticated, user, isAdmin });
-    
+
     if (!isAuthenticated || !user) {
       console.warn('[DEBUG] Not authenticated, redirecting to signin', { isAuthenticated, user });
       alert("Please sign in to save favorites");
