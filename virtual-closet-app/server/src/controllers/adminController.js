@@ -256,17 +256,65 @@ export const deleteImage = async (req, res) => {
 // -------- STATS --------
 export const getSystemStats = async (req, res) => {
   try {
-    const [userCount, clothingCount] = await Promise.all([
+    const [userCount, adminCount, clothingCount, itemsWithImages, itemsByCategory, itemsByGender, itemsByStatus] = await Promise.all([
       User.countDocuments(),
+      User.countDocuments({ role: "admin" }),
       Clothing.countDocuments(),
-      // Outfit.countDocuments(),       // add these later
+      Clothing.countDocuments({ imageUrl: { $exists: true, $ne: "" } }),
+      Clothing.aggregate([
+        { $group: { _id: "$category", count: { $sum: 1 } } },
+        { $sort: { count: -1 } }
+      ]),
+      Clothing.aggregate([
+        { $group: { _id: "$gender", count: { $sum: 1 } } },
+        { $sort: { count: -1 } }
+      ]),
+      Clothing.aggregate([
+        { $group: { _id: "$status", count: { $sum: 1 } } }
+      ]),
     ]);
 
-    // Fill in outfits later
+    const itemsWithoutImages = clothingCount - itemsWithImages;
+    const regularUsers = userCount - adminCount;
+    const avgItemsPerUser = userCount > 0 ? Math.round(clothingCount / userCount * 100) / 100 : 0;
+
+    // Convert category/gender/status arrays to objects
+    const categoryBreakdown = {};
+    itemsByCategory.forEach(cat => {
+      categoryBreakdown[cat._id || "Uncategorized"] = cat.count;
+    });
+
+    const genderBreakdown = {};
+    itemsByGender.forEach(gen => {
+      genderBreakdown[gen._id || "Unisex"] = gen.count;
+    });
+
+    const statusBreakdown = {};
+    itemsByStatus.forEach(stat => {
+      statusBreakdown[stat._id || "Available"] = stat.count;
+    });
+
     const stats = {
-      totalUsers: userCount,
-      totalClothingItems: clothingCount,
-      totalOutfits: 0,
+      users: {
+        total: userCount,
+        admins: adminCount,
+        regularUsers: regularUsers,
+      },
+      clothing: {
+        total: clothingCount,
+        withImages: itemsWithImages,
+        withoutImages: itemsWithoutImages,
+        imagePercentage: clothingCount > 0 ? Math.round(itemsWithImages / clothingCount * 100) : 0,
+      },
+      categoryBreakdown: categoryBreakdown,
+      genderBreakdown: genderBreakdown,
+      statusBreakdown: statusBreakdown,
+      engagement: {
+        avgItemsPerUser: avgItemsPerUser,
+      },
+      outfits: {
+        total: 0,
+      },
     };
 
     res.json(stats);

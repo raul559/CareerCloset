@@ -391,14 +391,14 @@ export default function AdminClothingManagement() {
             onClick={() => setCurrentPage(1)}
             disabled={currentPage === 1}
           >
-            ⟨⟨ First
+            First
           </button>
           <button
             style={styles.paginationButton}
             onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
             disabled={currentPage === 1}
           >
-            ⟨ Prev
+            Previous
           </button>
 
           <span style={{ margin: "0 10px" }}>
@@ -410,14 +410,14 @@ export default function AdminClothingManagement() {
             onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
             disabled={currentPage === totalPages}
           >
-            Next ⟩
+            Next
           </button>
           <button
             style={styles.paginationButton}
             onClick={() => setCurrentPage(totalPages)}
             disabled={currentPage === totalPages}
           >
-            Last ⟩⟩
+            Last
           </button>
         </div>
       )}
