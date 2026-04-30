@@ -107,11 +107,26 @@ export default function BrowseClothing() {
 
     const loadFavorites = async () => {
       try {
+        // Check again if still authenticated (in case user logged out)
+        if (!isAuthenticated || !user) {
+          return;
+        }
         const favorites = await getFavorites();
+        // Check again after fetch (in case user logged out while loading)
+        if (!isAuthenticated || !user) {
+          setFavoritedIds(new Set());
+          return;
+        }
         const ids = new Set(favorites.map(fav => fav.clothingId || fav._id));
         setFavoritedIds(ids);
         setFavoritesLoaded(true);
       } catch (err) {
+        // Silently fail - user may have been logged out (401 error)
+        if (err.response?.status === 401) {
+          setFavoritedIds(new Set());
+          setFavoritesLoaded(false);
+          return;
+        }
         setFavoritedIds(new Set());
       }
     };

@@ -30,12 +30,28 @@ export default function MyFavorites() {
 
         const loadFavorites = async () => {
             try {
+                // Check again before fetching (in case user logged out)
+                if (!isAuthenticated || !user) {
+                    return;
+                }
+
                 // Invalidate cache before loading to ensure fresh data
                 invalidateFavoritesCache();
                 const items = await getFavorites();
+
+                // Check again after fetch completes (in case user logged out while loading)
+                if (!isAuthenticated || !user) {
+                    return;
+                }
+
                 setFavoriteItems(items);
                 setError(null);
             } catch (err) {
+                // Check if error is due to logout (401) - if so, don't show error
+                if (err.response?.status === 401) {
+                    // User was logged out, redirect will happen via useEffect above
+                    return;
+                }
                 setError("Failed to load your favorites. Please try again.");
                 setFavoriteItems([]);
             } finally {
