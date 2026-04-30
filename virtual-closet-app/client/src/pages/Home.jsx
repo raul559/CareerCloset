@@ -25,8 +25,6 @@ export default function Home() {
             </button>
           </div>
         </div>
-
-        <img src="/group_pic.JPG" alt="Career Closet Group" className="hero-image" />
       </main>
     </div>
   );

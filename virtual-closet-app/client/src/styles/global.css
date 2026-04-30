@@ -1,94 +1,135 @@
-body {
-  background-color: #cfb991;
-  min-height: 100vh;
-  font-family: Helvetica, Arial, sans-serif;
+:root {
+  --bg: #0b1118;
+  --surface: rgba(15, 23, 42, 0.96);
+  --surface-soft: #0f172a;
+  --text-dark: #f8fafc;
+  --text-muted: #cbd5e1;
+  --accent: #60a5fa;
+  --accent-soft: rgba(96, 165, 250, 0.12);
+  --border: rgba(148, 163, 184, 0.16);
+  --shadow: 0 28px 70px rgba(0, 0, 0, 0.6);
 }
 
-/* PFW Fonts */
-body,
-p {
-  font-family: "Noto Sans", Helvetica, Arial, sans-serif;
-  font-size: 0.875rem;
-  font-weight: 400;
-  line-height: 1.5;
-  word-spacing: 0.16em;
-}
-
-h1 {
-  font-family: "Roboto", Helvetica, Arial, sans-serif;
-  font-size: 2rem;
-  font-weight: 700;
-  line-height: 1.5;
-  word-spacing: 0.16em;
-  letter-spacing: 0.03125rem;
-}
-@media only screen and (min-width: 0px) and (max-width: 767px) {
-  h1 {
-    font-size: 1.75rem;
-  }
-}
-h2 {
-  font-family: "Roboto", Helvetica, Arial, sans-serif;
-  font-size: 1.5rem;
-  font-weight: 700;
-  line-height: 1.5;
-  word-spacing: 0.16em;
-  letter-spacing: 0.03125rem;
-}
-@media only screen and (min-width: 0px) and (max-width: 767px) {
-  h2 {
-    font-size: 1.375rem;
-  }
-}
-
-h3 {
-  font-family: "Roboto", Helvetica, Arial, sans-serif;
-  font-size: 1.125rem;
-  font-weight: 700;
-  line-height: 1.5;
-  letter-spacing: 0.03125rem;
-  word-spacing: 0.16em;
-}
-@media only screen and (min-width: 0px) and (max-width: 767px) {
-  h3 {
-    font-size: 1rem;
-  }
-}
-
-h4 {
-  font-family: "Noto Sans", Helvetica, Arial, sans-serif;
-  font-size: 1rem;
-  font-weight: 700;
-  line-height: 1.5;
-  word-spacing: 0.16em;
-}
-@media only screen and (min-width: 0px) and (max-width: 767px) {
-  h4 {
-    font-size: 0.875rem;
-  }
-}
-
-h5 {
-  font-family: "Noto Sans", Helvetica, Arial, sans-serif;
-  font-weight: 700;
-  font-size: 0.875rem;
-  line-height: 1.5;
-  word-spacing: 0.16em;
-}
-@media only screen and (min-width: 0px) and (max-width: 767px) {
-  h5 {
-    font-size: 0.75rem;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  font-family: "Noto Sans", Helvetica, Arial, sans-serif;
+  color: var(--text-dark);
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(96, 165, 250, 0.14),
+      transparent 24%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(148, 163, 184, 0.08),
+      transparent 30%
+    ),
+    var(--bg);
+}
+
+body,
+p {
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1.75;
+  color: var(--text-muted);
+}
+
+h1 {
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
+  font-size: clamp(2.25rem, 4vw, 3rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03rem;
+  margin-bottom: 0.8em;
+  color: var(--text-dark);
+}
+
+@media only screen and (min-width: 0px) and (max-width: 767px) {
+  h1 {
+    font-size: 2.2rem;
+  }
+}
+
+h2 {
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: -0.01rem;
+  color: var(--text-dark);
+}
+
+@media only screen and (min-width: 0px) and (max-width: 767px) {
+  h2 {
+    font-size: 1.35rem;
+  }
+}
+
+h3 {
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.75;
+  letter-spacing: -0.01rem;
+  word-spacing: 0.16em;
+  color: var(--text-muted);
+}
+
+@media only screen and (min-width: 0px) and (max-width: 767px) {
+  h3 {
+    font-size: 0.95rem;
+  }
+}
+
+h4,
+h5 {
+  font-family: "Noto Sans", Helvetica, Arial, sans-serif;
+}
+
+h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+h5 {
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+button {
+  font: inherit;
+  border: none;
+  cursor: pointer;
+  border-radius: 999px;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
 }
 
 nav {
-  background-color: white;
-  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
+  background: rgba(15, 23, 42, 0.92);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.08);
+  backdrop-filter: blur(12px);
 }
 
 .sidebar {
@@ -98,9 +139,9 @@ nav {
   height: 100vh;
   width: 250px;
   z-index: 999;
-  backdrop-filter: blur(10px);
-  background-color: rgba(255, 255, 255, 0);
-  box-shadow: -10px 0 10px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(14px);
+  background-color: rgba(7, 11, 22, 0.96);
+  box-shadow: -10px 0 20px rgba(0, 0, 0, 0.5);
   display: none;
   flex-direction: column;
   align-items: flex-start;
@@ -111,10 +152,7 @@ nav {
   display: flex;
 }
 
-.sidebar li {
-  width: 100%;
-}
-
+.sidebar li,
 .sidebar a {
   width: 100%;
 }
