@@ -2,6 +2,8 @@ import { useMemo, useState, useEffect } from "react";
 import "../styles/browse.css";
 import { useNavigate } from "react-router-dom";
 import { useOutfit } from "../context/OutfitContext";
+import { useAuth } from "../utils/auth";
+import { getFavorites } from "../services/favoritesApi";
 
 import {
   FiltersSidebar,
@@ -18,12 +20,14 @@ const ITEMS_PER_PAGE = 30; // Reduced from 50 for faster initial load
 export default function BrowseClothing() {
   const navigate = useNavigate();
   const { addToOutfit } = useOutfit();
+  const { isAuthenticated, user } = useAuth();
 
   // Clothing metadata + image URLS
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
+  const [favoritedIds, setFavoritedIds] = useState(new Set()); // Cache of favorited item IDs
 
   // Filters
   const [query, setQuery] = useState("");
@@ -34,6 +38,7 @@ export default function BrowseClothing() {
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
+  const [favoritesLoaded, setFavoritesLoaded] = useState(false);
 
   // TODO: Replace hardcoded userId with authenticated user ID once user authentication is implemented
   // For now, fetch ALL items (no userId filter) so users can browse all clothing
@@ -47,30 +52,18 @@ export default function BrowseClothing() {
       try {
         const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5001/api";
 
-        // Fetch all items by making multiple paginated requests
-        let allItems = [];
-        let page = 1;
-        let hasMore = true;
+        // OPTIMIZATION: Load ALL items in ONE request with a high limit instead of paginating
+        // This is much faster than multiple round-trips
+        const res = await fetch(
+          `${API_URL}/clothing?page=1&limit=1000`
+        );
+        const data = await res.json();
 
-        while (hasMore) {
-          const res = await fetch(
-            `${API_URL}/clothing?page=${page}&limit=100&t=${Date.now()}`
-          );
-          const data = await res.json();
-
-          if (data && data.items) {
-            allItems = allItems.concat(data.items);
-            hasMore = data.items.length === 100 && page < data.totalPages;
-            page++;
-          } else {
-            hasMore = false;
-          }
-        }
-
+        const allItems = data && data.items ? data.items : [];
         setItems(allItems);
         setTotal(allItems.length);
       } catch (err) {
-        console.error("Failed to load clothing:", err);
+        // Silently handle error
       } finally {
         setLoading(false);
       }
@@ -98,6 +91,33 @@ export default function BrowseClothing() {
       window.removeEventListener('storage', storageHandler);
     };
   }, []); // Only load once on mount
+
+  // Load favorited items once (batched API call instead of per-item checks)
+  useEffect(() => {
+    if (!isAuthenticated || !user) {
+      setFavoritedIds(new Set());
+      setFavoritesLoaded(false);
+      return;
+    }
+
+    // Only load if we haven't already
+    if (favoritesLoaded) {
+      return;
+    }
+
+    const loadFavorites = async () => {
+      try {
+        const favorites = await getFavorites();
+        const ids = new Set(favorites.map(fav => fav.clothingId || fav._id));
+        setFavoritedIds(ids);
+        setFavoritesLoaded(true);
+      } catch (err) {
+        setFavoritedIds(new Set());
+      }
+    };
+
+    loadFavorites();
+  }, [isAuthenticated, user, favoritesLoaded]);
 
 
 
@@ -295,17 +315,27 @@ export default function BrowseClothing() {
               <ItemCard
                 key={it._id}
                 item={it}
+                isFavoritedInitially={favoritedIds.has(it.clothingId || it._id)}
+                onFavoriteChange={(clothingId, isFavorited) => {
+                  setFavoritedIds(prev => {
+                    const next = new Set(prev);
+                    if (isFavorited) {
+                      next.add(clothingId);
+                    } else {
+                      next.delete(clothingId);
+                    }
+                    return next;
+                  });
+                  // Don't reset the flag - just update the cache
+                }}
                 onDelete={async (id) => {
                   try {
                     // call admin API to delete item and remove locally
                     const { deleteClothingItem } = await import("../services/adminApi");
-                    const result = await deleteClothingItem(id);
-                    console.log("Delete result:", result);
+                    await deleteClothingItem(id);
                     setItems((prev) => prev.filter((p) => p._id !== id));
                   } catch (err) {
-                    console.error("Failed to delete item:", err);
-                    console.error("Error response:", err.response?.data);
-                    alert("Failed to delete item. See console for details.");
+                    alert("Failed to delete item. Please try again.");
                   }
                 }}
               />

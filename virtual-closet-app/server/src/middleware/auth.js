@@ -26,17 +26,16 @@ export async function authenticate(req, res, next) {
     const user = await User.findOne({ email: userEmail.toLowerCase() });
     
     // Attach user info to request
-    // SSO TODO: Parse from verified JWT token claims
+    // Always use email as userId for consistency (matches what favorites store)
     req.user = {
-      id: user?._id || userEmail, // SSO TODO: Use SSO unique userId
+      id: userEmail, // Use email consistently as user ID
       email: userEmail,
       role: user?.role || 'user', // Default to 'user' if not found
     };
   } catch (err) {
-    console.error('Error fetching user role:', err);
     // Fallback - set basic user info without role check
     req.user = {
-      id: userEmail,
+      id: userEmail, // Use email consistently as user ID
       email: userEmail,
       role: 'user',
     };
@@ -63,7 +62,6 @@ export async function optionalAuth(req, res, next) {
         role: user?.role || 'user',
       };
     } catch (err) {
-      console.error('Error fetching user role:', err);
       // Fallback - set basic user info
       req.user = {
         id: userEmail,
@@ -138,7 +136,6 @@ export async function simpleLogin(req, res) {
       },
     });
   } catch (err) {
-    console.error('Error in simpleLogin:', err);
     return res.status(500).json({ success: false, error: 'Server error' });
   }
 }

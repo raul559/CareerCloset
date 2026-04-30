@@ -8,6 +8,7 @@ import BrowseClothing from "./pages/BrowseClothing";
 import BuildOutfit from "./pages/BuildOutfit";
 import SignIn from "./pages/SignIn";
 import AdminDashboard from "./pages/AdminDashboard";
+import MyFavorites from "./pages/MyFavorites";
 import auth from "./utils/auth";
 import "./styles/global.css";
 
@@ -55,6 +56,7 @@ function AppContent() {
           <Route path="/browse" element={<BrowseClothing userEmail={userEmail} />} />
           <Route path="/build" element={<BuildOutfit />} />
           <Route path="/signin" element={<SignIn onLogin={handleLogin} loggedIn={loggedIn} />} />
+          <Route path="/favorites" element={<MyFavorites />} />
           <Route path="/admin" element={<AdminDashboard />} />
         </Routes>
       </main>

@@ -33,6 +33,7 @@ import imageRoutes from "./routes/images.js";
 import uploadRoute from "./routes/upload.js";
 import adminRoutes from "./routes/admin.js";
 import authRoutes from "./routes/auth.js";
+import favoriteRoutes from "./routes/favorites.js";
 
 // Server Port
 const PORT = process.env.PORT || 5001;
@@ -71,6 +72,7 @@ async function startServer() {
     app.use("/api/upload", uploadRoute);
     app.use("/api/clothing", clothingRoutes);
     app.use("/api/images", imageRoutes);
+    app.use("/api/favorites", favoriteRoutes);
     app.use("/api/admin", adminRoutes);
     app.use("/api/auth", authRoutes);
 
