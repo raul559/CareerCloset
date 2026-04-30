@@ -265,10 +265,7 @@ export function ItemCard({ item, onDelete, onFavoriteChange, isFavoritedInitiall
   };
 
   const handleToggleFavorite = async () => {
-    console.log('[DEBUG] Toggle favorite clicked:', { isAuthenticated, user, isAdmin, isFav });
-
     if (!isAuthenticated || !user) {
-      console.warn('[DEBUG] Not authenticated, redirecting to signin', { isAuthenticated, user });
       alert("Please sign in to save favorites");
       navigate("/signin");
       return;
@@ -303,9 +300,7 @@ export function ItemCard({ item, onDelete, onFavoriteChange, isFavoritedInitiall
       }
     } catch (error) {
       const errorMsg = error.response?.data?.error || error.message || 'Unknown error';
-      console.error("[DEBUG] Full error:", error.response?.data || error);
       alert(`Failed to update favorite: ${errorMsg}`);
-      console.error("Error toggling favorite:", error);
     } finally {
       setIsLoading(false);
     }

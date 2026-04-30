@@ -33,11 +33,9 @@ export default function MyFavorites() {
                 // Invalidate cache before loading to ensure fresh data
                 invalidateFavoritesCache();
                 const items = await getFavorites();
-                console.log('[MyFavorites] Loaded items:', items.length);
                 setFavoriteItems(items);
                 setError(null);
             } catch (err) {
-                console.error("Error loading favorites:", err);
                 setError("Failed to load your favorites. Please try again.");
                 setFavoriteItems([]);
             } finally {
@@ -50,18 +48,14 @@ export default function MyFavorites() {
 
     const handleRemoveFavorite = async (clothingId) => {
         try {
-            console.log('[MyFavorites] Removing favorite:', clothingId);
             await removeFavorite(clothingId);
             // Immediately remove from local state
             setFavoriteItems((prev) => {
-                const filtered = prev.filter((item) => item.clothingId !== clothingId);
-                console.log('[MyFavorites] Removed, remaining items:', filtered.length);
-                return filtered;
+                return prev.filter((item) => item.clothingId !== clothingId);
             });
             // Invalidate cache for next load
             invalidateFavoritesCache();
         } catch (err) {
-            console.error("Error removing favorite:", err);
             alert("Failed to remove favorite. Please try again.");
         }
     };

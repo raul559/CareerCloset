@@ -15,15 +15,11 @@ export async function getFavorites() {
     
     // Return cached data if still fresh
     if (favoritesCache !== null && cacheTimestamp && (now - cacheTimestamp) < CACHE_TTL) {
-      console.log('[FAVORITES] Returning cached data, items:', favoritesCache.length);
       return favoritesCache;
     }
 
-    console.log('[FAVORITES] Cache miss or expired, fetching fresh data from server');
     const response = await api.get("/favorites");
     const items = response.data.items || [];
-    
-    console.log('[FAVORITES] Received from server:', { itemsCount: items.length, status: response.status });
     
     // Update cache
     favoritesCache = items;
@@ -31,11 +27,6 @@ export async function getFavorites() {
     
     return items;
   } catch (error) {
-    console.error("[FAVORITES] Error fetching favorites:", {
-      status: error.response?.status,
-      message: error.response?.data?.error || error.message,
-      error: error.response?.data || error,
-    });
     return [];
   }
 }
@@ -54,20 +45,10 @@ export function invalidateFavoritesCache() {
  */
 export async function addFavorite(clothingId) {
   try {
-    const user = auth.getCurrentUser();
-    console.log('[FAVORITES] Adding favorite:', { clothingId, userEmail: user?.email });
-    
     const response = await api.post(`/favorites/${clothingId}`);
-    console.log('[FAVORITES] Successfully added favorite:', response.data);
     invalidateFavoritesCache(); // Clear cache so next fetch gets fresh data
     return response.data;
   } catch (error) {
-    console.error("[FAVORITES] Error adding favorite:", {
-      clothingId,
-      status: error.response?.status,
-      message: error.response?.data?.message || error.message,
-      error: error.response?.data || error,
-    });
     throw error;
   }
 }
@@ -78,20 +59,10 @@ export async function addFavorite(clothingId) {
  */
 export async function removeFavorite(clothingId) {
   try {
-    const user = auth.getCurrentUser();
-    console.log('[FAVORITES] Removing favorite:', { clothingId, userEmail: user?.email });
-    
     const response = await api.delete(`/favorites/${clothingId}`);
-    console.log('[FAVORITES] Successfully removed favorite:', response.data);
     invalidateFavoritesCache(); // Clear cache so next fetch gets fresh data
     return response.data;
   } catch (error) {
-    console.error("[FAVORITES] Error removing favorite:", {
-      clothingId,
-      status: error.response?.status,
-      message: error.response?.data?.message || error.message,
-      error: error.response?.data || error,
-    });
     throw error;
   }
 }
@@ -105,7 +76,6 @@ export async function checkIsFavorited(clothingId) {
     const response = await api.get(`/favorites/check/${clothingId}`);
     return response.data.isFavorited;
   } catch (error) {
-    console.error("Error checking favorite status:", error);
     return false;
   }
 }

@@ -63,7 +63,7 @@ export default function BrowseClothing() {
         setItems(allItems);
         setTotal(allItems.length);
       } catch (err) {
-        console.error("Failed to load clothing:", err);
+        // Silently handle error
       } finally {
         setLoading(false);
       }
@@ -112,7 +112,6 @@ export default function BrowseClothing() {
         setFavoritedIds(ids);
         setFavoritesLoaded(true);
       } catch (err) {
-        console.error("Failed to load favorites cache:", err);
         setFavoritedIds(new Set());
       }
     };
@@ -333,13 +332,10 @@ export default function BrowseClothing() {
                   try {
                     // call admin API to delete item and remove locally
                     const { deleteClothingItem } = await import("../services/adminApi");
-                    const result = await deleteClothingItem(id);
-                    console.log("Delete result:", result);
+                    await deleteClothingItem(id);
                     setItems((prev) => prev.filter((p) => p._id !== id));
                   } catch (err) {
-                    console.error("Failed to delete item:", err);
-                    console.error("Error response:", err.response?.data);
-                    alert("Failed to delete item. See console for details.");
+                    alert("Failed to delete item. Please try again.");
                   }
                 }}
               />
