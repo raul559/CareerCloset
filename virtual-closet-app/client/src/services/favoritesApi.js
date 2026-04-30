@@ -11,14 +11,19 @@ const CACHE_TTL = 5 * 60 * 1000; // 5 minute cache
  */
 export async function getFavorites() {
   try {
-    // Return cached data if still fresh
     const now = Date.now();
+    
+    // Return cached data if still fresh
     if (favoritesCache !== null && cacheTimestamp && (now - cacheTimestamp) < CACHE_TTL) {
+      console.log('[FAVORITES] Returning cached data, items:', favoritesCache.length);
       return favoritesCache;
     }
 
+    console.log('[FAVORITES] Cache miss or expired, fetching fresh data from server');
     const response = await api.get("/favorites");
     const items = response.data.items || [];
+    
+    console.log('[FAVORITES] Received from server:', { itemsCount: items.length, status: response.status });
     
     // Update cache
     favoritesCache = items;
@@ -26,7 +31,11 @@ export async function getFavorites() {
     
     return items;
   } catch (error) {
-    console.error("Error fetching favorites:", error);
+    console.error("[FAVORITES] Error fetching favorites:", {
+      status: error.response?.status,
+      message: error.response?.data?.error || error.message,
+      error: error.response?.data || error,
+    });
     return [];
   }
 }

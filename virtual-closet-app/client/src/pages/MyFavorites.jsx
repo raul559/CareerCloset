@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useOutfit } from "../context/OutfitContext";
 import { useAuth } from "../utils/auth";
-import { getFavorites, removeFavorite } from "../services/favoritesApi";
+import { getFavorites, removeFavorite, invalidateFavoritesCache } from "../services/favoritesApi";
 import "../styles/browse.css";
 
 export default function MyFavorites() {
@@ -30,7 +30,10 @@ export default function MyFavorites() {
 
         const loadFavorites = async () => {
             try {
+                // Invalidate cache before loading to ensure fresh data
+                invalidateFavoritesCache();
                 const items = await getFavorites();
+                console.log('[MyFavorites] Loaded items:', items.length);
                 setFavoriteItems(items);
                 setError(null);
             } catch (err) {
@@ -47,10 +50,16 @@ export default function MyFavorites() {
 
     const handleRemoveFavorite = async (clothingId) => {
         try {
+            console.log('[MyFavorites] Removing favorite:', clothingId);
             await removeFavorite(clothingId);
-            setFavoriteItems((prev) =>
-                prev.filter((item) => item.clothingId !== clothingId)
-            );
+            // Immediately remove from local state
+            setFavoriteItems((prev) => {
+                const filtered = prev.filter((item) => item.clothingId !== clothingId);
+                console.log('[MyFavorites] Removed, remaining items:', filtered.length);
+                return filtered;
+            });
+            // Invalidate cache for next load
+            invalidateFavoritesCache();
         } catch (err) {
             console.error("Error removing favorite:", err);
             alert("Failed to remove favorite. Please try again.");

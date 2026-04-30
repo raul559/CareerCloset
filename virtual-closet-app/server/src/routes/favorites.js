@@ -12,10 +12,12 @@ const router = express.Router();
 // All routes require authentication
 router.use(authenticate);
 
-// Get all favorites for authenticated user - add cache headers
+// Get all favorites for authenticated user - NO caching to ensure fresh data
 router.get("/", (req, res, next) => {
-  // Cache for 5 minutes
-  res.setHeader("Cache-Control", "private, max-age=300");
+  // Don't cache - users expect immediate updates when adding/removing favorites
+  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
   next();
 }, getFavorites);
 

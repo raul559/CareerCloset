@@ -265,7 +265,7 @@ export function ItemCard({ item, onDelete, onFavoriteChange, isFavoritedInitiall
   };
 
   const handleToggleFavorite = async () => {
-    console.log('[DEBUG] Toggle favorite clicked:', { isAuthenticated, user, isAdmin });
+    console.log('[DEBUG] Toggle favorite clicked:', { isAuthenticated, user, isAdmin, isFav });
 
     if (!isAuthenticated || !user) {
       console.warn('[DEBUG] Not authenticated, redirecting to signin', { isAuthenticated, user });
@@ -277,11 +277,24 @@ export function ItemCard({ item, onDelete, onFavoriteChange, isFavoritedInitiall
     setIsLoading(true);
     try {
       const clothingId = item.clothingId || item.id;
-      if (isFav) {
-        await removeFavorite(clothingId);
-      } else {
-        await addFavorite(clothingId);
+
+      // Try to toggle - if already favorited and we try to add, just toggle the state
+      // If not favorited and we try to remove, just toggle the state
+      try {
+        if (isFav) {
+          await removeFavorite(clothingId);
+        } else {
+          await addFavorite(clothingId);
+        }
+      } catch (error) {
+        // If we get "already favorited" error, user must be trying to unfavorite
+        if (error.response?.status === 400 && error.response?.data?.error?.includes('already')) {
+          await removeFavorite(clothingId);
+        } else {
+          throw error;
+        }
       }
+
       const newState = !isFav;
       setIsFav(newState);
       // Notify parent of favorite change
@@ -289,7 +302,9 @@ export function ItemCard({ item, onDelete, onFavoriteChange, isFavoritedInitiall
         onFavoriteChange(clothingId, newState);
       }
     } catch (error) {
-      alert("Failed to update favorite. Please try again.");
+      const errorMsg = error.response?.data?.error || error.message || 'Unknown error';
+      console.error("[DEBUG] Full error:", error.response?.data || error);
+      alert(`Failed to update favorite: ${errorMsg}`);
       console.error("Error toggling favorite:", error);
     } finally {
       setIsLoading(false);
