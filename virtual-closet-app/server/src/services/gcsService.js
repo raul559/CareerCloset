@@ -29,8 +29,8 @@ if (process.env.NODE_ENV === 'production') {
     });
     credentialsAvailable = true;
     console.log('✅ GCS Storage initialized with Application Default Credentials (production)');
-    console.log(`   Project ID: ${process.env.GCS_PROJECT_ID}`,
-    console.log(`   Bucket: ${process.env.GCS_BUCKET_NAME || 'pfw-virtual-close'}`);
+    console.log(`   Project ID: ${process.env.GCS_PROJECT_ID}`);
+    console.log(`   Bucket: ${process.env.GCS_BUCKET_NAME || 'pfw-virtual-closet'}`);
   } catch (err) {
     console.error('❌ GCS Storage initialization failed in production:', err.message);
     credentialsAvailable = false;
