@@ -40,10 +40,6 @@ export default function BrowseClothing() {
   const [currentPage, setCurrentPage] = useState(1);
   const [favoritesLoaded, setFavoritesLoaded] = useState(false);
 
-  // TODO: Replace hardcoded userId with authenticated user ID once user authentication is implemented
-  // For now, fetch ALL items (no userId filter) so users can browse all clothing
-  // const userId = "virtual-closet-user";
-
   // Load ALL clothing items once (filtering happens client-side)
   useEffect(() => {
     // Load items function is defined here so it can be called on mount
@@ -75,19 +71,19 @@ export default function BrowseClothing() {
     const handler = () => {
       loadAllItems();
     };
-    window.addEventListener('virtualcloset:itemsUpdated', handler);
+    window.addEventListener('closet:itemsUpdated', handler);
 
     // Also listen for localStorage 'storage' events so other tabs/windows reload
     const storageHandler = (e) => {
       if (!e) return;
-      if (e.key === 'virtualcloset:itemsUpdated') {
+      if (e.key === 'closet:itemsUpdated') {
         loadAllItems();
       }
     };
     window.addEventListener('storage', storageHandler);
 
     return () => {
-      window.removeEventListener('virtualcloset:itemsUpdated', handler);
+      window.removeEventListener('closet:itemsUpdated', handler);
       window.removeEventListener('storage', storageHandler);
     };
   }, []); // Only load once on mount

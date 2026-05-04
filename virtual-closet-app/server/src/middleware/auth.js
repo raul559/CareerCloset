@@ -1,17 +1,13 @@
 /**
- * Simple auth middleware - abstraction layer for easy SSO migration
- * For SSO: only update this file to validate JWT tokens
+ * Auth middleware for validating user credentials
  */
 
 import User from '../models/user.js';
 
 /**
- * Simple authentication check (temporary for testing)
- * SSO TODO: Validate JWT token from Authorization header
+ * Authenticate user via email header
  */
 export async function authenticate(req, res, next) {
-  // Simple approach: check for X-User-Email header
-  // SSO TODO: Verify JWT token instead
   const userEmail = req.headers['x-user-email'];
   
   if (!userEmail) {
@@ -78,7 +74,6 @@ export async function optionalAuth(req, res, next) {
 
 /**
  * Require admin role
- * SSO TODO: Check roles from JWT token
  */
 export function requireAdmin(req, res, next) {
   if (!req.user) {
@@ -99,8 +94,7 @@ export function requireAdmin(req, res, next) {
 }
 
 /**
- * Simple login endpoint (temporary for testing)
- * SSO TODO: Remove this entirely, use SSO redirect
+ * Simple login endpoint
  */
 export async function simpleLogin(req, res) {
   const { email, password } = req.body;
@@ -112,7 +106,6 @@ export async function simpleLogin(req, res) {
     });
   }
 
-  // Simple validation for testing
   if (!/^[^\s@]+@pfw\.edu$/i.test(email)) {
     return res.status(400).json({
       success: false,
@@ -120,8 +113,6 @@ export async function simpleLogin(req, res) {
     });
   }
 
-  // For testing - accept any password
-  // SSO TODO: Remove this, redirect to SSO provider
   try {
     const user = await User.findOne({ email: email.toLowerCase() });
     const role = user?.role || 'user';

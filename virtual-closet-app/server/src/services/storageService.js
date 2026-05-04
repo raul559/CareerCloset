@@ -14,7 +14,7 @@ if (process.env.NODE_ENV === "test") {
   const storage =
     process.env.NODE_ENV === "production"
       ? new Storage({
-          projectId: process.env.GCS_PROJECT_ID || "virtualcloset-477422",
+          projectId: process.env.GCS_PROJECT_ID,
         })
       : new Storage({
           keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,

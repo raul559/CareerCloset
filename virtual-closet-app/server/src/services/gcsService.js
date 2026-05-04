@@ -25,11 +25,11 @@ if (process.env.NODE_ENV === 'production') {
   // Production: Use Application Default Credentials (Cloud Run IAM)
   try {
     storage = new Storage({
-      projectId: process.env.GCS_PROJECT_ID || 'virtualcloset-477422'
+      projectId: process.env.GCS_PROJECT_ID
     });
     credentialsAvailable = true;
     console.log('✅ GCS Storage initialized with Application Default Credentials (production)');
-    console.log(`   Project ID: ${process.env.GCS_PROJECT_ID || 'virtualcloset-477422'}`);
+    console.log(`   Project ID: ${process.env.GCS_PROJECT_ID}`,
     console.log(`   Bucket: ${process.env.GCS_BUCKET_NAME || 'pfw-virtual-close'}`);
   } catch (err) {
     console.error('❌ GCS Storage initialization failed in production:', err.message);

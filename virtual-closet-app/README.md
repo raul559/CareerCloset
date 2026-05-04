@@ -1,4 +1,4 @@
-# Virtual Closet - PFW Career Services
+# Career Closet
 
 A modern web application for managing Purdue Fort Wayne's Career Closet, enabling students to browse professional clothing and build outfits.
 
@@ -59,7 +59,6 @@ A modern web application for managing Purdue Fort Wayne's Career Closet, enablin
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/DWilliams325/VirtualCloset.git
    cd virtual-closet-app
    ```
 

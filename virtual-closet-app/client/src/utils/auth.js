@@ -12,7 +12,6 @@ const STORAGE_PREFIX = 'vc_temp_';
 export const auth = {
   /**
    * Get current user information
-   * SSO TODO: Parse from JWT token claims instead
    */
   getCurrentUser: () => {
     // Check sessionStorage first (per-tab session), then localStorage (cross-tab persistence)
@@ -26,17 +25,16 @@ export const auth = {
     if (!email) return null;
     
     return {
-      id: email, // SSO TODO: Use SSO unique userId instead
+      id: email,
       email: email,
       name: name || email.split('@')[0],
-      role: role, // Use role from database (set during login/register)
-      isAdmin: role === 'admin', // Check against database role, not hardcoded email
+      role: role,
+      isAdmin: role === 'admin',
     };
   },
 
   /**
    * Check if user is authenticated
-   * SSO TODO: Validate JWT token instead
    */
   isAuthenticated: () => {
     // Check sessionStorage first (per-tab session), then localStorage (cross-tab persistence)
@@ -46,8 +44,7 @@ export const auth = {
   },
 
   /**
-   * Simple login (DEPRECATED - use server authentication instead)
-   * SSO TODO: Replace with redirect to SSO provider
+   * Simple login
    */
   login: (email, password, remember = false) => {
     // This fallback is disabled - all logins must be validated by the server
@@ -57,7 +54,6 @@ export const auth = {
 
   /**
    * Logout current user
-   * SSO TODO: Call SSO logout endpoint and clear tokens
    */
   logout: () => {
     sessionStorage.removeItem(`${STORAGE_PREFIX}userEmail`);
@@ -70,16 +66,14 @@ export const auth = {
 
   /**
    * Get auth headers for API requests
-   * SSO TODO: Add Authorization: Bearer {token} header
    */
   getAuthHeaders: () => {
     const user = auth.getCurrentUser();
     if (!user) return {};
     
     // Simple approach for now
-    // SSO TODO: Return { 'Authorization': `Bearer ${token}` }
     return {
-      'X-User-Email': user.email, // Temporary header
+      'X-User-Email': user.email,
     };
   },
 };

@@ -380,8 +380,6 @@ export const exportClothingCsv = async (req, res) => {
 
 export const exportOutfitsJson = async (req, res) => {
   try {
-    // TODO: when Outfit model exists:
-    // const outfits = await Outfit.find().lean();
     const outfits = [];
     res.setHeader("Content-Type", "application/json");
     res.setHeader("Content-Disposition", "attachment; filename=outfits.json");

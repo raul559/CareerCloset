@@ -34,10 +34,10 @@ export default function AdminClothingManagement() {
       load();
       try {
         // Notify other open pages (same-tab) that items changed
-        window.dispatchEvent(new CustomEvent('virtualcloset:itemsUpdated', { detail: { id: res.data._id } }));
+        window.dispatchEvent(new CustomEvent('closet:itemsUpdated', { detail: { id: res.data._id } }));
         // Also write a small localStorage ping so other tabs receive a storage event
         try {
-          localStorage.setItem('virtualcloset:itemsUpdated', JSON.stringify({ id: res.data._id, ts: Date.now() }));
+          localStorage.setItem('closet:itemsUpdated', JSON.stringify({ id: res.data._id, ts: Date.now() }));
         } catch (e) {
           // ignore storage failures (private mode, etc.)
         }
@@ -365,9 +365,9 @@ export default function AdminClothingManagement() {
                     setImageEditItem(null);
                     load();
                     try {
-                      window.dispatchEvent(new CustomEvent('virtualcloset:itemsUpdated', { detail: { id: imageEditItem._id } }));
+                      window.dispatchEvent(new CustomEvent('closet:itemsUpdated', { detail: { id: imageEditItem._id } }));
                       try {
-                        localStorage.setItem('virtualcloset:itemsUpdated', JSON.stringify({ id: imageEditItem._id, ts: Date.now() }));
+                        localStorage.setItem('closet:itemsUpdated', JSON.stringify({ id: imageEditItem._id, ts: Date.now() }));
                       } catch (e) { }
                     } catch (e) { }
                   });

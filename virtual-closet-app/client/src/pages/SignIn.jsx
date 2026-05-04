@@ -153,7 +153,7 @@ export default function SignIn({ onLogin, loggedIn }) {
   return (
     <div className="signin-wrapper">
       <main className="signin-card">
-        <h1 className="signin-title">Sign in to Virtual Closet</h1>
+        <h1 className="signin-title">Sign in to Career Closet</h1>
         <p className="signin-sub">Welcome back! Enter your credentials to continue.</p>
 
         {loggedIn ? (

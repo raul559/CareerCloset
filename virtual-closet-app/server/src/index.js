@@ -17,8 +17,6 @@ dotenv.config({
   path: join(__dirname, "..", ".env"),
 });
 
-console.log("DEBUG: Loaded GCS_BUCKET =", process.env.GCS_BUCKET);
-
 // ----------------------
 // Create Express App (AFTER env loads)
 // ----------------------
@@ -48,8 +46,8 @@ async function startServer() {
     const corsOptions = {
       origin: process.env.NODE_ENV === 'production'
         ? [
-            'https://virtual-closet-web-310822052817.us-central1.run.app',
-            'https://virtual-closet-api-310822052817.us-central1.run.app'
+            process.env.FRONTEND_URL || 'http://localhost:3000',
+            process.env.BACKEND_URL || 'http://localhost:5001'
           ]
         : ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:5001'],
       credentials: true,
@@ -80,7 +78,7 @@ async function startServer() {
     app.get("/api/health", (req, res) => {
       res.json({
         status: "OK",
-        message: "Virtual Closet API is running",
+        message: "Career Closet API is running",
         environment: process.env.NODE_ENV,
         timestamp: new Date().toISOString(),
       });
@@ -89,7 +87,7 @@ async function startServer() {
     // Root route
     app.get("/", (req, res) => {
       res.json({
-        message: "Welcome to Virtual Closet API",
+        message: "Welcome to Career Closet API",
         version: "1.0.0",
         endpoints: {
           health: "/api/health",

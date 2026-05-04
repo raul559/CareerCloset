@@ -72,8 +72,6 @@ export async function register(req, res) {
     }
 
     // Create new user
-    // NOTE: User model accepts role values of 'user' or 'admin'.
-    // Default to 'user' when no role provided (previously used 'student' which failed validation).
     const user = new User({
       email: email.toLowerCase(),
       password,
